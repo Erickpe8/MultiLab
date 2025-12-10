@@ -1,0 +1,21 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('asset_documents', function (Blueprint $t) {
+            $t->id();
+            $t->foreignId('asset_id')->constrained('assets')->cascadeOnUpdate()->cascadeOnDelete();
+            $t->string('doc_type', 40);
+            $t->string('path', 255);
+            $t->timestamps();
+            $t->index('asset_id', 'idx_asset_docs_asset');
+        });
+    }
+    public function down(): void {
+        Schema::dropIfExists('asset_documents');
+    }
+};

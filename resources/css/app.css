@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   🎨 Estilos personalizados para el Dashboard Multilab FESC
+   ============================================================ */
+
+/* ▸ Botón primario institucional */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-md
+         bg-multilab-blue text-white hover:bg-multilab-darkblue
+         focus:outline-none focus:ring-2 focus:ring-multilab-blue
+         transition-colors duration-200;
+}
+
+/* ▸ Tarjeta base para módulos */
+.module-card {
+  @apply rounded-2xl bg-white dark:bg-multilab-dark shadow-card
+         border border-transparent dark:border-multilab-darkblue/30
+         transition-all duration-200;
+}
+
+/* ▸ Contenedor general (opcional para futuras vistas) */
+.page-container {
+  @apply min-h-screen bg-multilab-light dark:bg-multilab-dark
+         text-multilab-dark dark:text-multilab-gray;
+}
+
+/* ▸ Estados de hover y enfoque */
+.module-card:hover {
+  @apply shadow-soft transform -translate-y-0.5;
+}
+
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
