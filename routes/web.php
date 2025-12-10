@@ -16,26 +16,65 @@ use App\Adapters\Http\Controllers\Admin\UserController;
 |--------------------------------------------------------------------------
 | Web Routes - Multilab FESC
 |--------------------------------------------------------------------------
-|
-| Aquí se registran las rutas web del sistema bajo arquitectura modular.
-| Incluye autenticación, roles, políticas y vistas estáticas públicas.
-|
+| Rutas oficiales del sistema Multilab, estructuradas por autenticación,
+| roles, permisos y módulos. La arquitectura sigue línea modular.
 */
 
-// Página inicial (pública)
+/*
+|--------------------------------------------------------------------------
+| Página inicial pública (Landing Multilab)
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
-// Panel principal del sistema
+/*
+|--------------------------------------------------------------------------
+| Autenticación (Laravel Breeze)
+|--------------------------------------------------------------------------
+*/
+require __DIR__ . '/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| Rutas protegidas (usuario autenticado y verificado)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Dashboard principal
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard general
+    |--------------------------------------------------------------------------
+    */
     Route::view('/dashboard', 'dashboard.index')->name('dashboard');
 
     /*
     |--------------------------------------------------------------------------
-    | Perfil del usuario autenticado
+    | Dashboard según rol (placeholders)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:superadmin')->get('/panel/superadmin', function () {
+        return view('dashboard.superadmin');
+    })->name('panel.superadmin');
+
+    Route::middleware('role:aux_admin')->get('/panel/auxiliar', function () {
+        return view('dashboard.auxiliar');
+    })->name('panel.auxiliar');
+
+    Route::middleware('role:docente')->get('/panel/docente', function () {
+        return view('dashboard.docente');
+    })->name('panel.docente');
+
+    Route::middleware('role:estudiante')->get('/panel/estudiante', function () {
+        return view('dashboard.estudiante');
+    })->name('panel.estudiante');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Perfil de usuario
     |--------------------------------------------------------------------------
     */
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -49,40 +88,44 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | Módulo de Inventario
     |--------------------------------------------------------------------------
     */
-    Route::prefix('inventory')->name('inventory.')->middleware('permission:view inventory')->group(function () {
-        Route::resource('assets', AssetController::class);
-        Route::resource('materials', MaterialController::class);
-    });
+    Route::prefix('inventory')
+        ->name('inventory.')
+        ->middleware('permission:view inventory')
+        ->group(function () {
+
+            Route::resource('assets', AssetController::class);
+            Route::resource('materials', MaterialController::class);
+        });
 
     /*
     |--------------------------------------------------------------------------
     | Módulo de Préstamos y Reservas
     |--------------------------------------------------------------------------
     */
-    Route::resource('loans', LoanController::class)->middleware('permission:manage loans');
-    Route::resource('reservations', ReservationController::class)->middleware('permission:manage loans');
+    Route::resource('loans', LoanController::class)
+        ->middleware('permission:manage loans');
+
+    Route::resource('reservations', ReservationController::class)
+        ->middleware('permission:manage loans');
 
     /*
     |--------------------------------------------------------------------------
-    | Administración (solo Superadmin)
+    | Administración del sistema (solo Superadmin)
     |--------------------------------------------------------------------------
     */
-    Route::prefix('admin')->name('admin.')->middleware('role:superadmin')->group(function () {
-        Route::resource('users', UserController::class);
-    });
+    Route::prefix('admin')
+        ->name('admin.')
+        ->middleware('role:superadmin')
+        ->group(function () {
+
+            Route::resource('users', UserController::class);
+        });
 });
 
 /*
 |--------------------------------------------------------------------------
-| Rutas públicas (sin autenticación)
+| Rutas estáticas públicas
 |--------------------------------------------------------------------------
 */
 Route::view('/policies', 'static.policies')->name('policies.index');
 Route::view('/privacy', 'static.privacy')->name('privacy.index');
-
-/*
-|--------------------------------------------------------------------------
-| Autenticación (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
-require __DIR__ . '/auth.php';
