@@ -107,5 +107,5 @@ Incluye:
 - David Arturo Aceros Ortiz
 - Carlos José Mantilla Cote
 
-Unidad de Desarrollo de Software – FESC  
+Ingenieria de Software – FESC  
 Año: 2025
