@@ -12,6 +12,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    /**
+     * Campos asignables en masa
+     */
     protected $fillable = [
         // Nombre segmentado
         'first_name',
@@ -19,11 +22,9 @@ class User extends Authenticatable
         'first_surname',
         'second_surname',
 
-        // Identificación académica
+        // Identificación
         'email',
         'password',
-
-        // Datos opcionales
         'document_type',
         'document_number',
         'phone',
@@ -32,21 +33,30 @@ class User extends Authenticatable
         'is_active',
     ];
 
+    /**
+     * Campos ocultos
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * Casts automáticos
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
     ];
 
-    protected $appends = ['name'];
+    /**
+     * Atributos calculados agregados automáticamente
+     */
+    protected $appends = ['name', 'display_role_label'];
 
     /**
-     * Nombre completo del usuario
+     * Accesor: nombre completo del usuario
      */
     public function getNameAttribute(): string
     {
@@ -59,20 +69,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Setter opcional para asignar nombre completo desde 1 input
+     * Mutador: asignar nombre completo desde una sola cadena
      */
     public function setNameAttribute($value): void
     {
         $parts = preg_split('/\s+/', trim($value));
 
-        $this->attributes['first_name']     = $parts[0] ?? '';
-        $this->attributes['middle_name']    = $parts[1] ?? '';
-        $this->attributes['first_surname']  = $parts[2] ?? '';
-        $this->attributes['second_surname'] = $parts[3] ?? '';
+        $this->attributes['first_name']     = $parts[0] ?? null;
+        $this->attributes['middle_name']    = $parts[1] ?? null;
+        $this->attributes['first_surname']  = $parts[2] ?? null;
+        $this->attributes['second_surname'] = $parts[3] ?? null;
     }
 
     /**
-     * Texto legible del rol
+     * Accesor: etiqueta legible del rol
      */
     public function getDisplayRoleLabelAttribute(): string
     {

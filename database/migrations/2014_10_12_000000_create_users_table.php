@@ -10,11 +10,27 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 191);
-            $table->string('email', 191)
-                ->unique('uk_users_email');
+
+            // Nombre segmentado
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('first_surname')->nullable();
+            $table->string('second_surname')->nullable();
+
+            // Identificación
+            $table->string('document_type')->nullable();
+            $table->string('document_number')->nullable();
+            $table->string('phone')->nullable();
+
+            // Credenciales
+            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // Estado del usuario
+            $table->boolean('is_active')->default(true);
+
+            // Tokens y timestamps
             $table->rememberToken();
             $table->timestamps();
         });
