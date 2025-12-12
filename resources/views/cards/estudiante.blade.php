@@ -1,4 +1,4 @@
-{{-- (EJEMPLO) Tarjetas del rol ESTUDIANTE en MultiLab --}}
+{{-- Tarjetas del rol ESTUDIANTE en MultiLab --}}
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 

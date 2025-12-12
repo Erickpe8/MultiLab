@@ -1,131 +1,98 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-// Controladores nativos
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LegalController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\Modules\EducacionSuperior\EducacionSuperiorController;
 
-// Controladores modulares
-use App\Adapters\Http\Controllers\AssetController;
-use App\Adapters\Http\Controllers\MaterialController;
-use App\Adapters\Http\Controllers\LoanController;
-use App\Adapters\Http\Controllers\ReservationController;
-use App\Adapters\Http\Controllers\Admin\UserController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes - Multilab FESC
-|--------------------------------------------------------------------------
-| Rutas oficiales del sistema Multilab, estructuradas por autenticación,
-| roles, permisos y módulos. La arquitectura sigue línea modular.
-*/
 
 /*
 |--------------------------------------------------------------------------
-| Página inicial pública (Landing Multilab)
+| Web Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-/*
-|--------------------------------------------------------------------------
-| Autenticación (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
-require __DIR__ . '/auth.php';
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
-| Rutas protegidas (usuario autenticado y verificado)
+| Legal Routes (Públicas)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Dashboard general
-    |--------------------------------------------------------------------------
-    */
-    Route::view('/dashboard', 'dashboard.index')->name('dashboard');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Dashboard según rol (placeholders)
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware('role:superadmin')->get('/panel/superadmin', function () {
-        return view('dashboard.superadmin');
-    })->name('panel.superadmin');
-
-    Route::middleware('role:aux_admin')->get('/panel/auxiliar', function () {
-        return view('dashboard.auxiliar');
-    })->name('panel.auxiliar');
-
-    Route::middleware('role:docente')->get('/panel/docente', function () {
-        return view('dashboard.docente');
-    })->name('panel.docente');
-
-    Route::middleware('role:estudiante')->get('/panel/estudiante', function () {
-        return view('dashboard.estudiante');
-    })->name('panel.estudiante');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Perfil de usuario
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Módulo de Inventario
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('inventory')
-        ->name('inventory.')
-        ->middleware('permission:view inventory')
-        ->group(function () {
-
-            Route::resource('assets', AssetController::class);
-            Route::resource('materials', MaterialController::class);
-        });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Módulo de Préstamos y Reservas
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('loans', LoanController::class)
-        ->middleware('permission:manage loans');
-
-    Route::resource('reservations', ReservationController::class)
-        ->middleware('permission:manage loans');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Administración del sistema (solo Superadmin)
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('admin')
-        ->name('admin.')
-        ->middleware('role:superadmin')
-        ->group(function () {
-
-            Route::resource('users', UserController::class);
-        });
+Route::prefix('legal')->name('legal.')->group(function () {
+    Route::get('/terms', [LegalController::class, 'terms'])->name('terms');
+    Route::get('/privacy', [LegalController::class, 'privacy'])->name('privacy');
+    Route::get('/data-protection', [LegalController::class, 'dataProtection'])->name('data-protection');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Rutas estáticas públicas
+| Authenticated Routes
 |--------------------------------------------------------------------------
 */
-Route::view('/policies', 'static.policies')->name('policies.index');
-Route::view('/privacy', 'static.privacy')->name('privacy.index');
+Route::middleware('auth')->group(function () {
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Password
+    Route::post('/password/verify', [PasswordController::class, 'verify'])->name('password.verify');
+    Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
+});
+/*
+|--------------------------------------------------------------------------
+| CONTROL DE USUARIOS (Solo SuperAdmin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified', 'role:superadmin'])
+    ->prefix('user-management')
+    ->name('user-management.')
+    ->group(function () {
+        Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::post('{user}/approve', [UserManagementController::class, 'approve'])->name('approve');
+        Route::delete('{user}/reject', [UserManagementController::class, 'reject'])->name('reject');
+        Route::patch('{user}/deactivate', [UserManagementController::class, 'deactivate'])->name('deactivate');
+        Route::put('{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
+        Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
+    });
+    Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::get('/superadmin/users', [UserManagementController::class, 'index'])->name('superadmin.users');
+    });
+    Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin/users')->group(function () {
+    Route::get('/', [UserManagementController::class, 'index'])->name('superadmin.users');
+    Route::get('/{id}', [UserManagementController::class, 'show'])->name('superadmin.users.show');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| MÓDULO POA – PILAR 1: EDUCACIÓN SUPERIOR
+| Actor: Director de Programa
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified', 'area:educacion_superior'])
+    ->prefix('poa/educacion-superior')
+    ->name('poa.educacion_superior.')
+    ->group(function () {
+    // Dashboard del Director de Programa (Pilar 1)
+    Route::get('/director', [EducacionSuperiorController::class, 'directorDashboard'])
+    ->name('director.dashboard');
+});
+Route::middleware(['auth', 'check.area:aux_admin'])->group(function () {
+// solo auxiliar (y superadmin)
+});
+
+Route::middleware(['auth', 'check.area:docente,aux_admin'])->group(function () {
+// docente o auxiliar (y superadmin)
+});
+
+
+require __DIR__.'/auth.php';

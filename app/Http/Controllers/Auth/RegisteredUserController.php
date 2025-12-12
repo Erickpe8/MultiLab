@@ -7,14 +7,13 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Mostrar vista de registro.
+     * Mostrar vista de preregistro.
      */
     public function create(): View
     {
@@ -22,40 +21,30 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Procesar registro de estudiantes.
+     * Procesar una solicitud de preregistro.
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'first_name'     => ['required', 'string', 'max:255'],
-            'middle_name'    => ['nullable', 'string', 'max:255'],
-            'first_surname'  => ['required', 'string', 'max:255'],
-            'second_surname' => ['nullable', 'string', 'max:255'],
-            'email'          => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'       => ['required', 'confirmed', Rules\Password::defaults()],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Crear usuario
-        $user = User::create([
-            'first_name'     => $request->first_name,
-            'middle_name'    => $request->middle_name,
-            'first_surname'  => $request->first_surname,
-            'second_surname' => $request->second_surname,
-            'email'          => $request->email,
-            'password'       => Hash::make($request->password),
-            'is_active'      => true, // Los estudiantes quedan activos
-        ]);
+        // Se crea el usuario usando el mutator de nombres seccionados
+        $user = new User();
+        $user->name      = $request->name; // mutator se encarga de first_name / apellidos
+        $user->email     = $request->email;
+        $user->password  = Hash::make($request->password);
+        $user->is_active = false; // queda pendiente de aprobación del laboratorio
+        $user->save();
 
-        // Asignar rol por defecto
-        $user->assignRole('estudiante');
-
-        // Evento de registro
-        event(new \Illuminate\Auth\Events\Registered($user));
-
-        // Iniciar sesión automáticamente
-        Auth::login($user);
-
-        // Redirigir al panel de estudiantes
-        return redirect()->route('panel.estudiante');
+        return redirect()
+            ->route('login')
+            ->with('notify', [
+                'type'    => 'info',
+                'message' => 'Tu preregistro en MultiLab ha sido recibido. El equipo del laboratorio validará tu cuenta antes de permitir el acceso.',
+            ]);
     }
 }
+

@@ -7,11 +7,22 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        Role::create(['name' => 'superadmin']);
-        Role::create(['name' => 'aux_admin']);
-        Role::create(['name' => 'docente']);
-        Role::create(['name' => 'estudiante']);
+        // IMPORTANTE: asegurar el guard_name correcto
+        $guard = 'web';
+
+        $roles = [
+            'superadmin',
+            'aux_admin',
+            'docente',
+            'estudiante',
+        ];
+
+        foreach ($roles as $role) {
+            Role::firstOrCreate(
+                ['name' => $role, 'guard_name' => $guard]
+            );
+        }
     }
 }

@@ -13,50 +13,57 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
-     * Campos asignables en masa
+     * Importante para Spatie Permission.
+     */
+    protected string $guard_name = 'web';
+
+    /**
+     * Campos asignables.
+     * MultiLab NO usa position, department, role_name, area del POA.
      */
     protected $fillable = [
-        // Nombre segmentado
+        // Nombre compuesto
         'first_name',
         'middle_name',
         'first_surname',
         'second_surname',
 
-        // Identificación
+        // Datos base
         'email',
         'password',
+
+        // Campos institucionales opcionales
+        'gender',
         'document_type',
         'document_number',
         'phone',
+        'phone_extension',
+        'mobile',
 
         // Estado
         'is_active',
     ];
 
-    /**
-     * Campos ocultos
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Casts automáticos
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'is_active' => 'boolean',
+        'password'          => 'hashed',
+        'is_active'         => 'boolean',
     ];
 
     /**
-     * Atributos calculados agregados automáticamente
+     * Atributo virtual: name.
      */
     protected $appends = ['name', 'display_role_label'];
 
     /**
-     * Accesor: nombre completo del usuario
+     * ---------------------------
+     * ACCESOR name
+     * ---------------------------
      */
     public function getNameAttribute(): string
     {
@@ -64,32 +71,89 @@ class User extends Authenticatable
             $this->first_name,
             $this->middle_name,
             $this->first_surname,
-            $this->second_surname
+            $this->second_surname,
         ])));
     }
 
     /**
-     * Mutador: asignar nombre completo desde una sola cadena
+     * ---------------------------
+     * MUTATOR name
+     * ---------------------------
+     * Divide “Nombre Apellido” en partes.
      */
     public function setNameAttribute($value): void
     {
-        $parts = preg_split('/\s+/', trim($value));
+        $value = trim((string) $value);
 
-        $this->attributes['first_name']     = $parts[0] ?? null;
-        $this->attributes['middle_name']    = $parts[1] ?? null;
-        $this->attributes['first_surname']  = $parts[2] ?? null;
-        $this->attributes['second_surname'] = $parts[3] ?? null;
+        if ($value === '') { return; }
+
+        $parts = preg_split('/\s+/', $value);
+        $count = count($parts);
+
+        $this->attributes['first_name']    = $parts[0] ?? '';
+        $this->attributes['middle_name']   = $parts[1] ?? '';
+
+        if ($count === 1) {
+            $this->attributes['first_surname']  = '';
+            $this->attributes['second_surname'] = '';
+            return;
+        }
+
+        if ($count === 2) {
+            $this->attributes['first_surname']  = $parts[1];
+            $this->attributes['second_surname'] = '';
+            return;
+        }
+
+        if ($count === 3) {
+            $this->attributes['first_surname']  = $parts[2];
+            $this->attributes['second_surname'] = '';
+            return;
+        }
+
+        // 4 o más palabras
+        $this->attributes['first_surname']  = $parts[2] ?? '';
+        $this->attributes['second_surname'] = $parts[3] ?? '';
     }
 
     /**
-     * Accesor: etiqueta legible del rol
+     * ---------------------------
+     * SCOPES para UserManagementController
+     * ---------------------------
      */
-    public function getDisplayRoleLabelAttribute(): string
-    {
-        if ($this->roles->isNotEmpty()) {
-            return ucfirst($this->roles->first()->name);
-        }
 
-        return 'Usuario';
+    public function scopePending($query)
+    {
+        return $query->where('is_active', false);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Helper rápido.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('superadmin');
+    }
+
+    /**
+     * Etiqueta legible del rol principal para mostrar en vistas.
+     */
+    public function getDisplayRoleLabelAttribute(): ?string
+    {
+        $roleName = $this->roles->first()?->name;
+
+        $labels = [
+            'superadmin' => 'Superadministrador del Sistema',
+            'aux_admin'  => 'Auxiliar Administrativo del Laboratorio',
+            'docente'    => 'Docente',
+            'estudiante' => 'Estudiante',
+        ];
+
+        return $roleName ? ($labels[$roleName] ?? ucfirst($roleName)) : 'Sin rol asignado';
     }
 }
