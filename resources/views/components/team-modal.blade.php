@@ -22,13 +22,14 @@
             <!-- Header -->
             <div class="px-6 py-5 border-b border-[var(--border)]
                         bg-gradient-to-r from-[var(--primary)]/10 to-[var(--accent)]/5">
+
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                    flex items-center justify-center shadow-lg">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)]
+                                    to-[var(--accent)] flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 009.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
 
@@ -58,11 +59,11 @@
                     <div class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-                        <div class="flex items-start gap-4">
 
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                        flex items-center justify-center text-white font-bold text-lg shadow-md
-                                        group-hover:scale-110 transition-transform">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
+                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
+                                        text-lg shadow-md group-hover:scale-110 transition-transform">
                                 DA
                             </div>
 
@@ -77,22 +78,23 @@
                                 </p>
 
                                 <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Integrante del equipo de desarrollo de MultiLab FESC, con participación activa en la
-                                    construcción y validación de los módulos funcionales del sistema.
+                                    Participó activamente en la construcción de módulos clave del sistema,
+                                    especialmente en filtrado por categorías, paneles administrativos,
+                                    inventario y refinamiento de funcionalidades asociadas al laboratorio.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Erick -->
+                    <!-- Erick Sebastián Pérez -->
                     <div class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-                        <div class="flex items-start gap-4">
 
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                        flex items-center justify-center text-white font-bold text-lg shadow-md
-                                        group-hover:scale-110 transition-transform">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
+                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
+                                        text-lg shadow-md group-hover:scale-110 transition-transform">
                                 EP
                             </div>
 
@@ -103,27 +105,28 @@
                                 </h4>
 
                                 <p class="text-sm text-[var(--accent)] font-medium">
-                                    Desarrollador Full Stack (Responsable actual)
+                                    Desarrollador Full Stack (Responsable técnico)
                                 </p>
 
                                 <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Responsable técnico del proyecto MultiLab FESC: definición de la arquitectura,
-                                    desarrollo backend en Laravel,
-                                    integración de permisos y roles, y diseño del frontend con Blade + TailwindCSS.
+                                    Responsable del dashboard, sistema de autenticación, login, prerregistro,
+                                    términos y condiciones, políticas de privacidad, módulo del equipo de desarrollo,
+                                    funcionalidades del inventario, arquitectura inicial del proyecto,
+                                    entorno de desarrollo y guía en el análisis de requerimientos institucionales.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Carlos Mantilla -->
+                    <!-- Carlos José Mantilla Cote -->
                     <div class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-                        <div class="flex items-start gap-4">
 
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                        flex items-center justify-center text-white font-bold text-lg shadow-md
-                                        group-hover:scale-110 transition-transform">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
+                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
+                                        text-lg shadow-md group-hover:scale-110 transition-transform">
                                 CM
                             </div>
 
@@ -138,9 +141,9 @@
                                 </p>
 
                                 <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Colaborador en el desarrollo de MultiLab FESC, aportando en la implementación,
-                                    pruebas y refinamiento de las funcionalidades orientadas a la gestión del
-                                    laboratorio.
+                                    Apoyó el diseño de la arquitectura del sistema y la construcción
+                                    de funcionalidades relacionadas con la gestión del inventario,
+                                    contribuyendo al desarrollo estable de los módulos asociados.
                                 </p>
                             </div>
                         </div>
@@ -159,8 +162,8 @@
                             <div>
                                 <p class="text-sm font-semibold text-[var(--text)] mb-1">Agradecimientos especiales</p>
                                 <p class="text-xs text-[var(--text-muted)] leading-relaxed">
-                                    A la Fundación de Estudios Superiores Comfanorte (FESC) por su apoyo y confianza
-                                    para el desarrollo de este proyecto institucional.
+                                    A la Fundación de Estudios Superiores Comfanorte (FESC) por su apoyo
+                                    y confianza para el desarrollo de este proyecto institucional.
                                 </p>
                             </div>
                         </div>
