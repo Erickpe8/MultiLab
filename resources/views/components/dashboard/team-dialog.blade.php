@@ -1,7 +1,3 @@
-{{--
-Developer team modal.
-Hidden by default; toggled with vanilla JavaScript.
---}}
 <div id="teamDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden">
     <div
         class="bg-white dark:bg-multilab-dark border-2 border-multilab-gray dark:border-multilab-darkblue rounded-lg p-6 w-11/12 max-w-md shadow-soft">

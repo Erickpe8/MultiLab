@@ -22,22 +22,19 @@
             <!-- Header -->
             <div class="px-6 py-5 border-b border-[var(--border)]
                         bg-gradient-to-r from-[var(--primary)]/10 to-[var(--accent)]/5">
-
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)]
-                                    to-[var(--accent)] flex items-center justify-center shadow-lg">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                                    flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 009.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
 
                         <div>
                             <h3 class="text-xl font-bold text-[var(--text)]">Equipo de Desarrollo</h3>
-                            <p class="text-xs text-[var(--text-muted)] mt-0.5">
-                                Personas detrás de MultiLab FESC
-                            </p>
+                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Personas detrás de MultiLab FESC</p>
                         </div>
                     </div>
 
@@ -55,65 +52,104 @@
             <div class="px-6 py-6 max-h-[60vh] overflow-y-auto">
                 <div class="space-y-4">
 
-                    <!-- David Arturo Aceros -->
+                    <!-- Erick Sebastián Pérez Carvajal -->
                     <div class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
-                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
-                                        text-lg shadow-md group-hover:scale-110 transition-transform">
-                                DA
-                            </div>
-
-                            <div class="flex-1">
-                                <h4
-                                    class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
-                                    David Arturo Aceros Ortiz
-                                </h4>
-
-                                <p class="text-sm text-[var(--accent)] font-medium">
-                                    Desarrollador de Software
-                                </p>
-
-                                <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Participó activamente en la construcción de módulos clave del sistema,
-                                    especialmente en filtrado por categorías, paneles administrativos,
-                                    inventario y refinamiento de funcionalidades asociadas al laboratorio.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Erick Sebastián Pérez -->
-                    <div class="group p-4 rounded-lg border border-[var(--border)]
-                                hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
-                                bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
-                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
-                                        text-lg shadow-md group-hover:scale-110 transition-transform">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                                        flex items-center justify-center text-white font-bold text-lg shadow-md
+                                        group-hover:scale-110 transition-transform">
                                 EP
                             </div>
 
                             <div class="flex-1">
-                                <h4
-                                    class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
-                                    Erick Sebastián Pérez Carvajal
-                                </h4>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                    <h4
+                                        class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
+                                        Erick Sebastián Pérez Carvajal
+                                    </h4>
+
+                                    <a href="https://github.com/erickpe8" target="_blank" rel="noopener noreferrer"
+                                        class="inline-flex items-center gap-2 text-xs font-semibold
+                                              text-[var(--text-secondary)] hover:text-[var(--accent)]
+                                              underline underline-offset-4">
+                                        GitHub: @erickpe8
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
+                                        </svg>
+                                    </a>
+                                </div>
 
                                 <p class="text-sm text-[var(--accent)] font-medium">
-                                    Desarrollador Full Stack (Responsable técnico)
+                                    Desarrollador Full Stack (Co-responsable del proyecto)
                                 </p>
 
-                                <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Responsable del dashboard, sistema de autenticación, login, prerregistro,
-                                    términos y condiciones, políticas de privacidad, módulo del equipo de desarrollo,
-                                    funcionalidades del inventario, arquitectura inicial del proyecto,
-                                    entorno de desarrollo y guía en el análisis de requerimientos institucionales.
+                                <p class="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                                    Foco principal: arquitectura, calidad y bases técnicas del sistema.
                                 </p>
+
+                                <ul
+                                    class="mt-3 space-y-1 text-xs text-[var(--text-muted)] leading-relaxed list-disc list-inside">
+                                    <li>Arquitectura general del sistema</li>
+                                    <li>Implementación del patrón MVC + UseCases</li>
+                                    <li>Desarrollo de pruebas automatizadas</li>
+                                    <li>Componentes de autenticación y seguridad</li>
+                                    <li>Módulo de perfil de usuario</li>
+                                    <li>Documentación técnica del proyecto</li>
+                                    <li>Creación y mantenimiento de seeders institucionales</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- David Arturo Aceros Ortiz -->
+                    <div class="group p-4 rounded-lg border border-[var(--border)]
+                                hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
+                                bg-gradient-to-br from-[var(--border)]/5 to-transparent">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                                        flex items-center justify-center text-white font-bold text-lg shadow-md
+                                        group-hover:scale-110 transition-transform">
+                                DA
+                            </div>
+
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                    <h4
+                                        class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
+                                        David Arturo Aceros Ortiz
+                                    </h4>
+
+                                    <a href="https://github.com/Aceros113" target="_blank" rel="noopener noreferrer"
+                                        class="inline-flex items-center gap-2 text-xs font-semibold
+                                              text-[var(--text-secondary)] hover:text-[var(--accent)]
+                                              underline underline-offset-4">
+                                        GitHub: @Aceros113
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
+                                        </svg>
+                                    </a>
+                                </div>
+
+                                <p class="text-sm text-[var(--accent)] font-medium">
+                                    Desarrollador Full Stack (Co-responsable del proyecto)
+                                </p>
+
+                                <p class="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                                    Foco principal: bodega, materiales, préstamos/devoluciones y trazabilidad operativa.
+                                </p>
+
+                                <ul
+                                    class="mt-3 space-y-1 text-xs text-[var(--text-muted)] leading-relaxed list-disc list-inside">
+                                    <li>Componente de préstamo de materiales de bodega</li>
+                                    <li>Sistema de inventario de materiales</li>
+                                    <li>Módulo de préstamos y devoluciones</li>
+                                    <li>Control de estados de materiales</li>
+                                    <li>Observaciones para estudiantes y docentes</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -122,29 +158,48 @@
                     <div class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
-
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)]
-                                        to-[var(--accent)] flex items-center justify-center text-white font-bold
-                                        text-lg shadow-md group-hover:scale-110 transition-transform">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                                        flex items-center justify-center text-white font-bold text-lg shadow-md
+                                        group-hover:scale-110 transition-transform">
                                 CM
                             </div>
 
                             <div class="flex-1">
-                                <h4
-                                    class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
-                                    Carlos José Mantilla Cote
-                                </h4>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                    <h4
+                                        class="font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors">
+                                        Carlos José Mantilla Cote
+                                    </h4>
+
+                                    <a href="https://github.com/CarlosMantillaC" target="_blank"
+                                        rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-semibold
+                                              text-[var(--text-secondary)] hover:text-[var(--accent)]
+                                              underline underline-offset-4">
+                                        GitHub: @CarlosMantillaC
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
+                                        </svg>
+                                    </a>
+                                </div>
 
                                 <p class="text-sm text-[var(--accent)] font-medium">
-                                    Desarrollador de Software
+                                    Desarrollador Full Stack (Co-responsable del proyecto)
                                 </p>
 
-                                <p class="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
-                                    Apoyó el diseño de la arquitectura del sistema y la construcción
-                                    de funcionalidades relacionadas con la gestión del inventario,
-                                    contribuyendo al desarrollo estable de los módulos asociados.
+                                <p class="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
+                                    Foco principal: aula B201, gestión de PCs, disponibilidad y control de sesiones.
                                 </p>
+
+                                <ul
+                                    class="mt-3 space-y-1 text-xs text-[var(--text-muted)] leading-relaxed list-disc list-inside">
+                                    <li>Componente de préstamo del aula de cómputo B201</li>
+                                    <li>Sistema de gestión del aula y PCs</li>
+                                    <li>Control de disponibilidad del aula</li>
+                                    <li>Control de uso exclusivo para docentes</li>
+                                    <li>Histórico de sesiones y validaciones</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -162,8 +217,8 @@
                             <div>
                                 <p class="text-sm font-semibold text-[var(--text)] mb-1">Agradecimientos especiales</p>
                                 <p class="text-xs text-[var(--text-muted)] leading-relaxed">
-                                    A la Fundación de Estudios Superiores Comfanorte (FESC) por su apoyo
-                                    y confianza para el desarrollo de este proyecto institucional.
+                                    A la Fundación de Estudios Superiores Comfanorte (FESC) por su apoyo y confianza
+                                    para el desarrollo de este proyecto institucional.
                                 </p>
                             </div>
                         </div>
@@ -181,6 +236,7 @@
                     Cerrar
                 </button>
             </div>
+
         </div>
     </div>
 </div>

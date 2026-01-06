@@ -7,7 +7,7 @@
         </div>
     @endif
 
-    <div class="min-h-screen relative flex items-center justify-center bg-cover bg-center bg-no-repeat px-4 py-4"
+    <div class="min-h-screen relative flex items-center justify-center bg-cover bg-center bg-no-repeat px-4 py"
         style="background-image: url('{{ asset('images/FESC.JPG') }}');">
 
         {{-- Overlay institucional (deja ver la imagen) --}}
@@ -15,7 +15,7 @@
 
         {{-- Contenedor principal (más compacto) --}}
         <div class="relative z-10 w-full max-w-md rounded-2xl border border-[var(--border)]
-                    bg-white dark:bg-[var(--card)] shadow-2xl px-6 py-6 sm:px-8 sm:py-7">
+                    bg-white dark:bg-[var(--card)] shadow-2xl px-6 py-4 sm:px-8 sm:py-7">
 
             {{-- Logo y título (más pequeño) --}}
             <div class="text-center mb-4">
@@ -57,7 +57,7 @@
                         Contraseña
                     </label>
                     <input id="password" type="password" name="password" required autocomplete="current-password"
-                        class="w-full rounded-xl border border-[var(--border)] px-4 py-2.5
+                        class="w-full rounded-xl border border-[var(--border)] px-4 py-2
                                bg-white dark:bg-[var(--bg)]
                                text-[var(--text)] placeholder:text-[color:var(--text-muted)]
                                focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/35 focus:border-[var(--accent)]
@@ -103,21 +103,21 @@
                 @endif
 
                 {{-- Términos y Privacidad --}}
-                <div class="text-center pt-2">
-                    <p class="text-xs text-[color:var(--text-muted)] leading-relaxed">
-                        Al iniciar sesión aceptas los
-                        <a href="{{ route('terms') }}" target="_blank" rel="noopener noreferrer"
-                            class="font-semibold text-[var(--accent)] hover:text-[var(--primary)] underline underline-offset-4">
-                            Términos y Condiciones
-                        </a>
-                        y la
-                        <a href="{{ route('privacy') }}" target="_blank" rel="noopener noreferrer"
-                            class="font-semibold text-[var(--accent)] hover:text-[var(--primary)] underline underline-offset-4">
-                            Política de Privacidad
-                        </a>
-                        del sistema.
-                    </p>
-                </div>
+                    <div class="pt-6 border-t border-red-500/20">
+                        <p class="text-sm text-[var(--text-muted)] leading-relaxed">
+                            Al iniciar sesión aceptas los
+                            <a href="{{ route('legal.terms') }}" target="_blank" rel="noopener noreferrer"
+                               class="font-semibold text-red-600 hover:text-red-700 transition-colors underline underline-offset-4">
+                                Términos y Condiciones
+                            </a>
+                            y la
+                            <a href="{{ route('legal.privacy') }}" target="_blank" rel="noopener noreferrer"
+                               class="font-semibold text-red-600 hover:text-red-700 transition-colors underline underline-offset-4">
+                                Política de Privacidad
+                            </a>
+                            del sistema.
+                        </p>
+                    </div>
             </form>
         </div>
     </div>

@@ -25,9 +25,9 @@ Route::get('/dashboard', function () {
 | Legal Routes (Públicas)
 |--------------------------------------------------------------------------
 */
-Route::prefix('legal')->name('legal.')->group(function () {
-    Route::get('/terms', [LegalController::class, 'terms'])->name('terms');
-    Route::get('/privacy', [LegalController::class, 'privacy'])->name('privacy');
+    Route::prefix('legal')->name('legal.')->group(function () {
+    Route::view('/terms', 'legal.terms')->name('terms');
+    Route::view('/privacy', 'legal.privacy')->name('privacy');
 });
 
 /*

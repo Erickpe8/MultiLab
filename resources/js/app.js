@@ -1,113 +1,89 @@
-import './bootstrap';
-import Alpine from 'alpinejs';
+import './bootstrap'
+import Alpine from 'alpinejs'
 
-window.Alpine = Alpine;
-Alpine.start();
+window.Alpine = Alpine
+Alpine.start()
 
-/**
- * ===========================================================
- *  SISTEMA DE NOTIFICACIONES GLOBAL (window.notify)
- * ===========================================================
- *
- * Soporta: success, error, warning, info.
- * Autocierre, animación, clic para cerrar.
- * Compatible con Blade: <x-notify /> o notify.blade.php
- * ===========================================================
- */
-
+// =============== MultiLab Notify ===============
 window.notify = (function () {
-    let timer = null;
+  let timer = null
 
-    const el         = () => document.getElementById('notify');
-    const card       = () => document.getElementById('notify-card');
-    const icon       = () => document.getElementById('notify-icon');
-    const iconWrap   = () => document.getElementById('notify-icon-wrap');
-    const message    = () => document.getElementById('notify-message');
-    const closeBtn   = () => document.getElementById('notify-close');
+  const el = () => document.getElementById('notify')
+  const card = () => document.getElementById('notify-card')
+  const icon = () => document.getElementById('notify-icon')
+  const iconWrap = () => document.getElementById('notify-icon-wrap')
+  const message = () => document.getElementById('notify-message')
+  const closeBtn = () => document.getElementById('notify-close')
 
-    // Configuración de colores / iconos
-    const types = {
-        success: {
-            border: '#16a34a', // verde
-            accent: '#16a34a',
-            svg: 'M5 13l4 4L19 7',
-        },
-        error: {
-            border: '#dc2626', // rojo
-            accent: '#dc2626',
-            svg: 'M6 18L18 6M6 6l12 12',
-        },
-        warning: {
-            border: '#f59e0b', // amarillo
-            accent: '#f59e0b',
-            svg: 'M12 9v4m0 4h.01',
-        },
-        info: {
-            border: '#2563eb', // azul
-            accent: '#2563eb',
-            svg: 'M13 16h-1v-4h-1m1-4h.01',
-        },
-    };
+  const types = {
+    success: { border: '#16a34a', accent: '#16a34a', svg: 'M5 13l4 4L19 7' },
+    error: { border: '#dc2626', accent: '#dc2626', svg: 'M6 18L18 6M6 6l12 12' },
+    warning: { border: '#f59e0b', accent: '#f59e0b', svg: 'M12 9v4m0 4h.01' },
+    info: { border: '#2563eb', accent: '#2563eb', svg: 'M13 16h-1v-4h-1m1-4h.01' },
+  }
 
-    /** Construye el ícono SVG */
-    function setIcon(pathD) {
-        icon().innerHTML = '';
+  function safe() {
+    const n = el()
+    const c = card()
+    const i = icon()
+    const w = iconWrap()
+    const m = message()
+    if (!n || !c || !i || !w || !m) return null
+    return { n, c, i, w, m }
+  }
 
-        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        p.setAttribute('stroke-linecap', 'round');
-        p.setAttribute('stroke-linejoin', 'round');
-        p.setAttribute('stroke-width', '2');
-        p.setAttribute('d', pathD);
+  function setIcon(svgEl, pathD) {
+    svgEl.innerHTML = ''
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    p.setAttribute('stroke-linecap', 'round')
+    p.setAttribute('stroke-linejoin', 'round')
+    p.setAttribute('stroke-width', '2')
+    p.setAttribute('d', pathD)
+    svgEl.appendChild(p)
+  }
 
-        icon().appendChild(p);
-    }
+  function show(msg, type = 'info', timeout = 5000) {
+    const s = safe()
+    if (!s) return
 
-    /** Muestra la notificación */
-    function show(msg, type = 'info', timeout = 5000) {
-        const t = types[type] || types.info;
-        const n = el();
+    const t = types[type] || types.info
+    s.m.textContent = msg
 
-        if (!n) return; // por si la vista no tiene el componente
+    s.c.style.borderLeftColor = t.border
+    s.i.style.color = t.accent
+    s.w.style.backgroundColor = `${t.border}22`
 
-        message().textContent = msg;
+    setIcon(s.i, t.svg)
 
-        // Colores dinámicos
-        card().style.borderLeftColor = t.border;
-        icon().style.color = t.accent;
-        iconWrap().style.backgroundColor = `${t.border}22`;
+    s.n.classList.remove('hidden')
+    requestAnimationFrame(() => {
+      s.n.classList.remove('opacity-0', '-translate-y-2')
+      s.n.classList.add('opacity-100', 'translate-y-0')
+    })
 
-        // Icono
-        setIcon(t.svg);
+    if (timer) clearTimeout(timer)
+    if (timeout > 0) timer = setTimeout(hide, timeout)
+  }
 
-        // Reiniciar animación
-        n.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            n.classList.remove('opacity-0', '-translate-y-2');
-            n.classList.add('opacity-100', 'translate-y-0');
-        });
+  function hide() {
+    const s = safe()
+    if (!s) return
 
-        // Autocierre
-        if (timer) clearTimeout(timer);
-        if (timeout > 0) timer = setTimeout(hide, timeout);
-    }
+    s.n.classList.add('opacity-0', '-translate-y-2')
+    s.n.classList.remove('opacity-100', 'translate-y-0')
 
-    /** Ocultar la notificación con animación */
-    function hide() {
-        const n = el();
-        if (!n) return;
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => s.n.classList.add('hidden'), 250)
+  }
 
-        n.classList.add('opacity-0', '-translate-y-2');
-        n.classList.remove('opacity-100', 'translate-y-0');
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = closeBtn()
+    if (btn) btn.addEventListener('click', hide)
 
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => n.classList.add('hidden'), 250);
-    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hide()
+    })
+  })
 
-    /** Botón cerrar (la X) */
-    document.addEventListener('DOMContentLoaded', () => {
-        const btn = closeBtn();
-        if (btn) btn.addEventListener('click', hide);
-    });
-
-    return { show, hide };
-})();
+  return { show, hide }
+})()
