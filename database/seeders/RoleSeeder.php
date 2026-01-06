@@ -7,11 +7,10 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
+    private const GUARD = 'web';
+
     public function run(): void
     {
-        // Spatie guarda roles/permissions con guard_name; esta app usa el guard web.
-        $guard = 'web';
-
         $roles = [
             'Administrador',
             'Director de Programa',
@@ -21,11 +20,10 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $roleName) {
-            $role = Role::firstOrCreate(
-                ['name' => $roleName, 'guard_name' => $guard]
+            Role::updateOrCreate(
+                ['name' => $roleName, 'guard_name' => self::GUARD],
+                []
             );
-
-            // Placeholder para asignar permisos más adelante (ej. $role->syncPermissions([...])).
         }
     }
 }
