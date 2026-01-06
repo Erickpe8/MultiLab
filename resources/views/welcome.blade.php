@@ -6,7 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MultiLab - FESC</title>
 
-    <!-- Tailwind y Flowbite -->
+    <script>
+        /**
+         * Configura el tema inicial en el documento según preferencias guardadas o sistema.
+         * Entradas: Ninguna.
+         * Salidas: void (sin retorno).
+         */
+        (function () {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 
@@ -19,145 +35,264 @@
             background-attachment: fixed;
         }
 
-        .overlay {
-            background-color: rgba(29, 22, 22, 0.7);
-            backdrop-filter: blur(8px);
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(1200px 600px at 20% 15%, rgba(216, 64, 64, 0.16), transparent 60%),
+                radial-gradient(900px 520px at 80% 70%, rgba(142, 22, 22, 0.14), transparent 55%),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.58));
+        }
+
+        :root.dark .bg-overlay {
+            background:
+                radial-gradient(1200px 600px at 20% 15%, rgba(216, 64, 64, 0.18), transparent 60%),
+                radial-gradient(900px 520px at 80% 70%, rgba(142, 22, 22, 0.16), transparent 55%),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.54));
         }
     </style>
 </head>
 
-<body class="antialiased font-sans text-gray-100">
-    <!-- Capa difuminada sobre la imagen -->
-    <div class="overlay min-h-screen flex flex-col justify-between">
+<body class="antialiased font-sans text-[var(--text)] overflow-hidden">
+    <div class="bg-overlay"></div>
 
-        <!-- Header -->
-        <header class="flex flex-wrap justify-between items-center px-4 sm:px-6 py-3 bg-[#1D1616]/70">
-            <div class="flex items-center gap-3">
-                <!-- Logo actualizado -->
-                <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-10 sm:h-12 w-auto">
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#D84040] tracking-wide">MultiLab</h1>
-            </div>
+    @php
+        // MultiLab: foco en operación diaria del laboratorio (B201) y bodega de materiales.
+        $modules = [
+            [
+                "code" => "M1",
+                "name" => "Control de acceso a PCs",
+                "objective" => "Registra quién utiliza cada estación del laboratorio, con trazabilidad y observaciones asociadas para respaldar el control operativo."
+            ],
+            [
+                "code" => "M2",
+                "name" => "Reservas del aula y recursos",
+                "objective" => "Centraliza las reservas para evitar choques de disponibilidad y mejorar la planificación de uso del laboratorio."
+            ],
+            [
+                "code" => "M3",
+                "name" => "Préstamos y devoluciones",
+                "objective" => "Administra el préstamo de herramientas y materiales con estados claros, responsables y registro de entrega/devolución."
+            ],
+            [
+                "code" => "M4",
+                "name" => "Inventario del laboratorio y bodega",
+                "objective" => "Mantiene un registro actualizado de equipos, herramientas y materiales, con historial de movimientos y control de condiciones."
+            ],
+            [
+                "code" => "M5",
+                "name" => "Históricos y observaciones",
+                "objective" => "Genera históricos que respaldan la gestión del laboratorio: uso, novedades, incidencias y seguimiento por periodos."
+            ],
+        ];
+    @endphp
 
-            <!-- Navegación -->
-            <nav class="flex flex-wrap gap-2 sm:gap-3 mt-3 sm:mt-0">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}"
-                            class="px-3 sm:px-4 py-2 rounded-lg bg-[#D84040] hover:bg-[#8E1616] text-sm sm:text-base transition font-semibold">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="px-3 sm:px-4 py-2 rounded-lg bg-[#D84040] hover:bg-[#8E1616] text-sm sm:text-base transition font-semibold">
-                            Iniciar Sesión
-                        </a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}"
-                                class="px-3 sm:px-4 py-2 rounded-lg border border-[#D84040] text-sm sm:text-base hover:bg-[#8E1616] hover:text-white transition font-semibold">
-                                Registrarse
+    <div class="relative z-10 h-[100svh] flex flex-col">
+
+        {{-- HEADER --}}
+        <header class="shrink-0 border-b border-[var(--border)]
+                       bg-white/70 dark:bg-[#0f1115]/80 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
+                    <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-10 sm:h-11 w-auto" />
+                    <span class="text-xl sm:text-2xl font-extrabold tracking-wide text-[var(--accent)]">
+                        MultiLab
+                    </span>
+                </a>
+
+                <nav class="flex items-center gap-2 sm:gap-3">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}"
+                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
+                                       text-sm font-semibold text-white shadow-sm transition">
+                                Dashboard
                             </a>
-                        @endif
-                    @endauth
-                @endif
-            </nav>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
+                                       text-sm font-semibold text-white shadow-sm transition">
+                                Iniciar sesión
+                            </a>
+
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}"
+                                    class="px-4 py-2 rounded-xl border border-[var(--border)]
+                                           bg-white/60 dark:bg-[var(--bg)]/35
+                                           text-sm font-semibold text-[var(--text)]
+                                           hover:border-[var(--accent)] hover:text-[var(--accent)]
+                                           transition">
+                                    Registrarse
+                                </a>
+                            @endif
+                        @endauth
+
+                        <x-theme-toggle id="theme-toggle-welcome" size="md" />
+                    @endif
+                </nav>
+            </div>
         </header>
 
-        <!-- Contenido principal -->
-        <main class="flex flex-col items-center justify-center flex-1 px-4 sm:px-6 py-8">
-            <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
-                <!-- Carrusel a la izquierda -->
-                <div id="auto-carousel"
-                    class="relative w-full h-56 sm:h-64 md:h-72 overflow-hidden rounded-xl shadow-lg md:w-4/5 mx-auto">
+        {{-- MAIN --}}
+        <main class="flex-1 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full py-4 sm:py-5 lg:py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8 h-full min-h-0 items-stretch">
 
-                    <!-- Contenedor de las imágenes -->
-                    <div class="relative w-full h-full">
-                        <div
-                            class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out">
-                            <img src="{{ asset('images/1.png') }}"
-                                class="w-full h-full object-cover object-center rounded-xl" alt="Imagen FESC 1">
-                        </div>
-                        <div
-                            class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
-                            <img src="{{ asset('images/2.png') }}"
-                                class="w-full h-full object-cover object-center rounded-xl" alt="Imagen FESC 2">
-                        </div>
-                        <div
-                            class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
-                            <img src="{{ asset('images/3.png') }}"
-                                class="w-full h-full object-cover object-center rounded-xl bg-[#1D1616]"
-                                alt="Pilares Estratégicos">
-                        </div>
-                        <div
-                            class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
-                            <img src="{{ asset('images/4.png') }}"
-                                class="w-full h-full object-cover object-center rounded-xl" alt="Imagen FESC 4">
-                        </div>
-                        <div
-                            class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
-                            <img src="{{ asset('images/5.png') }}"
-                                class="w-full h-full object-cover object-center rounded-xl" alt="Imagen FESC 5">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal de actualizaciones -->
-                <div class="relative flex flex-col items-center justify-center text-center
-                            bg-[#1D1616]/80 backdrop-blur-md rounded-xl shadow-lg border border-[#8E1616]/50
-                            h-56 sm:h-64 md:h-72 md:w-4/5 mx-auto overflow-hidden px-4 sm:px-6 py-6 sm:py-8">
-
-                    <!-- Contenido centrado -->
-                    <div class="flex flex-col items-center justify-center space-y-5">
-                        <!-- Título -->
-                        <div>
-                            <h3 class="text-xl sm:text-2xl font-bold text-[#D84040] mb-2">Actualizaciones</h3>
-                            <p class="text-[#EEEEEE] text-sm sm:text-base leading-relaxed max-w-md mx-auto">
-                                Mantente informado sobre las últimas mejoras del <strong>MultiLab</strong> y consulta el historial de cambios que optimizan su desempeño, estabilidad y seguridad institucional.
+                    <section class="h-full min-h-0 rounded-2xl border border-[var(--border)]
+                                    bg-white dark:bg-[#0f1115] shadow-xl
+                                    overflow-hidden flex flex-col">
+                        <div class="px-5 sm:px-6 py-4 border-b border-[var(--border)]">
+                            <h2 class="text-base sm:text-lg font-extrabold text-[var(--text)]">
+                                ¿Qué hace MultiLab?
+                            </h2>
+                            <p class="text-sm text-[color:var(--text-muted)] mt-1">
+                                Funcionalidades clave para la operación del Laboratorio B201 y la bodega.
                             </p>
                         </div>
 
-                        <!-- Botón centrado -->
-                        <a href="#"
-                        class="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3 sm:py-4 text-sm sm:text-base font-semibold rounded-lg
-                                border border-[#D84040] text-[#EEEEEE] hover:bg-[#8E1616] hover:text-white transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Ver más
-                        </a>
-                    </div>
-                </div>
+                        <div class="flex-1 min-h-0">
+                            <div id="pillar-carousel" class="relative w-full h-full overflow-hidden">
 
+                                <div class="absolute inset-0 pointer-events-none">
+                                    <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-35"
+                                        style="background: color-mix(in oklab, var(--accent) 26%, transparent);"></div>
+                                    <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-25"
+                                        style="background: color-mix(in oklab, var(--primary) 22%, transparent);"></div>
+                                </div>
+
+                                <div class="relative h-full">
+                                    @foreach ($modules as $i => $m)
+                                        <div class="pillar-item absolute inset-0 transition-opacity duration-500 ease-out
+                                                    {{ $i === 0 ? 'opacity-100' : 'opacity-0 hidden' }}">
+
+                                            <div class="h-full px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center text-center">
+                                                <div class="w-full max-w-2xl">
+                                                    <h3 class="text-[28px] sm:text-3xl lg:text-4xl font-extrabold text-[var(--text)] leading-tight break-words">
+                                                        {{ $m['name'] }}
+                                                    </h3>
+
+                                                    <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed
+                                                              text-[color:var(--text-muted)] max-w-[62ch] mx-auto break-words">
+                                                        {{ $m['objective'] }}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="h-full min-h-0 relative rounded-2xl border border-[var(--border)]
+                                    bg-white dark:bg-[#0f1115] shadow-xl
+                                    overflow-hidden flex flex-col">
+                        <div class="absolute inset-0 pointer-events-none">
+                            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-40"
+                                style="background: color-mix(in oklab, var(--accent) 30%, transparent);"></div>
+                            <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full blur-3xl opacity-30"
+                                style="background: color-mix(in oklab, var(--primary) 25%, transparent);"></div>
+                        </div>
+
+                        <div class="relative flex-1 min-h-0 px-6 sm:px-8 py-6 sm:py-7 text-center
+                                    flex flex-col items-center justify-center">
+                            <h3 class="text-3xl sm:text-4xl font-extrabold text-[var(--accent)]">
+                                Actualizaciones
+                            </h3>
+
+                            <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed text-[color:var(--text-muted)] max-w-xl mx-auto">
+                                Revisa las mejoras más recientes de <strong>MultiLab</strong> enfocadas en control de recursos,
+                                estabilidad del sistema y trazabilidad de uso dentro del laboratorio.
+                            </p>
+
+                            <div class="mt-7 flex justify-center">
+                                <a href="#"
+                                    class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
+                                           bg-[var(--accent)] text-white hover:bg-[var(--primary)]
+                                           shadow-sm transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Ver más
+                                </a>
+                            </div>
+
+                            <div class="mt-6 text-xs text-[color:var(--text-muted)]">
+                                Última revisión: {{ now()->format('d/m/Y') }}
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
             </div>
         </main>
 
-        <!-- Footer -->
-        <footer class="text-center py-4 bg-[#1D1616]/70 text-[#EEEEEE] text-xs sm:text-sm">
-            <p>&copy; {{ date('Y') }} Fundación de Estudios Superiores Comfanorte — FESC</p>
-            <p class="mt-1">Desarrollado por la Unidad de Desarrollo</p>
+        {{-- FOOTER --}}
+        <footer class="shrink-0">
+            @include('layouts.footer')
         </footer>
     </div>
 
-    <!-- Script de autoplay -->
     <script>
+        /**
+         * Inicializa el carrusel cuando la página está lista.
+         * Entradas: Ninguna.
+         * Salidas: void (sin retorno).
+         */
         document.addEventListener('DOMContentLoaded', () => {
-            const items = document.querySelectorAll('#auto-carousel .carousel-item');
+            const items = Array.from(document.querySelectorAll('#pillar-carousel .pillar-item'));
+            if (!items.length) return;
+
             let index = 0;
             const total = items.length;
 
-            function showSlide(nextIndex) {
-                items[index].classList.remove('opacity-100');
-                items[index].classList.add('opacity-0');
+            items.forEach((el, i) => {
+                if (i === 0) {
+                    el.classList.remove('hidden');
+                    el.classList.add('opacity-100');
+                    el.classList.remove('opacity-0');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.add('opacity-0');
+                    el.classList.remove('opacity-100');
+                }
+            });
 
-                items[nextIndex].classList.remove('opacity-0');
-                items[nextIndex].classList.add('opacity-100');
+            /**
+             * Cambia al slide indicado aplicando las clases de transición.
+             * Entradas: nextIndex (number) índice de la diapositiva siguiente.
+             * Salidas: void (sin retorno).
+             */
+            function showSlide(nextIndex) {
+                const current = items[index];
+                const next = items[nextIndex];
+
+                current.classList.remove('opacity-100');
+                current.classList.add('opacity-0');
+
+                next.classList.remove('hidden');
+                next.classList.add('opacity-0');
+
+                requestAnimationFrame(() => {
+                    next.classList.remove('opacity-0');
+                    next.classList.add('opacity-100');
+                });
+
+                window.setTimeout(() => {
+                    current.classList.add('hidden');
+                }, 520);
 
                 index = nextIndex;
             }
 
             setInterval(() => {
-                const nextIndex = (index + 1) % total;
-                showSlide(nextIndex);
+                showSlide((index + 1) % total);
             }, 3000);
         });
     </script>
