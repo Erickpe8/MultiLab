@@ -1,8 +1,18 @@
-<x-app-layout>
+@section('title', 'Política de privacidad')
+
+@php
+    $layout = auth()->check() ? 'app-layout' : 'guest-layout';
+@endphp
+
+<x-dynamic-component :component="$layout">
     <x-slot name="header">
         <div class="flex items-center gap-3">
-            <a href="{{ route('dashboard') }}"
-                class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+            @php
+                $backRoute = auth()->check()
+                    ? route('dashboard')
+                    : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
+            @endphp
+            <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -13,7 +23,7 @@
                     Privacidad de Datos
                 </h2>
                 <p class="mt-1 text-sm text-[var(--text-muted)]">
-                    Política de protección de datos personales
+                    Política de Privacidad y Tratamiento de Datos Personales en MultiLab
                 </p>
             </div>
         </div>
@@ -35,10 +45,11 @@
                             </svg>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-[var(--text)]">Política de Privacidad y Tratamiento de
-                                Datos Personales</h1>
+                            <h1 class="text-2xl font-bold text-[var(--text)]">
+                                Política de Privacidad y Tratamiento de Datos Personales – MultiLab
+                            </h1>
                             <p class="text-sm text-[var(--text-muted)] mt-1">
-                                Última actualización: 25 de Noviembre del 2025
+                                Última actualización: 04 de Enero del 2026
                             </p>
                         </div>
                     </div>
@@ -49,25 +60,100 @@
                     <div class="space-y-10">
 
                         <!-- Introducción -->
-                        <div class="p-4 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30">
+                        <div id="introduccion"
+                            class="p-4 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30">
                             <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                La Fundación de Estudios Superiores Comfanorte – FESC, como institución de educación
-                                superior comprometida con la gestión responsable de la información, adopta esta Política
-                                de Privacidad con el fin de garantizar el manejo ético, seguro y transparente de los
-                                datos personales administrados en el Sistema MultiLab. En cumplimiento de la Ley 1581
-                                de 2012, el Decreto 1377 de 2013, la Ley 1266 de 2008, el Decreto Único 1074 de 2015 y
-                                la normatividad vigente en materia de protección de datos, la FESC establece los
-                                parámetros que rigen la recolección, almacenamiento, tratamiento, circulación,
-                                actualización y eliminación de la información personal de los usuarios. Este documento
-                                refleja el compromiso institucional de proteger la integridad, disponibilidad y
-                                confidencialidad de los datos, promoviendo una cultura de respeto, seguridad y buenas
-                                prácticas dentro del ecosistema académico, administrativo y tecnológico asociado con
-                                MultiLab.
+                                La Fundación de Estudios Superiores Comfanorte – FESC adopta esta Política de Privacidad
+                                con el fin de
+                                garantizar el manejo ético, seguro y transparente de los datos personales administrados
+                                en <strong>MultiLab</strong>,
+                                sistema institucional orientado a la operación del Laboratorio de Software B201,
+                                incluyendo el control de acceso,
+                                la gestión de reservas, préstamos de recursos y la trazabilidad de uso.
+                                En cumplimiento de la Ley 1581 de 2012, el Decreto 1377 de 2013, la Ley 1266 de 2008, el
+                                Decreto Único 1074 de 2015
+                                y la normatividad vigente en materia de protección de datos, la FESC define aquí los
+                                parámetros para la recolección,
+                                almacenamiento, tratamiento, circulación, actualización y supresión de la información
+                                personal.
                             </p>
                         </div>
 
+                        <!-- Índice -->
+                        <div class="bg-[var(--card)] rounded-xl border border-[var(--border)] shadow-sm">
+                            <div class="px-6 py-6 sm:py-8 space-y-4">
+                                <p class="text-sm font-semibold text-[var(--text)]">Índice</p>
+                                <div class="grid gap-2 sm:grid-cols-2 text-sm">
+                                    <a href="#informacion-recopilamos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        1. Información que recopilamos
+                                    </a>
+                                    <a href="#uso-informacion"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        2. Uso de la información
+                                    </a>
+                                    <a href="#seguridad"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        3. Seguridad de los datos
+                                    </a>
+                                    <a href="#derechos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        4. Derechos del titular
+                                    </a>
+                                    <a href="#transferencia"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        5. Transferencia y compartición
+                                    </a>
+                                    <a href="#encargados"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        6. Encargados del tratamiento
+                                    </a>
+                                    <a href="#procedimientos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        7. Procedimientos
+                                    </a>
+                                    <a href="#principios"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        8. Principios del tratamiento
+                                    </a>
+                                    <a href="#base-legal"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        9. Base legal y autorización
+                                    </a>
+                                    <a href="#finalidades"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        10. Finalidades detalladas
+                                    </a>
+                                    <a href="#retencion"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        11. Retención y supresión
+                                    </a>
+                                    <a href="#cookies-tecnicos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        12. Cookies y registros técnicos
+                                    </a>
+                                    <a href="#menores"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        13. Datos de menores
+                                    </a>
+                                    <a href="#incidentes"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        14. Incidentes y reporte
+                                    </a>
+                                    <a href="#cambios"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        15. Cambios y vigencia
+                                    </a>
+                                    <a href="#definiciones"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        16. Definiciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 1. Información que recopilamos -->
-                        <section>
+                        <section id="informacion-recopilamos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -78,17 +164,15 @@
 
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-4">
                                 <p>
-                                    MultiLab recopila información que resulta fundamental para garantizar el correcto
-                                    funcionamiento del sistema, facilitar los procesos académicos y administrativos, y
-                                    asegurar la trazabilidad institucional. La información recolectada permite
-                                    identificar a los usuarios, registrar su actividad dentro del sistema, verificar su
-                                    rol y mantener un registro confiable de las acciones ejecutadas. Todo tratamiento se
-                                    realiza bajo criterios de necesidad, pertinencia y proporcionalidad, asegurando
-                                    siempre el mínimo uso indispensable conforme a la normativa colombiana.
+                                    MultiLab recopila información necesaria para identificar usuarios autorizados,
+                                    administrar el acceso al laboratorio,
+                                    gestionar reservas y préstamos, y garantizar trazabilidad operativa. El tratamiento
+                                    se realiza bajo criterios de necesidad,
+                                    pertinencia y proporcionalidad, asegurando siempre el uso mínimo indispensable
+                                    conforme a la normativa colombiana.
                                 </p>
 
                                 <div class="space-y-4">
-                                    <!-- Item -->
                                     <div class="flex items-start gap-2">
                                         <svg class="w-5 h-5 text-[var(--accent)] shrink-0 mt-0.5" fill="currentColor"
                                             viewBox="0 0 20 20">
@@ -97,19 +181,16 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                         <div>
-                                            <p class="font-semibold text-[var(--text)]">Datos de Identificación</p>
+                                            <p class="font-semibold text-[var(--text)]">Datos de identificación</p>
                                             <p class="text-sm">
-                                                Se recoge información básica como nombre completo, número de
-                                                identificación, correo institucional, cargo o rol asignado en MultiLab,
-                                                y demás datos necesarios para asociar al usuario con los procesos
-                                                académicos y administrativos en los que participa. Esta información
-                                                permite determinar permisos, accesos y responsabilidades dentro de la
-                                                plataforma.
+                                                Nombre completo, documento de identificación, correo institucional y
+                                                datos requeridos para asignación de rol/permisos.
+                                                Esta información permite asociar responsabilidades y acciones dentro del
+                                                laboratorio.
                                             </p>
                                         </div>
                                     </div>
 
-                                    <!-- Item -->
                                     <div class="flex items-start gap-2">
                                         <svg class="w-5 h-5 text-[var(--accent)] shrink-0 mt-0.5" fill="currentColor"
                                             viewBox="0 0 20 20">
@@ -118,17 +199,14 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                         <div>
-                                            <p class="font-semibold text-[var(--text)]">Datos Técnicos de Acceso</p>
+                                            <p class="font-semibold text-[var(--text)]">Datos técnicos y de acceso</p>
                                             <p class="text-sm">
-                                                Incluye direcciones IP, tipo de navegador, sistema operativo, fechas y
-                                                horas de ingreso, duración de sesiones, dispositivos utilizados y
-                                                registros técnicos que permiten mejorar la seguridad, identificar
-                                                comportamientos inusuales y fortalecer mecanismos de autenticación.
+                                                IP, navegador, sistema operativo, fechas/horas de ingreso y registros de
+                                                sesión para seguridad, auditoría y prevención de uso no autorizado.
                                             </p>
                                         </div>
                                     </div>
 
-                                    <!-- Item -->
                                     <div class="flex items-start gap-2">
                                         <svg class="w-5 h-5 text-[var(--accent)] shrink-0 mt-0.5" fill="currentColor"
                                             viewBox="0 0 20 20">
@@ -137,13 +215,12 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                         <div>
-                                            <p class="font-semibold text-[var(--text)]">Datos de Uso</p>
+                                            <p class="font-semibold text-[var(--text)]">Datos de operación y
+                                                trazabilidad</p>
                                             <p class="text-sm">
-                                                Corresponde a las interacciones dentro del sistema: formularios
-                                                completados, actividades realizadas, procesos gestionados, tiempos de
-                                                ejecución y rutas de navegación. Estos datos permiten garantizar la
-                                                trazabilidad, evaluar el cumplimiento de funciones y detectar
-                                                oportunidades de mejora en los procesos institucionales.
+                                                Registros de reservas, préstamos, devoluciones, observaciones e
+                                                incidencias relacionadas con el uso de PCs, herramientas y recursos del
+                                                laboratorio.
                                             </p>
                                         </div>
                                     </div>
@@ -152,7 +229,7 @@
                         </section>
 
                         <!-- 2. Uso de la información -->
-                        <section>
+                        <section id="uso-informacion">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -163,32 +240,27 @@
 
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-4">
                                 <p>
-                                    La información recopilada por MultiLab es utilizada exclusivamente para fines
-                                    institucionales y dentro del marco legal vigente. Cada dato almacenado cumple una
-                                    función específica dentro de los procesos académicos, administrativos y operativos,
-                                    permitiendo la adecuada gestión del Plan Operativo Anual. La FESC garantiza que el
-                                    tratamiento de los datos se realiza siguiendo criterios de finalidad, veracidad,
-                                    seguridad y confidencialidad, evitando el uso indebido o no autorizado de la
-                                    información personal.
+                                    La información recopilada por MultiLab se utiliza exclusivamente para fines
+                                    institucionales y operativos del Laboratorio de Software B201,
+                                    garantizando control de acceso, trazabilidad, seguridad y continuidad del servicio.
                                 </p>
 
                                 <ul class="list-disc list-inside space-y-2 ml-4">
-                                    <li>Garantizar el correcto funcionamiento, disponibilidad y estabilidad del sistema.
+                                    <li>Autenticación, control de acceso y administración de roles/permisos.</li>
+                                    <li>Gestión de reservas de recursos y asignación de uso de estaciones de trabajo.
                                     </li>
-                                    <li>Administrar procesos académicos, administrativos y operativos asociados al POA.
+                                    <li>Gestión de préstamos y devoluciones de herramientas/materiales.</li>
+                                    <li>Registro de observaciones e incidencias para control operativo e inventario.
                                     </li>
-                                    <li>Ejecutar controles internos, auditorías digitales y seguimiento institucional.
-                                    </li>
-                                    <li>Optimizar la experiencia del usuario mediante mejoras tecnológicas y de diseño.
-                                    </li>
-                                    <li>Cumplir requerimientos legales, regulatorios o administrativos exigidos por
-                                        autoridades como el MEN, SIC o entes de control.</li>
+                                    <li>Auditoría interna, trazabilidad y control de seguridad del sistema.</li>
+                                    <li>Cumplimiento de obligaciones legales y procedimientos institucionales
+                                        aplicables.</li>
                                 </ul>
                             </div>
                         </section>
 
-                        <!-- 3. Protección de datos -->
-                        <section>
+                        <!-- 3. Seguridad -->
+                        <section id="seguridad">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -199,33 +271,26 @@
 
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-3">
                                 <p>
-                                    La FESC implementa un conjunto de medidas técnicas, administrativas y
-                                    organizacionales destinadas a garantizar la seguridad de los datos tratados en
-                                    MultiLab. Estas medidas buscan evitar el acceso no autorizado, la pérdida de
-                                    información, filtraciones, alteraciones o usos indebidos. La protección de datos es
-                                    un compromiso permanente dentro de la institución y se fortalece a través de
-                                    auditorías, actualizaciones tecnológicas y políticas internas de seguridad.
+                                    La FESC implementa medidas técnicas, administrativas y organizacionales para evitar
+                                    acceso no autorizado, pérdida,
+                                    alteración o uso indebido de la información tratada en MultiLab. La protección de
+                                    datos se fortalece con prácticas de seguridad,
+                                    auditoría y mejora continua.
                                 </p>
 
                                 <ul class="list-disc list-inside space-y-2 ml-4">
-                                    <li>Sistemas avanzados de encriptación para los datos sensibles almacenados y
-                                        transmitidos.</li>
-                                    <li>Autenticación segura mediante credenciales institucionales, roles y permisos.
-                                    </li>
-                                    <li>Controles de acceso basados en funciones, evitando la manipulación por usuarios
-                                        no autorizados.</li>
-                                    <li>Monitoreo constante de la actividad dentro del sistema para detectar
-                                        comportamientos anómalos.</li>
-                                    <li>Mecanismos de respaldo automatizado y protocolos de recuperación ante fallos.
-                                    </li>
-                                    <li>Uso obligatorio de canales cifrados SSL/TLS para proteger la información en
-                                        tránsito.</li>
+                                    <li>Controles de acceso por roles y permisos.</li>
+                                    <li>Registro de actividad para auditoría y trazabilidad.</li>
+                                    <li>Respaldo y recuperación según prácticas internas.</li>
+                                    <li>Uso de canales seguros cuando aplique (por ejemplo SSL/TLS en ambientes
+                                        desplegados).</li>
+                                    <li>Monitoreo de actividad para detección de comportamientos anómalos.</li>
                                 </ul>
                             </div>
                         </section>
 
-                        <!-- 4. Derechos del titular -->
-                        <section>
+                        <!-- 4. Derechos -->
+                        <section id="derechos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -236,33 +301,26 @@
 
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-3">
                                 <p>
-                                    Los titulares de la información personal registrada en MultiLab cuentan con un
-                                    conjunto de derechos protegidos por la Ley 1581 de 2012 y demás normativas
-                                    aplicables. La FESC garantiza que los usuarios podrán ejercer estos derechos a
-                                    través de mecanismos formales, seguros y accesibles, asegurando siempre una
-                                    respuesta clara, oportuna y transparente.
+                                    Los titulares de información personal registrada en MultiLab cuentan con los
+                                    derechos establecidos por la Ley 1581 de 2012 y normas aplicables.
+                                    La FESC garantiza mecanismos formales para ejercerlos.
                                 </p>
 
                                 <ul class="list-disc list-inside space-y-2 ml-4">
-                                    <li>Acceder a la información personal registrada en el sistema.</li>
-                                    <li>Solicitar corrección, actualización o rectificación de datos incorrectos o
-                                        incompletos.</li>
-                                    <li>Solicitar prueba de la autorización otorgada para el tratamiento de sus datos.
-                                    </li>
-                                    <li>Ser informado sobre el uso específico que se da a la información recolectada.
-                                    </li>
-                                    <li>Presentar quejas ante la Superintendencia de Industria y Comercio si considera
-                                        vulnerados sus derechos.</li>
-                                    <li>Solicitar la supresión de datos cuando desaparezca la finalidad o subsistan
-                                        incumplimientos normativos.</li>
-                                    <li>Revocar la autorización otorgada en cualquier momento, salvo restricciones
-                                        legales.</li>
+                                    <li>Acceder a su información personal.</li>
+                                    <li>Solicitar corrección, actualización o rectificación.</li>
+                                    <li>Solicitar prueba de autorización (cuando aplique).</li>
+                                    <li>Ser informado sobre el uso de su información.</li>
+                                    <li>Presentar quejas ante la SIC si considera vulnerados sus derechos.</li>
+                                    <li>Solicitar supresión cuando no subsista la finalidad y no exista deber
+                                        legal/contractual.</li>
+                                    <li>Revocar autorización, salvo restricciones legales.</li>
                                 </ul>
                             </div>
                         </section>
 
-                        <!-- 5. Compartir información -->
-                        <section>
+                        <!-- 5. Transferencia -->
+                        <section id="transferencia">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -272,18 +330,16 @@
                             </h2>
 
                             <p class="text-[var(--text-secondary)] leading-relaxed">
-                                La información registrada en MultiLab no será compartida con terceros sin la
-                                autorización expresa del titular, excepto en situaciones previstas por la ley o cuando
-                                resulte necesario para el cumplimiento de funciones institucionales. La FESC garantiza
-                                que toda transferencia de datos será realizada bajo estrictos protocolos de seguridad y
-                                únicamente a entidades debidamente autorizadas, tales como organismos estatales de
-                                control, entidades reguladoras o áreas internas responsables de procesos académicos o
-                                administrativos.
+                                La información registrada en MultiLab no será compartida con terceros sin autorización
+                                del titular,
+                                salvo en los casos previstos por la ley o cuando sea necesario para el cumplimiento de
+                                funciones institucionales.
+                                Cualquier transferencia se realizará bajo lineamientos y controles institucionales.
                             </p>
                         </section>
 
-                        <!-- 6. Tratamiento por terceros autorizados -->
-                        <section>
+                        <!-- 6. Encargados -->
+                        <section id="encargados">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -293,17 +349,16 @@
                             </h2>
 
                             <p class="text-[var(--text-secondary)] leading-relaxed">
-                                La FESC podrá delegar el tratamiento de datos a terceros internos o externos que cuenten
-                                con la capacidad técnica y administrativa para garantizar la seguridad de la
-                                información. Cada encargado deberá cumplir estrictamente las obligaciones derivadas de
-                                la ley, los principios de esta política y los acuerdos de confidencialidad establecidos
-                                por la institución. En ningún caso se permitirá que terceros accedan, modifiquen o
-                                utilicen datos personales sin autorización formal, expresa y verificable.
+                                La FESC podrá delegar operaciones técnicas o administrativas a dependencias internas o
+                                terceros autorizados,
+                                siempre bajo obligaciones de confidencialidad y cumplimiento normativo. En ningún caso
+                                se permitirá acceso
+                                o uso de datos sin autorización formal y controles verificables.
                             </p>
                         </section>
 
-                        <!-- 7. Procedimientos del titular -->
-                        <section>
+                        <!-- 7. Procedimientos -->
+                        <section id="procedimientos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
@@ -313,64 +368,237 @@
                             </h2>
 
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-4">
-
                                 <p>
-                                    Para garantizar el ejercicio pleno de los derechos de los titulares, la FESC dispone
-                                    de mecanismos formales y gratuitos que permiten presentar consultas, reclamos,
-                                    solicitudes de rectificación, actualizaciones, supresión de datos o revocatorias de
-                                    autorización. Estos procesos se realizan conforme a los plazos establecidos por la
-                                    legislación colombiana y a través de los canales institucionales habilitados para
-                                    tal fin.
+                                    La FESC dispone de mecanismos formales para presentar consultas, reclamos y
+                                    solicitudes relacionadas con datos personales.
+                                    Se atenderán conforme a los plazos de ley y procedimientos institucionales.
                                 </p>
 
-                                <!-- Consultas -->
                                 <div>
                                     <p class="font-semibold text-[var(--text)] mb-2">7.1 Consultas</p>
                                     <p>
-                                        Los titulares podrán consultar la información personal contenida en MultiLab
-                                        mediante solicitud enviada al correo institucional: <span class="font-medium text-[var(--accent)]">secretario_general@fesc.edu.co</span>
-                                        <br>
-                                        Las solicitudes serán atendidas dentro de los diez (10) días hábiles siguientes,
-                                        conforme a lo establecido en la normatividad vigente.
+                                        Podrán presentarse al correo institucional:
+                                        <span
+                                            class="font-medium text-[var(--accent)]">secretario_general@fesc.edu.co</span>.
+                                        Se atenderán dentro de los diez (10) días hábiles siguientes y, si se requiere,
+                                        podrá concederse prórroga conforme a ley.
                                     </p>
                                 </div>
 
-                                <!-- Reclamos -->
                                 <div>
                                     <p class="font-semibold text-[var(--text)] mb-2">7.2 Reclamos</p>
                                     <p>
                                         Para corrección, actualización o supresión de datos, el titular podrá presentar
-                                        un reclamo formal que incluya la descripción del hecho, los datos a corregir y
-                                        la documentación necesaria. La FESC dará respuesta dentro de los quince (15)
-                                        días hábiles siguientes, prorrogables según la complejidad del caso.
+                                        un reclamo formal con la descripción del hecho,
+                                        los datos a intervenir y soportes. Se responderá dentro de los quince (15) días
+                                        hábiles siguientes y, si aplica, con prórroga legal.
                                     </p>
                                 </div>
 
-                                <!-- Revocatoria -->
                                 <div>
-                                    <p class="font-semibold text-[var(--text)] mb-2">7.3 Revocatoria de la Autorización
-                                    </p>
-                                    <p>
-                                        La revocatoria de autorización podrá solicitarse cuando el titular considere que
-                                        no se respetan los principios, deberes o garantías constitucionales y legales
-                                        que rigen el tratamiento de datos. En estos casos, la FESC evaluará la solicitud
-                                        y determinará si la finalidad del tratamiento aún subsiste o si procede la
-                                        revocatoria total o parcial.
-                                    </p>
-                                </div>
-
-                                <!-- Canales de contacto -->
-                                <div class="mt-3">
-                                    <p class="font-medium text-[var(--text)] mb-1">Canales oficiales</p>
-
-                                    <ul class="list-disc list-inside space-y-1 ml-4">
-                                        <li>Secretaría General: <span
-                                                class="font-medium text-[var(--accent)]">secretario_general@fesc.edu.co</span>
-                                        </li>
-                                        <li>Consultas de soporte técnico: Unidad de Desarrollo de Software</li>
+                                    <p class="font-semibold text-[var(--text)] mb-2">Requisitos mínimos</p>
+                                    <ul class="list-disc list-inside space-y-2 ml-4">
+                                        <li>Identificación del titular o representante autorizado.</li>
+                                        <li>Descripción clara de la solicitud.</li>
+                                        <li>Soportes/documentos cuando aplique.</li>
+                                        <li>Contacto válido para notificaciones.</li>
                                     </ul>
                                 </div>
+                            </div>
+                        </section>
 
+                        <!-- 8. Principios -->
+                        <section id="principios">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    8
+                                </span>
+                                Principios del Tratamiento
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed">
+                                El tratamiento de los datos personales en MultiLab se ajusta a los principios de la Ley
+                                1581 de 2012:
+                                legalidad, finalidad, libertad, veracidad o calidad, transparencia, acceso y circulación
+                                restringida,
+                                seguridad y confidencialidad.
+                            </p>
+                        </section>
+
+                        <!-- 9. Base legal -->
+                        <section id="base-legal">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    9
+                                </span>
+                                Base Legal y Autorización
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed space-y-4">
+                                <span class="block">
+                                    El tratamiento de datos se realiza con autorización previa, expresa e informada del
+                                    titular, salvo los casos en los que la ley permite su uso sin autorización.
+                                </span>
+                                <span class="block">
+                                    En caso de revocatoria u oposición, la FESC verificará si subsisten finalidades u
+                                    obligaciones legales que requieran conservar información.
+                                </span>
+                            </p>
+                        </section>
+
+                        <!-- 10. Finalidades -->
+                        <section id="finalidades">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    10
+                                </span>
+                                Finalidades Detalladas del Tratamiento
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed space-y-3">
+                                <span class="block">
+                                    La información se emplea para autenticación segura, control de acceso al
+                                    laboratorio, administración de reservas y préstamos,
+                                    trazabilidad, auditoría y mejora operativa del servicio.
+                                </span>
+                                <span class="block">
+                                    También soporta la gestión de incidentes, la seguridad, la prevención de fraude y el
+                                    cumplimiento de procedimientos institucionales.
+                                </span>
+                            </p>
+                        </section>
+
+                        <!-- 11. Retención -->
+                        <section id="retencion">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    11
+                                </span>
+                                Retención, Conservación y Supresión
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed space-y-3">
+                                <span class="block">
+                                    Los datos se conservan durante el tiempo necesario para cumplir las finalidades
+                                    descritas, obligaciones legales y requerimientos institucionales de control interno.
+                                </span>
+                                <span class="block">
+                                    Cuando cese la finalidad y no exista deber legal o institucional que lo impida, la
+                                    información será suprimida conforme a procedimientos internos aplicables.
+                                </span>
+                            </p>
+                        </section>
+
+                        <!-- 12. Cookies y logs -->
+                        <section id="cookies-tecnicos">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    12
+                                </span>
+                                Cookies y Registros Técnicos
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed space-y-4">
+                                <span class="block">
+                                    MultiLab podrá registrar información técnica (por ejemplo IP, logs y metadatos de
+                                    sesión) con fines de seguridad, auditoría, trazabilidad y mejora operativa.
+                                </span>
+                                <span class="block">
+                                    Estos registros se utilizan exclusivamente para propósitos institucionales y no se
+                                    comercializan ni se comparten con terceros no autorizados.
+                                </span>
+                            </p>
+                        </section>
+
+                        <!-- 13. Menores -->
+                        <section id="menores">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    13
+                                </span>
+                                Tratamiento de Datos de Menores
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed">
+                                MultiLab es un sistema institucional de uso restringido. En el caso de tratar datos de
+                                menores, se aplicarán garantías reforzadas,
+                                priorizando el interés superior del menor y cumpliendo la normatividad vigente,
+                                incluyendo autorizaciones cuando corresponda.
+                            </p>
+                        </section>
+
+                        <!-- 14. Incidentes -->
+                        <section id="incidentes">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    14
+                                </span>
+                                Gestión de Incidentes y Reporte
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed space-y-3">
+                                <span class="block">
+                                    Ante incidentes de seguridad, accesos irregulares o anomalías, los usuarios deberán
+                                    reportar de manera inmediata a los canales institucionales definidos.
+                                </span>
+                                <span class="block">
+                                    La FESC documentará el caso, activará protocolos de respuesta y aplicará medidas
+                                    para preservar la confidencialidad, integridad y disponibilidad de la información.
+                                </span>
+                            </p>
+                        </section>
+
+                        <!-- 15. Cambios -->
+                        <section id="cambios">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    15
+                                </span>
+                                Cambios a la Política y Vigencia
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed">
+                                La FESC podrá actualizar esta política por cambios normativos o lineamientos
+                                institucionales. Las versiones vigentes estarán disponibles en MultiLab.
+                            </p>
+                        </section>
+
+                        <!-- 16. Definiciones -->
+                        <section id="definiciones">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center text-[var(--accent)] text-sm font-bold">
+                                    16
+                                </span>
+                                Definiciones
+                            </h2>
+
+                            <div class="space-y-3 text-[var(--text-secondary)]">
+                                <p><span class="font-semibold">Dato personal:</span> Información vinculada o que permite
+                                    identificar a una persona natural.</p>
+                                <p><span class="font-semibold">Dato sensible:</span> Información que afecta la intimidad
+                                    o puede generar discriminación.</p>
+                                <p><span class="font-semibold">Tratamiento:</span> Operaciones sobre datos personales
+                                    (recolección, almacenamiento, uso, actualización, supresión).</p>
+                                <p><span class="font-semibold">Responsable:</span> La FESC como entidad que define
+                                    finalidades y medios del tratamiento.</p>
+                                <p><span class="font-semibold">Titular:</span> Persona natural a quien pertenecen los
+                                    datos.</p>
+                                <p><span class="font-semibold">MultiLab:</span> Plataforma institucional para
+                                    administrar la operación del Laboratorio de Software B201 (reservas, préstamos,
+                                    control de acceso, observaciones e históricos).</p>
+                                <p><span class="font-semibold">Trazabilidad:</span> Registro sistemático de acciones y
+                                    cambios para fines de verificación y control.</p>
+                                <p><span class="font-semibold">Incidente:</span> Evento que compromete la
+                                    confidencialidad, integridad o disponibilidad de los datos.</p>
                             </div>
                         </section>
 
@@ -380,12 +608,17 @@
                 <!-- Footer del documento -->
                 <div class="px-6 sm:px-8 py-4 border-t border-[var(--border)] bg-[var(--border)]/5">
                     <p class="text-xs text-[var(--text-secondary)] text-center">
-                        Esta política podrá ser actualizada conforme a la normativa vigente. Las modificaciones serán
-                        informadas a través de los canales institucionales oficiales de la FESC.
+                        Para consultas, solicitudes o reclamos relacionados con el tratamiento de datos personales,
+                        los titulares podrán contactar a la Secretaría General de la FESC:
+                        <span class="font-semibold">secretario_general@fesc.edu.co</span>.
+                    </p>
+                    <p class="text-xs text-[var(--text-secondary)] text-center mt-2">
+                        Esta política podrá ser actualizada conforme a la normativa vigente y lineamientos
+                        institucionales.
                     </p>
                 </div>
 
             </article>
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

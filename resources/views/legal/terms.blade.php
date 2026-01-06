@@ -1,14 +1,25 @@
-<x-app-layout>
+@section('title', 'Términos y condiciones')
+
+@php
+    $layout = auth()->check() ? 'app-layout' : 'guest-layout';
+@endphp
+
+<x-dynamic-component :component="$layout">
     <x-slot name="header">
         <div class="flex items-center gap-3">
-            <a href="{{ route('dashboard') }}"
+            @php
+                $backRoute = auth()->check()
+                    ? route('dashboard')
+                    : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
+            @endphp
 
-                class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+            <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </a>
+
             <div>
                 <h2 class="font-semibold text-2xl text-[var(--text)] leading-tight">
                     Términos y Condiciones de Uso
@@ -28,8 +39,7 @@
                 <div
                     class="px-6 sm:px-8 py-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
                     <div class="flex items-start gap-4">
-                        <div
-                            class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                             flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -41,7 +51,7 @@
                                 Términos y Condiciones de Uso – MultiLab
                             </h1>
                             <p class="text-sm text-[var(--text-muted)] mt-1">
-                                Última actualización: 25 de Noviembre del 2025
+                                Última actualización: 04 de Enero del 2026
                             </p>
                         </div>
                     </div>
@@ -51,11 +61,74 @@
                 <div class="px-6 sm:px-8 py-8 prose prose-sm max-w-none">
                     <div class="space-y-10">
 
+                        <div class="bg-[var(--card)] rounded-xl border border-[var(--border)] shadow-sm">
+                            <div class="px-6 py-6 sm:py-8 space-y-4">
+                                <p class="text-sm font-semibold text-[var(--text)]">Índice</p>
+                                <div class="grid gap-2 sm:grid-cols-2 text-sm">
+                                    <a href="#aceptacion"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        1. Aceptación
+                                    </a>
+                                    <a href="#uso-autorizado"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        2. Uso autorizado
+                                    </a>
+                                    <a href="#responsabilidades"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        3. Responsabilidades
+                                    </a>
+                                    <a href="#propiedad"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        4. Propiedad intelectual
+                                    </a>
+                                    <a href="#datos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        5. Protección de datos
+                                    </a>
+                                    <a href="#gobierno"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        6. Gobierno y seguridad del sistema
+                                    </a>
+                                    <a href="#habeas-data"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        7. Habeas Data
+                                    </a>
+                                    <a href="#trazabilidad-auditoria"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        8. Trazabilidad y auditoría
+                                    </a>
+                                    <a href="#evidencias-archivos"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        9. Evidencias y archivos
+                                    </a>
+                                    <a href="#disponibilidad-soporte"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        10. Disponibilidad y soporte
+                                    </a>
+                                    <a href="#sanciones"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        11. Sanciones y terminación
+                                    </a>
+                                    <a href="#modificaciones"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        12. Modificaciones y vigencia
+                                    </a>
+                                    <a href="#ley-aplicable"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        13. Ley aplicable
+                                    </a>
+                                    <a href="#definiciones"
+                                        class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors block">
+                                        14. Definiciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 1. Aceptación -->
-                        <section>
+                        <section id="aceptacion">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     1
                                 </span>
@@ -66,13 +139,12 @@
                                 Naturaleza institucional de MultiLab
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                MultiLab es una herramienta tecnológica institucional de uso restringido, desarrollada
-                                por la Unidad de Desarrollo de Software de la Fundación de Estudios Superiores
-                                Comfanorte (FESC) para apoyar la gestión, seguimiento, monitoreo y documentación del
-                                Plan Operativo Anual (POA) y otros procesos académicos, administrativos y operativos
-                                internos. Su uso se encuentra intrínsecamente ligado al cumplimiento de los fines
-                                misionales de la FESC y a la ejecución de actividades institucionales debidamente
-                                autorizadas.
+                                MultiLab es una herramienta tecnológica institucional de uso restringido, destinada a
+                                administrar la operación diaria del Laboratorio de Software B201 de la Fundación de
+                                Estudios Superiores Comfanorte (FESC). El sistema permite controlar el acceso a las
+                                estaciones de trabajo (PCs), gestionar reservas y préstamos de recursos, registrar
+                                observaciones asociadas al uso y generar históricos que respalden la gestión operativa
+                                del laboratorio y su inventario físico.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
@@ -82,8 +154,8 @@
                                 Al autenticarse, navegar o realizar cualquier acción dentro de MultiLab, el usuario
                                 manifiesta de forma expresa, informada e inequívoca que ha leído, comprendido y acepta
                                 la totalidad de los presentes términos y condiciones de uso, así como las políticas
-                                institucionales vigentes, los reglamentos internos y las demás disposiciones de carácter
-                                académico, administrativo, tecnológico y normativo emitidas por la FESC.
+                                institucionales vigentes, reglamentos internos y disposiciones de carácter académico,
+                                administrativo, tecnológico y normativo emitidas por la FESC.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
@@ -99,10 +171,9 @@
                         </section>
 
                         <!-- 2. Uso autorizado -->
-                        <section>
+                        <section id="uso-autorizado">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     2
                                 </span>
@@ -113,12 +184,11 @@
                                 Usuarios habilitados y roles instituidos
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                El acceso a MultiLab se limita de forma exclusiva a los usuarios que hayan sido
-                                previamente autorizados por la FESC, entre ellos directivos, coordinadores,
-                                docentes, personal administrativo y otros colaboradores institucionales que requieran el
-                                uso del sistema en razón de sus funciones. Cada usuario contará con un rol y permisos
-                                definidos, de acuerdo con sus responsabilidades dentro del proceso de planeación,
-                                ejecución y seguimiento del POA y de otros procesos institucionales relacionados.
+                                El acceso a MultiLab se limita de forma exclusiva a usuarios autorizados por la FESC,
+                                incluyendo personal de apoyo y responsables del laboratorio, docentes, administrativos y
+                                otros colaboradores que requieran el uso del sistema por razones de operación y control
+                                del laboratorio. Cada usuario contará con roles y permisos definidos de acuerdo con sus
+                                responsabilidades y funciones asignadas.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
@@ -129,18 +199,16 @@
                             </p>
                             <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
                                 <li>
-                                    Registrar, consultar y actualizar información vinculada al Plan Operativo Anual
-                                    (POA) y a los procesos estratégicos, académicos, administrativos y de gestión
-                                    institucional autorizados.
+                                    Gestionar reservas de recursos del laboratorio y asignación de uso de estaciones de
+                                    trabajo (PCs) conforme a la disponibilidad y reglas internas.
                                 </li>
                                 <li>
-                                    Generar reportes, indicadores, evidencias y trazabilidad del cumplimiento de metas,
-                                    acciones e iniciativas institucionales definidas por la FESC.
+                                    Registrar préstamos y devoluciones de herramientas y materiales de la bodega,
+                                    incluyendo observaciones relevantes para el control de inventario.
                                 </li>
                                 <li>
-                                    Realizar actividades de seguimiento, monitoreo y control interno de las acciones
-                                    que se desarrollan en el marco del POA y demás procesos aprobados por las
-                                    instancias de gobierno institucional.
+                                    Consultar y generar históricos operativos que respalden la trazabilidad de uso,
+                                    mantenimiento, incidentes y control de acceso al laboratorio.
                                 </li>
                             </ul>
 
@@ -152,21 +220,24 @@
                             </p>
                             <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
                                 <li>
-                                    Utilizar el sistema para fines personales, comerciales o ajenos a la misión y
-                                    objetivos institucionales de la FESC.
+                                    Utilizar el sistema para fines personales, comerciales o ajenos a la operación del
+                                    laboratorio y a los objetivos institucionales de la FESC.
                                 </li>
                                 <li>
-                                    Intentar modificar, alterar, descompilar, desensamblar o aplicar ingeniería inversa
-                                    sobre el software, sus módulos, su estructura de datos o sus componentes técnicos.
+                                    Alterar registros de reservas, préstamos, inventario u observaciones con el fin de
+                                    ocultar información, evadir responsabilidad o modificar trazabilidad.
+                                </li>
+                                <li>
+                                    Intentar modificar, descompilar, desensamblar o aplicar ingeniería inversa sobre el
+                                    software, sus módulos, su estructura de datos o sus componentes técnicos.
                                 </li>
                                 <li>
                                     Eludir, vulnerar o intentar vulnerar mecanismos de seguridad, autenticación o
                                     control de accesos dispuestos para la protección de la información.
                                 </li>
                                 <li>
-                                    Descargar, copiar, reproducir, divulgar o comunicar a terceros información
-                                    institucional contenida en MultiLab sin autorización expresa y por escrito de la
-                                    instancia competente.
+                                    Descargar, copiar o divulgar a terceros información institucional contenida en
+                                    MultiLab sin autorización expresa de la instancia competente.
                                 </li>
                             </ul>
 
@@ -177,16 +248,14 @@
                                 Cualquier uso indebido, no autorizado o contrario a los fines institucionales de
                                 MultiLab podrá ser considerado falta grave y dará lugar a las acciones disciplinarias,
                                 académicas, laborales y legales correspondientes, de conformidad con los reglamentos
-                                internos de la FESC y con la legislación colombiana en materia de delitos informáticos,
-                                protección de datos personales y responsabilidad civil y penal.
+                                internos de la FESC y con la legislación colombiana vigente.
                             </p>
                         </section>
 
                         <!-- 3. Responsabilidades del usuario -->
-                        <section>
+                        <section id="responsabilidades">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     3
                                 </span>
@@ -197,41 +266,35 @@
                                 Custodia y confidencialidad de credenciales
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Las credenciales de acceso (usuario y contraseña) son personales, intransferibles y de
-                                uso exclusivo del titular asignado. El usuario es responsable de adoptar todas las
-                                medidas necesarias para evitar que terceros accedan a MultiLab mediante su identidad
-                                digital, comprometiéndose a no compartir, ceder, divulgar o prestar sus credenciales
-                                bajo ninguna circunstancia.
+                                Las credenciales de acceso son personales e intransferibles. El usuario es responsable
+                                de adoptar las medidas necesarias para evitar el acceso de terceros mediante su
+                                identidad digital, comprometiéndose a no compartir ni divulgar sus credenciales.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Uso responsable de la información institucional
+                                Registro veraz y oportuno
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Toda información consultada, registrada, procesada o generada dentro de MultiLab se
-                                considera información institucional, estratégica o de apoyo a la gestión. El usuario
-                                debe utilizarla de forma responsable, limitando su uso a los fines autorizados y
-                                absteniéndose de divulgarla, reproducirla o modificarla sin autorización previa de las
-                                instancias correspondientes.
+                                El usuario se compromete a registrar información veraz, completa y oportuna respecto a
+                                reservas, préstamos, devoluciones, observaciones e incidentes. El registro debe reflejar
+                                lo ocurrido en el laboratorio sin alteraciones deliberadas.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
                                 Reporte de incidentes y fallos de seguridad
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                El usuario tiene la obligación de informar de manera inmediata y veraz al administrador
-                                del sistema o a la Unidad de Desarrollo de Software cualquier incidente de seguridad,
-                                acceso irregular, falla técnica, sospecha de vulneración, intento de suplantación o
-                                anomalía que pueda comprometer la integridad, confidencialidad o disponibilidad de la
-                                información almacenada en MultiLab.
+                                El usuario tiene la obligación de informar al responsable del laboratorio o a la Unidad
+                                de Desarrollo de Software cualquier incidente de seguridad, acceso irregular, falla
+                                técnica, sospecha de suplantación o anomalía que pueda comprometer la integridad,
+                                confidencialidad o disponibilidad de la información registrada en MultiLab.
                             </p>
                         </section>
 
                         <!-- 4. Propiedad intelectual -->
-                        <section>
+                        <section id="propiedad">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     4
                                 </span>
@@ -243,10 +306,9 @@
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
                                 MultiLab constituye una obra de creación intelectual protegida por la legislación
-                                colombiana en materia de derechos de autor, propiedad intelectual y protección de
-                                software, incluyendo, entre otras, la Ley 23 de 1982, la Ley 44 de 1993 y la Decisión
-                                Andina 351 de 1993. La titularidad exclusiva de los derechos patrimoniales y morales
-                                sobre el sistema corresponde a la Fundación de Estudios Superiores Comfanorte (FESC).
+                                colombiana en materia de derechos de autor y propiedad intelectual. La titularidad
+                                exclusiva de los derechos patrimoniales y morales sobre el sistema corresponde a la
+                                Fundación de Estudios Superiores Comfanorte (FESC).
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
@@ -256,29 +318,26 @@
                                 Se encuentran amparados por esta protección, entre otros:
                             </p>
                             <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
-                                <li>Código fuente y código compilado del sistema.</li>
-                                <li>Arquitectura, modelos de datos, algoritmos y lógica de negocio.</li>
+                                <li>Código fuente, código compilado y lógica de negocio.</li>
+                                <li>Arquitectura del sistema, modelos de datos y estructura de permisos.</li>
                                 <li>Diseño de interfaces, estilos visuales y experiencia de usuario (UX/UI).</li>
-                                <li>Documentación técnica y funcional, manuales, diagramas y material asociado.</li>
+                                <li>Documentación técnica y funcional relacionada.</li>
                             </ul>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
                                 Restricciones de uso y explotación
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Queda terminantemente prohibida la copia, reproducción, distribución, adaptación,
-                                modificación, venta, alquiler, sublicenciamiento, traducción, descompilación,
-                                desensamblado o cualquier modalidad de explotación económica de MultiLab fuera del
-                                marco institucional de la FESC, sin la autorización previa, expresa y por escrito de la
-                                Rectoría o de la instancia que esta designe.
+                                Queda prohibida la copia, distribución, adaptación, modificación o explotación de
+                                MultiLab fuera del marco institucional de la FESC, sin autorización previa y por escrito
+                                de la instancia competente.
                             </p>
                         </section>
 
                         <!-- 5. Protección de datos -->
-                        <section>
+                        <section id="datos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     5
                                 </span>
@@ -290,44 +349,26 @@
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
                                 El tratamiento de datos personales dentro de MultiLab se rige por la Ley 1581 de 2012,
-                                la Ley 1266 de 2008, el Decreto 1377 de 2013, el Decreto Único Reglamentario 1074 de
-                                2015 y las disposiciones de la Superintendencia de Industria y Comercio. Asimismo, se
-                                sujeta a las Políticas de Protección de Datos Personales de la FESC, aprobadas mediante
-                                Acta 088 del Comité de Planeación del 26 de junio de 2018 y formalizadas por la
-                                Resolución de Rectoría No. 469 del mismo año.
+                                la Ley 1266 de 2008, el Decreto 1377 de 2013 y las demás disposiciones aplicables, así
+                                como por las Políticas de Protección de Datos Personales de la FESC.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Principios de tratamiento
-                            </h3>
-                            <p class="text-[var(--text-secondary)] leading-relaxed mb-4">
-                                Toda información personal gestionada en MultiLab será tratada con base en los
-                                principios de:
-                            </p>
-                            <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
-                                <li>Legalidad, finalidad y libertad en la recolección y uso de los datos.</li>
-                                <li>Veracidad, calidad, seguridad y confidencialidad de la información.</li>
-                                <li>Acceso y circulación restringida, con perfiles y permisos definidos.</li>
-                            </ul>
-
-                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Responsabilidad en el manejo de datos
+                                Finalidad del tratamiento en MultiLab
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                La FESC actúa como responsable del tratamiento de los datos personales incluidos en
-                                MultiLab y garantiza la adopción de medidas técnicas, humanas y organizativas
-                                razonables para proteger la información frente a accesos no autorizados, pérdida,
-                                alteración o uso indebido. El usuario, como parte de la cadena de tratamiento,
-                                contribuye a esta responsabilidad cumpliendo las políticas institucionales y la
-                                normatividad vigente.
+                                La información personal registrada en MultiLab se utiliza para el control de acceso al
+                                laboratorio, la trazabilidad de reservas y préstamos, la asignación de
+                                responsabilidades,
+                                el registro de incidentes y la generación de históricos que respalden la operación del
+                                laboratorio y su inventario.
                             </p>
                         </section>
 
                         <!-- 6. Responsabilidad institucional -->
-                        <section>
+                        <section id="gobierno">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     6
                                 </span>
@@ -335,110 +376,207 @@
                             </h2>
 
                             <h3 class="font-semibold text-[var(--text)] mt-2 mb-3">
-                                Dirección y gobierno del sistema
+                                Administración del sistema
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                La Unidad de Desarrollo de Software, bajo la coordinación del Programa de Ingeniería de
-                                Software y las instancias superiores de la FESC, es la encargada de la administración,
-                                evolución, mantenimiento, mejora continua y soporte técnico de MultiLab. Esta unidad
-                                vela por la estabilidad, disponibilidad y correcto funcionamiento del sistema.
+                                La Unidad de Desarrollo de Software de la FESC es la encargada de la administración,
+                                evolución, mantenimiento y soporte técnico de MultiLab, en coordinación con las
+                                instancias responsables del Laboratorio de Software B201.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Seguridad de la información
+                                Seguridad y continuidad operativa
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                La institución implementa medidas técnicas, organizativas y administrativas de seguridad
-                                orientadas a mitigar riesgos de pérdida, fuga, alteración o acceso no autorizado a la
-                                información contenida en el sistema. No obstante, el usuario reconoce que ningún
-                                sistema tecnológico es infalible y se compromete a colaborar activamente en la
-                                protección de la información reportando cualquier anomalía o sospecha de incidente.
-                            </p>
-
-                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Responsabilidad del usuario frente a incidentes
-                            </h3>
-                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                La omisión en el reporte de incidentes de seguridad, el uso indebido de credenciales, la
-                                divulgación no autorizada de información o el incumplimiento de las políticas
-                                institucionales puede generar responsabilidad disciplinaria y legal para el usuario,
-                                sin perjuicio de las acciones adicionales que la FESC pueda adelantar para proteger su
-                                patrimonio tecnológico y reputacional.
+                                La institución implementa medidas de seguridad orientadas a mitigar riesgos de pérdida,
+                                fuga o alteración de información. El usuario reconoce que debe colaborar activamente
+                                reportando incidentes y siguiendo las políticas internas del laboratorio.
                             </p>
                         </section>
 
                         <!-- 7. Derechos del titular / Habeas Data -->
-                        <section>
+                        <section id="habeas-data">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span
-                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     7
                                 </span>
                                 Derechos del Titular, Consultas, Reclamos y Procedimientos de Habeas Data
                             </h2>
 
-                            <h3 class="font-semibold text-[var(--text)] mt-2 mb-3">
-                                Derechos del titular de los datos personales
-                            </h3>
-                            <p class="text-[var(--text-secondary)] leading-relaxed mb-4">
-                                Los titulares de los datos personales registrados en MultiLab, ya sea de manera
-                                directa o a través de información derivada de procesos institucionales, tienen derecho a:
+                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
+                                Los titulares de los datos personales registrados en MultiLab podrán ejercer sus
+                                derechos de acceso, actualización, rectificación, supresión y revocatoria de
+                                autorización, de acuerdo con los procedimientos institucionales y la normatividad
+                                vigente en Colombia.
                             </p>
+
+                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
+                                Canal oficial para solicitudes
+                            </h3>
+                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
+                                Para el ejercicio de derechos relacionados con el tratamiento de datos personales, los
+                                titulares podrán dirigir sus consultas y reclamos a la FESC a través del canal
+                                institucional de la Secretaría General:
+                                <span class="font-semibold">secretario_general@fesc.edu.co</span>.
+                            </p>
+                        </section>
+
+                        <!-- 8. Trazabilidad y auditoría -->
+                        <section id="trazabilidad-auditoria">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    8
+                                </span>
+                                Trazabilidad y Auditoría del Sistema
+                            </h2>
+
+                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
+                                MultiLab mantiene registros de actividad para garantizar trazabilidad y control interno,
+                                incluyendo reservas, préstamos, devoluciones, observaciones, cambios de inventario y
+                                acciones administrativas cuando aplique.
+                            </p>
+
                             <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
-                                <li>Conocer, acceder y obtener información sobre los datos personales que reposan en las bases de datos institucionales.</li>
-                                <li>Actualizar y rectificar los datos cuando sean parciales, inexactos, incompletos o
-                                    desactualizados.</li>
-                                <li>Solicitar la supresión del dato cuando considere que no se requiere para la finalidad con la que fue recolectado o cuando se haya agotado el tiempo autorizado de tratamiento.</li>
-                                <li>Revocar la autorización otorgada para el tratamiento de sus datos personales, cuando
-                                    no exista un deber legal o contractual que lo impida.</li>
-                                <li>Presentar consultas y reclamos ante la FESC y, de ser necesario, quejas ante la
-                                    Superintendencia de Industria y Comercio.</li>
+                                <li>Usuario autenticado que ejecuta la operación.</li>
+                                <li>Fecha y hora del evento.</li>
+                                <li>Módulo afectado (reservas, préstamos, inventario, observaciones, etc.).</li>
+                                <li>Descripción de cambios realizados cuando aplique.</li>
                             </ul>
+                        </section>
 
-                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Consultas sobre el tratamiento de datos
+                        <!-- 9. Evidencias y archivos -->
+                        <section id="evidencias-archivos">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    9
+                                </span>
+                                Evidencias y archivos
+                            </h2>
+
+                            <h3 class="font-semibold text-[var(--text)] mt-2 mb-3">
+                                Principio de pertinencia
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                El titular podrá elevar consultas para conocer la información personal que sobre él se
-                                encuentre almacenada en las bases de datos que soportan MultiLab. Las consultas
-                                deberán formularse por escrito y serán atendidas en los plazos y condiciones
-                                establecidos por la normatividad vigente, conforme a las políticas internas de la FESC.
+                                Las evidencias y archivos cargados en MultiLab deben estar directamente vinculados con
+                                la operación del laboratorio, el control de inventario, el soporte de observaciones,
+                                incidentes, mantenimientos o procesos internos autorizados.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Reclamos, correcciones, actualizaciones y supresión
+                                Prohibiciones
                             </h3>
+                            <ul class="list-disc list-inside ml-4 text-[var(--text-secondary)] space-y-2 mb-6">
+                                <li>Incluir software malicioso o contenido que comprometa la plataforma.</li>
+                                <li>Adjuntar material sin autorización institucional cuando se requiera.</li>
+                                <li>Registrar datos sensibles no necesarios para el control del laboratorio.</li>
+                            </ul>
+                        </section>
+
+                        <!-- 10. Disponibilidad, mantenimiento y soporte -->
+                        <section id="disponibilidad-soporte">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    10
+                                </span>
+                                Disponibilidad, mantenimiento y soporte
+                            </h2>
+
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Cuando el titular considere que la información contenida debe ser objeto de corrección,
-                                actualización o supresión, o cuando advierta el presunto incumplimiento de la ley o de
-                                las políticas institucionales, podrá presentar un reclamo ante la FESC, siguiendo los
-                                procedimientos definidos en las Políticas de Protección de Datos Personales de la
-                                institución.
+                                MultiLab podrá estar sujeto a mantenimientos programados y correctivos necesarios para
+                                su estabilidad. La FESC procurará comunicar las ventanas de mantenimiento con la
+                                anticipación posible según la criticidad del cambio.
                             </p>
 
-                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Revocatoria de autorización y quejas ante la autoridad competente
-                            </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                El titular podrá solicitar la revocatoria de la autorización otorgada para el
-                                tratamiento de sus datos personales cuando no exista deber legal o contractual que lo
-                                impida. Si, una vez agotado el procedimiento interno, persiste un posible incumplimiento
-                                del régimen de protección de datos, el titular podrá acudir ante la Superintendencia de
-                                Industria y Comercio para la presentación de quejas formales, conforme a lo
-                                establecido en la Ley 1581 de 2012 y normas reglamentarias.
+                                El soporte técnico se presta conforme a los procedimientos institucionales de atención
+                                y registro de incidentes.
                             </p>
+                        </section>
 
-                            <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
-                                Canales oficiales para el ejercicio de derechos
-                            </h3>
+                        <!-- 11. Sanciones, suspensión y terminación -->
+                        <section id="sanciones">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    11
+                                </span>
+                                Sanciones, suspensión y terminación de acceso
+                            </h2>
+
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
-                                Para el ejercicio de los derechos relacionados con el tratamiento de datos personales
-                                asociados a MultiLab, los titulares podrán dirigir sus consultas, solicitudes y
-                                reclamos a la FESC a través del canal institucional de la Secretaría General:
-                                <span class="font-semibold">secretario_general@fesc.edu.co</span>, de acuerdo con los
-                                procedimientos y requisitos definidos en las políticas institucionales vigentes.
+                                El incumplimiento de estos términos, el uso indebido del sistema o la alteración de
+                                registros de operación del laboratorio podrá generar restricciones, suspensión temporal
+                                o revocatoria del acceso, sin perjuicio de acciones disciplinarias y legales.
                             </p>
+                        </section>
+
+                        <!-- 12. Modificaciones y vigencia -->
+                        <section id="modificaciones">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    12
+                                </span>
+                                Modificaciones y vigencia
+                            </h2>
+                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
+                                La FESC podrá actualizar estos términos y condiciones conforme a necesidades
+                                institucionales. El uso posterior de MultiLab implicará la aceptación expresa de la
+                                versión vigente.
+                            </p>
+                        </section>
+
+                        <!-- 13. Ley aplicable -->
+                        <section id="ley-aplicable">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    13
+                                </span>
+                                Ley aplicable y jurisdicción
+                            </h2>
+                            <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
+                                Estos términos se rigen por la legislación colombiana vigente en materia tecnológica,
+                                administrativa y de protección de datos, así como por las políticas internas
+                                institucionales de la FESC.
+                            </p>
+                        </section>
+
+                        <!-- 14. Definiciones -->
+                        <section id="definiciones">
+                            <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                    text-[var(--accent)] text-sm font-bold">
+                                    14
+                                </span>
+                                Definiciones
+                            </h2>
+                            <div class="space-y-3 text-[var(--text-secondary)]">
+                                <p><span class="font-semibold">MultiLab:</span> Plataforma institucional para
+                                    administrar la operación del Laboratorio de Software B201 (reservas, préstamos,
+                                    control de acceso, observaciones e históricos).</p>
+                                <p><span class="font-semibold">Usuario:</span> Persona con credenciales habilitadas por
+                                    la FESC para operar dentro de MultiLab.</p>
+                                <p><span class="font-semibold">Reserva:</span> Registro de asignación de uso de un
+                                    recurso (por ejemplo, estación de trabajo) en una fecha y franja horaria
+                                    determinadas.</p>
+                                <p><span class="font-semibold">Préstamo:</span> Entrega controlada de una herramienta o
+                                    material desde la bodega del laboratorio para un uso autorizado.</p>
+                                <p><span class="font-semibold">Devolución:</span> Retorno del recurso prestado, con
+                                    verificación de estado y registro de observaciones cuando aplique.</p>
+                                <p><span class="font-semibold">Observación:</span> Nota operativa registrada sobre el
+                                    uso de un recurso, su estado, incidentes o novedades relevantes.</p>
+                                <p><span class="font-semibold">Trazabilidad / Auditoría:</span> Registro sistemático de
+                                    acciones y cambios dentro de MultiLab para fines de control interno.</p>
+                                <p><span class="font-semibold">Rol / Permiso:</span> Conjunto de responsabilidades y
+                                    autorizaciones para acceder a módulos y ejecutar acciones dentro del sistema.</p>
+                                <p><span class="font-semibold">Incidente:</span> Evento que afecta la operación del
+                                    laboratorio, la disponibilidad de recursos o la integridad de la información.</p>
+                            </div>
                         </section>
 
                         <!-- Aviso -->
@@ -459,13 +597,14 @@
                                         políticas institucionales de protección de datos personales, seguridad de la
                                         información y propiedad intelectual, podrá dar lugar a la suspensión del acceso
                                         a MultiLab, la aplicación de sanciones disciplinarias internas y el inicio de
-                                        acciones legales civiles, administrativas y penales ante las autoridades
-                                        competentes, sin perjuicio de las indemnizaciones por daños y perjuicios a que
-                                        hubiere lugar.
+                                        acciones legales ante las autoridades competentes, sin perjuicio de las medidas
+                                        adicionales que la FESC adopte para proteger su patrimonio tecnológico y el
+                                        inventario del laboratorio.
                                     </p>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -477,9 +616,13 @@
                         titulares podrán contactar a la Secretaría General de la FESC a través del correo:
                         <span class="font-semibold">secretario_general@fesc.edu.co</span>.
                     </p>
+                    <p class="text-xs text-[var(--text-secondary)] text-center mt-2">
+                        Soporte técnico: Unidad de Desarrollo de Software de la FESC, siguiendo los canales
+                        institucionales autorizados.
+                    </p>
                 </div>
 
             </article>
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

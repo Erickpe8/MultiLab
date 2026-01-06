@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -13,23 +12,22 @@ use App\Http\Controllers\UserManagementController;
 |--------------------------------------------------------------------------
 */
 
-Route::view('/', 'welcome')->name('welcome');
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
-Route::view('/dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
 | Legal Routes (Públicas)
 |--------------------------------------------------------------------------
-| Names simples: route('terms') / route('privacy')
-| URLs organizadas: /legal/terms /legal/privacy
 */
-Route::prefix('legal')->group(function () {
+Route::prefix('legal')->name('legal.')->group(function () {
     Route::get('/terms', [LegalController::class, 'terms'])->name('terms');
     Route::get('/privacy', [LegalController::class, 'privacy'])->name('privacy');
-    Route::get('/data-protection', [LegalController::class, 'dataProtection'])->name('data_protection');
 });
 
 /*
@@ -58,15 +56,11 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
     ->name('user-management.')
     ->group(function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('index');
-        Route::get('/{user}', [UserManagementController::class, 'show'])->name('show');
-
-        Route::post('/{user}/approve', [UserManagementController::class, 'approve'])->name('approve');
-        Route::delete('/{user}/reject', [UserManagementController::class, 'reject'])->name('reject');
-
-        Route::patch('/{user}/deactivate', [UserManagementController::class, 'deactivate'])->name('deactivate');
-        Route::put('/{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
-
-        Route::delete('/{user}', [UserManagementController::class, 'destroy'])->name('destroy');
+        Route::post('{user}/approve', [UserManagementController::class, 'approve'])->name('approve');
+        Route::delete('{user}/reject', [UserManagementController::class, 'reject'])->name('reject');
+        Route::patch('{user}/deactivate', [UserManagementController::class, 'deactivate'])->name('deactivate');
+        Route::put('{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
+        Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
     });
 
 require __DIR__ . '/auth.php';
