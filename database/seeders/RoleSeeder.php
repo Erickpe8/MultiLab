@@ -9,20 +9,23 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // IMPORTANTE: asegurar el guard_name correcto
+        // Spatie guarda roles/permissions con guard_name; esta app usa el guard web.
         $guard = 'web';
 
         $roles = [
-            'superadmin',
-            'aux_admin',
-            'docente',
-            'estudiante',
+            'Administrador',
+            'Director de Programa',
+            'Estudiante',
+            'Auxiliar Administrativo',
+            'Docente',
         ];
 
-        foreach ($roles as $role) {
-            Role::firstOrCreate(
-                ['name' => $role, 'guard_name' => $guard]
+        foreach ($roles as $roleName) {
+            $role = Role::firstOrCreate(
+                ['name' => $roleName, 'guard_name' => $guard]
             );
+
+            // Placeholder para asignar permisos más adelante (ej. $role->syncPermissions([...])).
         }
     }
 }
