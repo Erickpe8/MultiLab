@@ -1,47 +1,44 @@
 services:
-    multilab-mysql:
+    mysql:
         image: mysql:9.4
+        container_name: multilab-mysql
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: multilab
-            MYSQL_ROOT_PASSWORD: ""
-            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_ROOT_PASSWORD: root
         volumes:
-            - mysql_data:/var/lib/mysql
+            -   mysql_data:/var/lib/mysql
         networks:
-            - app-network
+            -   app-network
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: multilab-phpmyadmin
-        restart: unless-stopped
         ports:
             - "8081:80"
         environment:
-            PMA_HOST: multilab-mysql
-            PMA_PORT: 3306
+            PMA_HOST: mysql
         depends_on:
-            - multilab-mysql
+            -   mysql
         networks:
-            - app-network
+            -   app-network
 
-    laravel:
+    app:
         build: .
         container_name: multilab-laravel
         working_dir: /var/www
         volumes:
-            - ./:/var/www
+            -   .:/var/www
         ports:
-            - "8000:8000"
+            -   "8000:8000"
         depends_on:
-            - multilab-mysql
-        command: sh -c "if [ ! -d vendor ]; then composer install; fi && if [ ! -f .env ]; then cp .env.example .env && php artisan key:generate; fi && php artisan serve --host=0.0.0.0 --port=8000"
+            -   mysql
+        command: php artisan serve --host=0.0.0.0 --port=8000
         networks:
-            - app-network
+            -   app-network
 
 volumes:
     mysql_data:
 
 networks:
     app-network:
-        driver: bridge
