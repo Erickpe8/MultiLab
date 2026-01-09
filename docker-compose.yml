@@ -31,11 +31,11 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www
-        depends_on:
-            - multilab-mysql
         ports:
             - "8000:8000"
-        command: php artisan serve --host=0.0.0.0 --port=8000
+        depends_on:
+            - multilab-mysql
+        command: sh -c "if [ ! -d vendor ]; then composer install; fi && if [ ! -f .env ]; then cp .env.example .env && php artisan key:generate; fi && php artisan serve --host=0.0.0.0 --port=8000"
         networks:
             - app-network
 
