@@ -375,6 +375,7 @@
                 @csrf
                 @method('patch')
 
+                {{-- Información personal --}}
                 @include('profile.partials.sections.basic-info')
 
                 @include('profile.partials.sections.preferences')

@@ -15,7 +15,7 @@
 
             {{-- CARD 1: Perfil (info + preferencias + firma) --}}
             <div class="rounded-2xl bg-white border border-[color:var(--border)] shadow-sm p-6 sm:p-8">
-                @include('profile.partials.update-profile-information-form', ['renderSecurity' => false])
+                @include('profile.update-profile-information-form', ['renderSecurity' => false])
             </div>
 
             {{-- CARD 2: Seguridad (contraseña + zona de peligro) --}}
