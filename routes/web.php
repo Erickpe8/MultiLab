@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ProfileThemeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +26,10 @@ Route::get('/dashboard', function () {
 | Legal Routes (Públicas)
 |--------------------------------------------------------------------------
 */
-    Route::prefix('legal')->name('legal.')->group(function () {
+Route::prefix('legal')->name('legal.')->group(function () {
     Route::view('/terms', 'legal.terms')->name('terms');
     Route::view('/privacy', 'legal.privacy')->name('privacy');
+    Route::view('/data-protection', 'legal.data-protection')->name('data-protection');
 });
 
 /*
@@ -36,13 +38,22 @@ Route::get('/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // Profile
+    // Profile (vista + datos básicos)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Avatar
+    Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
+
+    // Theme
+    Route::patch('/profile/theme', [ProfileThemeController::class, 'update'])->name('profile.theme.update');
+
     // Password
     Route::post('/password/verify', [PasswordController::class, 'verify'])->name('password.verify');
+
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 });
 
