@@ -1,397 +1,220 @@
 @php
-    $profileState = [
-        'first_name' => old('first_name', $user->first_name),
-        'middle_name' => old('middle_name', $user->middle_name),
-        'first_surname' => old('first_surname', $user->first_surname),
-        'second_surname' => old('second_surname', $user->second_surname),
-        'gender' => old('gender', $user->gender),
-        'email' => old('email', $user->email),
-        'phone' => old('phone', $user->phone),
-        'mobile' => old('mobile', $user->mobile),
-        'phone_extension' => old('phone_extension', $user->phone_extension),
-        'notify_email' => (bool) old('notify_email', $user->notify_email ?? true),
-        'notify_in_app' => (bool) old('notify_in_app', $user->notify_in_app ?? true),
-        'digest_frequency' => old('digest_frequency', $user->digest_frequency ?? 'weekly'),
-        'theme' => old('theme', $user->theme ?? 'system'),
-        'compact_mode' => (bool) old('compact_mode', $user->compact_mode ?? false),
-    ];
+$avatarInitials = collect([$user->first_name, $user->first_surname])
+    ->filter()
+    ->map(fn($segment) => mb_strtoupper(mb_substr($segment, 0, 1)))
+    ->implode('');
 
-    $initials = collect([
-        $user->first_name,
-        $user->middle_name,
-        $user->first_surname,
-        $user->second_surname,
-    ])->filter()->map(function ($segment) {
-        return mb_strtoupper(mb_substr($segment, 0, 1));
-    })->implode('');
-
-    $avatarPath = $user->profile_photo_path;
-    $avatarUrl = null;
-    $avatarWarning = null;
-    $storageLinkMissing = !file_exists(public_path('storage'));
-
-    if ($avatarPath) {
-        try {
-            $publicStorage = \Illuminate\Support\Facades\Storage::disk('public');
-
-            if ($publicStorage->exists($avatarPath)) {
-                $version = $user->updated_at ? $user->updated_at->getTimestamp() : now()->getTimestamp();
-                $avatarUrl = $publicStorage->url($avatarPath) . '?v=' . $version;
-            } elseif (config('app.debug')) {
-                $avatarWarning = "Archivo no encontrado en storage. Revisa php artisan storage:link y permisos.";
-            }
-        } catch (\Throwable $exception) {
-            if (config('app.debug')) {
-                $avatarWarning = "No se puede acceder al disco público: " . $exception->getMessage();
-            }
-        }
-    }
+$avatarInitials = $avatarInitials !== '' ? $avatarInitials : 'U';
 @endphp
 
-@push('styles')
-    {{-- Unificamos versión con el modal --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
-
-    {{-- Estilos del recorte circular (Cropper siempre recorta cuadrado internamente, pero aquí se ve circular) --}}
-    <style>
-        #cropperStage .cropper-view-box,
-        #cropperStage .cropper-face,
-        #cropperStage .cropper-crop-box {
-            border-radius: 50%;
-        }
-
-        #cropperStage .cropper-dashed,
-        #cropperStage .cropper-point,
-        #cropperStage .cropper-line,
-        #cropperStage .cropper-center {
-            display: none !important;
-        }
-
-        #cropperStage .cropper-view-box {
-            outline: 2px solid rgba(255, 255, 255, 0.9);
-            outline-offset: -2px;
-        }
-
-        #cropperStage .cropper-modal {
-            background-color: rgba(0, 0, 0, 0.45) !important;
-            opacity: 1 !important;
-        }
-    </style>
-@endpush
-
-<section>
-    <div x-data='{
-        loading: false,
-        initial: @json($profileState),
-        current: @json($profileState),
-
-        avatarPreview: @json($avatarUrl ?? ""),
-        initialAvatar: @json($avatarUrl ?? ""),
-        avatarChanged: false,
-        avatarClientError: "",
-
-        cropOpen: false,
-        cropperImageSrc: "",
-        cropperObjectUrl: "",
-        cropper: null,
-
-        themeSaving: false,
-        themeStatus: "",
-
-        get hasChanges() {
-            const fieldsChanged = Object.keys(this.initial).some((key) => {
-                const initialValue = this.initial[key] ?? "";
-                const currentValue = this.current[key] ?? "";
-                return initialValue !== currentValue;
-            });
-
-            return fieldsChanged || this.avatarChanged;
-        },
-
-        handleAvatarChange(event) {
-            const file = event.target.files?.[0];
-            this.avatarClientError = "";
-
-            if (!file) return;
-
-            const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-            if (!allowedTypes.includes(file.type)) {
-                this.avatarClientError = "Solo JPG, PNG o WEBP (máx. 2 MB).";
-                this.resetAvatarInput(true);
-                return;
-            }
-
-            const maxSize = 2 * 1024 * 1024;
-            if (file.size > maxSize) {
-                this.avatarClientError = "El archivo excede el límite de 2 MB.";
-                this.resetAvatarInput(true);
-                return;
-            }
-
-            this.openCropper(file);
-        },
-
-        openCropper(file) {
-            if (!file) return;
-
-            this.closeCropper(false);
-            this.avatarClientError = "";
-
-            const objectUrl = URL.createObjectURL(file);
-            this.cropperImageSrc = objectUrl;
-            this.cropperObjectUrl = objectUrl;
-            this.cropOpen = true;
-
-            this.$nextTick(() => this.initCropper());
-        },
-
-        initCropper() {
-            const imageElement = document.getElementById("cropperImage");
-
-            if (!imageElement || !this.cropperImageSrc) {
-                this.avatarClientError = "No se pudo preparar el recorte.";
-                return;
-            }
-
-            this.destroyCropperInstance();
-
-            const initialize = () => {
-                this.cropper = new Cropper(imageElement, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-
-                    // CLAVE: el usuario mueve la caja de recorte (el “círculo”), no la imagen
-                    dragMode: "crop",
-                    cropBoxMovable: true,
-                    cropBoxResizable: false,
-
-                    // Tamaño inicial del recorte dentro del stage (similar a tu 78%)
-                    autoCropArea: 0.78,
-
-                    background: false,
-                    responsive: true,
-                    guides: false,
-                    center: false,
-                    highlight: false,
-
-                    movable: true,
-                    zoomable: true,
-                    rotatable: true,
-                    scalable: false,
-
-                    toggleDragModeOnDblclick: false,
-                });
-            };
-
-            if (imageElement.complete) {
-                initialize();
-            } else {
-                imageElement.onload = () => initialize();
-            }
-        },
-
-        zoomIn() {
-            if (!this.cropper) return;
-            this.cropper.zoom(0.08);
-        },
-
-        zoomOut() {
-            if (!this.cropper) return;
-            this.cropper.zoom(-0.08);
-        },
-
-        rotateLeft() {
-            if (!this.cropper) return;
-            this.cropper.rotate(-90);
-        },
-
-        resetCrop() {
-            if (!this.cropper) return;
-            this.cropper.reset();
-        },
-
-        async applyCrop() {
-            if (!this.cropper) {
-                this.avatarClientError = "No se pudo recortar la imagen.";
-                return;
-            }
-
-            try {
-                const size = 256;
-
-                // 1) Canvas base (cuadrado) desde Cropper
-                const squareCanvas = this.cropper.getCroppedCanvas({
-                    width: size,
-                    height: size,
-                    imageSmoothingEnabled: true,
-                    imageSmoothingQuality: "high",
-                });
-
-                if (!squareCanvas) throw new Error("canvas");
-
-                // 2) Canvas final circular REAL (con transparencia)
-                const out = document.createElement("canvas");
-                out.width = size;
-                out.height = size;
-
-                const ctx = out.getContext("2d");
-                ctx.clearRect(0, 0, size, size);
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.clip();
-
-                ctx.drawImage(squareCanvas, 0, 0);
-                ctx.restore();
-
-                const blob = await new Promise((resolve, reject) => {
-                    out.toBlob((result) => {
-                        if (!result) {
-                    reject(new Error("El recorte generó un archivo inválido."));
-                    return;
-                        }
-                        resolve(result);
-                    }, "image/webp", 0.9);
-                });
-
-                const file = new File([blob], "avatar.webp", { type: blob.type });
-                const dt = new DataTransfer();
-                dt.items.add(file);
-
-                const input = this.$refs.avatarInput;
-                if (input) {
-                    input.files = dt.files;
-                }
-
-                const previewUrl = URL.createObjectURL(blob);
-                this.setPreviewUrl(previewUrl);
-
-                this.avatarChanged = true;
-                this.avatarClientError = "";
-                this.closeCropper(false);
-            } catch (error) {
-                console.error("No se pudo generar la imagen recortada.", error);
-                this.avatarClientError = "No se pudo generar la imagen final.";
-            }
-        },
-
-        closeCropper(clearInput = true) {
-            this.destroyCropperInstance();
-
-            if (this.cropperObjectUrl) {
-                URL.revokeObjectURL(this.cropperObjectUrl);
-                this.cropperObjectUrl = "";
-            }
-
-            this.cropperImageSrc = "";
-            this.cropOpen = false;
-
-            if (clearInput) {
-                this.resetAvatarInput(true);
-            }
-        },
-
-        destroyCropperInstance() {
-            if (this.cropper) {
-                this.cropper.destroy();
-                this.cropper = null;
-            }
-        },
-
-        resetAvatarInput(clearValue = false) {
-            const avatarInput = this.$refs.avatarInput;
-            if (avatarInput && clearValue) {
-                avatarInput.value = "";
-            }
-        },
-
-        setPreviewUrl(url) {
-            if (this.avatarPreview && this.avatarPreview.startsWith("blob:")) {
-                URL.revokeObjectURL(this.avatarPreview);
-            }
-            this.avatarPreview = url;
-        },
-
-        applyTheme(theme) {
-            if (typeof window.applyProfileTheme === "function") {
-                window.applyProfileTheme(theme);
-            }
-        },
-
-        async persistTheme(event) {
-            const theme = event.target.value ?? this.current.theme;
-            this.current.theme = theme;
-            this.themeSaving = true;
-            this.themeStatus = "";
-
-            try {
-                const token = document.querySelector("meta[name=\"csrf-token\"]")?.getAttribute("content") ?? "";
-                const response = await fetch("{{ route('profile.theme.update') }}", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "X-CSRF-TOKEN": token,
-                    },
-                    body: JSON.stringify({ theme }),
-                });
-
-                if (!response.ok) {
-                    throw new Error("network");
-                }
-
-                const payload = await response.json();
-
-                if (payload.ok) {
-                    localStorage.setItem("theme", payload.theme);
-                    if (window.theme?.apply) {
-                        window.theme.apply(payload.theme);
-                    } else if (typeof window.applyProfileTheme === "function") {
-                        window.applyProfileTheme(payload.theme);
-                    }
-                    this.applyTheme(payload.theme);
-                    this.themeStatus = "Guardado";
-                } else {
-                    this.themeStatus = "Error";
-                }
-            } catch (error) {
-                this.themeStatus = "Error";
-            } finally {
-                this.themeSaving = false;
-                setTimeout(() => {
-                    this.themeStatus = "";
-                }, 2500);
-            }
-        },
-    }'>
-
-        <form id="send-verification" method="post" action="{{ route('verification.send') }}">@csrf</form>
-
-        <div class="max-w-5xl mx-auto space-y-6 md:space-y-8">
-            <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data"
-                class="space-y-6 md:space-y-8" @submit="loading = true">
-                @csrf
-                @method('patch')
-
-                @include('profile.partials.sections.basic-info')
-
-                @include('profile.partials.sections.preferences')
-
-                @include('profile.partials.sections.profile-actions')
-
-            </form>
+<x-ui.section-card title="Información básica"
+    subtitle="Actualiza los datos personales, tu foto y las preferencias que definen tu experiencia en el portal.">
+    <div class="space-y-6">
+
+        {{-- Avatar card (BLANCA) --}}
+        <div
+            class="flex flex-col gap-4 rounded-xl border border-[color:var(--border)] bg-white p-4 md:flex-row md:items-center md:gap-6">
+            <div class="shrink-0">
+                <div class="relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-[var(--border)] bg-white">
+                    <img x-show="avatarPreview" :src="avatarPreview" alt="Avatar" class="w-full h-full object-cover"
+                        style="display: none;" />
+                    <div x-show="!avatarPreview"
+                        class="w-full h-full flex items-center justify-center font-bold text-lg text-[var(--text)]">
+                        {{ $avatarInitials }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 space-y-2 min-w-0">
+                <h4 class="text-lg font-bold text-[var(--text)]">Avatar</h4>
+                <p class="text-sm text-[var(--text-muted)]">
+                    Personaliza tu cuenta con una foto institucional o profesional. Solo JPG, PNG o WEBP (máx. 2 MB).
+                </p>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <input id="avatar" name="avatar" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
+                        x-ref="avatarInput" @change="handleAvatarChange($event)">
+
+                    <label for="avatar"
+                        class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold bg-[var(--primary)] text-white hover:opacity-90 transition cursor-pointer">
+                        Cambiar foto
+                    </label>
+
+                    <span class="text-xs text-[var(--text-muted)] truncate"
+                        x-text="avatarChanged ? 'Imagen lista para guardar' : 'Sin cambios'"></span>
+                </div>
+
+                @error('avatar')
+                    <p class="text-xs text-red-600">{{ $message }}</p>
+                @enderror
+
+                <p x-cloak x-show="avatarClientError" x-text="avatarClientError" class="text-xs text-red-600"
+                    style="display: none;"></p>
+            </div>
         </div>
 
-        @include('profile.components.avatar-cropper-modal')
+        {{-- Nombres --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="first_name" class="block font-semibold theme-text text-base mb-2">Primer nombre</label>
+                <input id="first_name" name="first_name" type="text" x-model="current.first_name"
+                    autocomplete="given-name" required class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('first_name')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="middle_name" class="block font-semibold theme-text text-base mb-2">Segundo nombre</label>
+                <input id="middle_name" name="middle_name" type="text" x-model="current.middle_name"
+                    autocomplete="additional-name" class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('middle_name')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Warnings --}}
+        <div class="space-y-3">
+            @if ($avatarWarning)
+                <p class="text-sm text-red-600 border border-red-200 rounded-lg px-3 py-2 bg-red-50/60">
+                    {{ $avatarWarning }}
+                </p>
+            @endif
+            @if ($storageLinkMissing)
+                <p class="text-sm text-red-600 border border-red-200 rounded-lg px-3 py-2 bg-red-50/60">
+                    El enlace simbólico <code>public/storage</code> no existe. Ejecuta <code>php artisan storage:link</code>
+                    y verifica permisos.
+                </p>
+            @endif
+        </div>
+
+        {{-- Apellidos --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="first_surname" class="block font-semibold theme-text text-base mb-2">Primer apellido</label>
+                <input id="first_surname" name="first_surname" type="text" x-model="current.first_surname"
+                    autocomplete="family-name" required class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('first_surname')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="second_surname" class="block font-semibold theme-text text-base mb-2">Segundo
+                    apellido</label>
+                <input id="second_surname" name="second_surname" type="text" x-model="current.second_surname"
+                    autocomplete="family-name" class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('second_surname')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Género + Email --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="gender" class="block font-semibold theme-text text-base mb-2">Género</label>
+
+                <select id="gender" name="gender" x-model="current.gender" class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors appearance-none">
+                    <option value="">Sin especificar</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="O">Otro</option>
+                </select>
+
+                @error('gender')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="email" class="block font-semibold theme-text text-base mb-2">Correo institucional</label>
+                <input id="email" name="email" type="email" x-model="current.email" autocomplete="email" required class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" placeholder="correo@institucion.edu" />
+
+                @error('email')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+
+                {{-- bloque verificación queda igual --}}
+                @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
+                    <div class="mt-3 p-3 rounded-lg verification-warning-bg verification-warning-border">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-5 h-5 verification-warning-icon mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div class="flex-1 space-y-1">
+                                <p class="text-sm verification-warning-text">Tu dirección de correo no ha sido verificada.
+                                </p>
+                                <button type="button" form="send-verification" onclick="this.form.submit()"
+                                    class="text-sm font-medium verification-warning-link hover:underline transition-all">
+                                    Reenviar enlace de verificación
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Teléfonos --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="phone" class="block font-semibold theme-text text-base mb-2">Teléfono fijo</label>
+                <input id="phone" name="phone" type="text" x-model="current.phone" autocomplete="tel" inputmode="tel"
+                    class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('phone')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="mobile" class="block font-semibold theme-text text-base mb-2">Celular</label>
+                <input id="mobile" name="mobile" type="text" x-model="current.mobile" autocomplete="tel" inputmode="tel"
+                    class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('mobile')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="phone_extension" class="block font-semibold theme-text text-base mb-2">Extensión</label>
+                <input id="phone_extension" name="phone_extension" type="text" x-model="current.phone_extension"
+                    autocomplete="off" class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
+                           placeholder:text-[color:var(--muted)]
+                           focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
+                           transition-colors" />
+                @error('phone_extension')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
 
     </div>
-</section>
-
-@push('scripts')
-    @include('profile.partials.sections.profile-scripts')
-
-    {{-- Unificamos versión con el CSS del header --}}
-    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
-@endpush
+</x-ui.section-card>
