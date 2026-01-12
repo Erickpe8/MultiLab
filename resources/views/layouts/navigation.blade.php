@@ -146,20 +146,20 @@ $user = Auth::user();
             <p class="uppercase text-[10px] tracking-[0.15em] text-[var(--text)]/50 px-3 mb-2 font-bold">
                 Módulos
             </p>
-            <div
-                class="mx-3 px-3 py-3 rounded-lg text-xs italic
-                        bg-gradient-to-br from-[var(--border)]/10 to-transparent
-                        border border-[var(--border)]/30
-                        text-[var(--text)]/60">
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[var(--accent)]/50" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Próximamente más modulos…</span>
-                </div>
-            </div>
+
+            <x-nav-link :href="route('filament.dashboard.resources.loans.index')" :active="request()->routeIs('filament.dashboard.resources.loans.*')"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-200 group
+                    {{ request()->routeIs('filament.dashboard.resources.loans.*')
+    ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
+    : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                {{-- Prestamo icon --}}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                    {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
+                </svg>
+                <span>Préstamos</span>
+            </x-nav-link>
         </div>
     </div>
 
