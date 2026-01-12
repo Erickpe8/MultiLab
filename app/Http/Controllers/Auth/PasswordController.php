@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -40,6 +40,6 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ])->save();
 
-        return back()->with('status', 'password-updated');
+        return back()->with('success', 'Contraseña actualizada correctamente.');
     }
 }
