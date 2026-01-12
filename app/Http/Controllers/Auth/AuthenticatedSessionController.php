@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         $displayName = $user?->first_name ?: ($user?->name ?? 'usuario');
 
-        return redirect()->intended(route('dashboard'))
+        return redirect('/dashboard')
             ->with('notify', [
                 'type'    => 'success',
                 'message' => 'Bienvenido(a) a MultiLab, ' . $displayName . '.',
