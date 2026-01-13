@@ -270,7 +270,46 @@
 
                 this.avatarChanged = true;
                 this.avatarClientError = "";
-                this.closeCropper(false);
+
+                const formData = new FormData();
+                formData.append("avatar", file);
+                formData.append("_method", "PATCH");
+
+                try {
+                    const response = await fetch("{{ route('profile.avatar.update') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json",
+                        },
+                        body: formData,
+                    });
+
+                    const payload = await response.json().catch(() => ({}));
+
+                    if (!response.ok || !payload.ok) {
+                        throw payload;
+                    }
+
+                    const serverUrl = payload.profile_photo_url ?? previewUrl;
+                    this.setPreviewUrl(serverUrl);
+                    this.avatarChanged = false;
+                    this.avatarClientError = "";
+
+                    this.closeCropper(false);
+
+                    if (typeof window.showNotification === "function") {
+                        window.showNotification("Foto de perfil actualizada.", "success");
+                    }
+                } catch (error) {
+                    console.error("No se pudo subir el avatar recortado.", error);
+                    this.avatarClientError = "No se pudo actualizar la foto. Intenta de nuevo.";
+
+                    if (typeof window.showNotification === "function") {
+                        window.showNotification("No se pudo actualizar la foto.", "error");
+                    }
+                }
+
             } catch (error) {
                 console.error("No se pudo generar la imagen recortada.", error);
                 this.avatarClientError = "No se pudo generar la imagen final.";
@@ -383,6 +422,7 @@
                 @include('profile.partials.sections.profile-actions')
 
             </form>
+
         </div>
 
         @include('profile.components.avatar-cropper-modal')
