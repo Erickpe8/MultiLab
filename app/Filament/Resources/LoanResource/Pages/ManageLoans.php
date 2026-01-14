@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\LoanResource\Pages;
 
 use App\Filament\Resources\LoanResource;
+use App\Filament\Resources\Pages\AppManageRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
 
-class ManageLoans extends ManageRecords
+class ManageLoans extends AppManageRecords
 {
     protected static string $resource = LoanResource::class;
 

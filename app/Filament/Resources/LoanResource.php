@@ -7,13 +7,12 @@ use App\Filament\Resources\LoanResource\RelationManagers;
 use App\Models\Loan;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LoanResource extends Resource
+class LoanResource extends AppResource
 {
     protected static ?string $model = Loan::class;
 
