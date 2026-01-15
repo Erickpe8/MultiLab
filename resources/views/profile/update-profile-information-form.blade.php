@@ -9,103 +9,128 @@
         'phone' => old('phone', $user->phone),
         'mobile' => old('mobile', $user->mobile),
         'phone_extension' => old('phone_extension', $user->phone_extension),
+
         'notify_email' => (bool) old('notify_email', $user->notify_email ?? true),
         'notify_in_app' => (bool) old('notify_in_app', $user->notify_in_app ?? true),
         'digest_frequency' => old('digest_frequency', $user->digest_frequency ?? 'weekly'),
+
         'theme' => old('theme', $user->theme ?? 'system'),
         'compact_mode' => (bool) old('compact_mode', $user->compact_mode ?? false),
     ];
 @endphp
 
-<section>
-    <div x-data='{
-        loading: false,
-        initial: @json($profileState),
-        current: @json($profileState),
+<section class="theme-text">
+    <div x-data="{
+            loading: false,
 
-        themeSaving: false,
-        themeStatus: "",
+            initial: @js($profileState),
+            current: @js($profileState),
 
-        get hasChanges() {
-            const fieldsChanged = Object.keys(this.initial).some((key) => {
-                const initialValue = this.initial[key] ?? "";
-                const currentValue = this.current[key] ?? "";
-                return initialValue !== currentValue;
-            });
+            themeSaving: false,
+            themeStatus: '',
 
-            return fieldsChanged;
-        },
-
-        applyTheme(theme) {
-            if (typeof window.applyProfileTheme === "function") {
-                window.applyProfileTheme(theme);
-            }
-        },
-
-        async persistTheme(event) {
-            const theme = event.target.value ?? this.current.theme;
-            this.current.theme = theme;
-            this.themeSaving = true;
-            this.themeStatus = "";
-
-            try {
-                const token = document.querySelector("meta[name=\"csrf-token\"]")?.getAttribute("content") ?? "";
-                const response = await fetch("{{ route('profile.theme.update') }}", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "X-CSRF-TOKEN": token,
-                    },
-                    body: JSON.stringify({ theme }),
+            get hasChanges() {
+                return Object.keys(this.initial).some((key) => {
+                    const initialValue = this.initial[key] ?? '';
+                    const currentValue = this.current[key] ?? '';
+                    return initialValue !== currentValue;
                 });
+            },
 
-                if (!response.ok) {
-                    throw new Error("network");
-                }
+            initThemeListener() {
+                // 1) Normaliza y aplica el tema inicial (fuente de verdad: window.theme.current() o current.theme)
+                const initial = (window.theme?.normalize?.(window.theme?.current?.() ?? this.current.theme)) ?? this.current.theme;
+                this.current.theme = initial;
+                window.theme?.apply?.(initial);
 
-                const payload = await response.json();
+                // 2) Mantiene sincronizado cuando otro componente (toggle) cambia el tema
+                this.__themeChangedHandler = (event) => {
+                    const incoming = window.theme?.normalize?.(event?.detail?.theme ?? window.theme?.current?.());
+                    if (!incoming) return;
 
-                if (payload.ok) {
-                    localStorage.setItem("theme", payload.theme);
-                    if (window.theme?.apply) {
-                        window.theme.apply(payload.theme);
-                    } else if (typeof window.applyProfileTheme === "function") {
-                        window.applyProfileTheme(payload.theme);
+                    if (incoming !== this.current.theme) {
+                        this.current.theme = incoming;
                     }
-                    this.applyTheme(payload.theme);
-                    this.themeStatus = "Guardado";
-                } else {
-                    this.themeStatus = "Error";
-                }
-            } catch (error) {
-                this.themeStatus = "Error";
-            } finally {
-                this.themeSaving = false;
-                setTimeout(() => {
-                    this.themeStatus = "";
-                }, 2500);
-            }
-        },
-    }'>
+                };
 
-        <form id="send-verification" method="post" action="{{ route('verification.send') }}">@csrf</form>
+                window.addEventListener('theme:changed', this.__themeChangedHandler);
+            },
+
+            setThemeFromSelect() {
+                const next = window.theme?.normalize?.(this.current.theme) ?? this.current.theme;
+                this.current.theme = next;
+
+                // Aplica inmediato en UI
+                window.theme?.apply?.(next);
+
+                // Persiste (DB si existe; si no, local)
+                this.persistTheme(next);
+            },
+
+            async persistTheme(themeValue = null) {
+                const nextTheme = window.theme?.normalize?.(themeValue ?? this.current.theme) ?? (themeValue ?? this.current.theme);
+
+                // Si no existe persist (por lo que sea), se queda en local (apply ya guardó localStorage)
+                if (typeof window.theme?.persist !== 'function') {
+                    this.themeStatus = 'Guardado (local)';
+                    setTimeout(() => (this.themeStatus = ''), 2500);
+                    return;
+                }
+
+                this.themeSaving = true;
+                this.themeStatus = '';
+
+                let result;
+                try {
+                    result = await window.theme.persist(nextTheme);
+                } catch (error) {
+                    result = {
+                        ok: false,
+                        theme: nextTheme,
+                        persisted: 'local',
+                        error: error?.message ?? 'unknown',
+                    };
+                } finally {
+                    this.themeSaving = false;
+                }
+
+                if (result?.ok) {
+                    const saved = window.theme?.normalize?.(result.theme) ?? result.theme;
+                    this.current.theme = saved;
+                    window.theme?.apply?.(saved);
+
+                    // Notifica al resto de la app (toggle/otros)
+                    window.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: saved } }));
+
+                    this.themeStatus = result.persisted === 'db' ? 'Guardado' : 'Guardado (local)';
+                } else {
+                    // Si falló backend, igual aplicamos local para que no se sienta roto
+                    window.theme?.apply?.(nextTheme);
+                    window.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: nextTheme } }));
+                    this.themeStatus = 'Error';
+                }
+
+                setTimeout(() => (this.themeStatus = ''), 2500);
+            },
+        }" x-init="initThemeListener()">
+        <form id="send-verification" method="post" action="{{ route('verification.send') }}">
+            @csrf
+        </form>
 
         <div class="max-w-5xl mx-auto space-y-6 md:space-y-8">
-            <form method="post" action="{{ route('profile.update') }}"
-                class="space-y-6 md:space-y-8" @submit="loading = true">
+            <form method="post" action="{{ route('profile.update') }}" class="space-y-6 md:space-y-8"
+                @submit="loading = true">
                 @csrf
                 @method('patch')
 
                 @include('profile.partials.sections.basic-info')
 
+                {{-- IMPORTANTE: en el select de Tema, usa x-model="current.theme" y @change="setThemeFromSelect()" --}}
                 @include('profile.partials.sections.preferences')
 
                 @include('profile.partials.sections.profile-actions')
-
             </form>
         </div>
-
     </div>
 </section>
 

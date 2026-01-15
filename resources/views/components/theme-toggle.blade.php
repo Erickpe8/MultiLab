@@ -1,4 +1,4 @@
-@props([
+﻿@props([
     'id' => 'theme-toggle',
     'size' => 'md',
     'label' => 'Cambiar tema',
@@ -15,7 +15,7 @@
 <label class="theme-toggle-wrapper relative inline-flex items-center cursor-pointer select-none group"
     aria-label="{{ $label }}" data-size="{{ $size }}">
     {{-- input controlador (peer) --}}
-    <input id="{{ $id }}-input" type="checkbox" class="sr-only" aria-label="{{ $label }}">
+    <input id="{{ $id }}-input" data-theme-toggle type="checkbox" class="sr-only" aria-label="{{ $label }}">
 
     {{-- pista (track) --}}
     <span
@@ -24,7 +24,7 @@
                  shadow-md hover:shadow-xl
                  ring-2 ring-transparent group-hover:ring-[var(--accent)]/30
                  group-focus-visible:ring-[var(--accent)]">
-        {{-- Ícono luna (izq) -> solo DARK --}}
+        {{-- icono luna (izq) -> solo DARK --}}
         <span
             class="icon-moon absolute left-1.5 inline-flex items-center justify-center {{ $sz['icon'] }}
                      opacity-0 transition-all duration-300">
@@ -34,7 +34,7 @@
             </svg>
         </span>
 
-        {{-- Ícono sol (der) -> solo LIGHT --}}
+        {{-- icono sol (der) -> solo LIGHT --}}
         <span
             class="icon-sun absolute right-1.5 inline-flex items-center justify-center {{ $sz['icon'] }}
                      opacity-100 transition-all duration-300">
@@ -105,7 +105,7 @@
             transform: translateX(2.25rem) scale(1.05);
         }
 
-        /* === CONMUTACIÓN DE ICONOS === */
+        /* === CONMUTACIoN DE ICONOS === */
         label>input:checked+.track .icon-sun {
             opacity: 0;
             transform: scale(0.8) rotate(-90deg);
@@ -162,7 +162,7 @@
             }
         }
 
-        /* Animación sutil al cambiar */
+        /* AnimaciÃ³n sutil al cambiar */
         label>input+.track {
             animation: none;
         }
@@ -171,43 +171,5 @@
             animation: tilt 0.3s ease-in-out;
         }
     </style>
-
-    <script>
-        (function() {
-            function applyTheme(theme) {
-                document.documentElement.dataset.theme = theme;
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-                localStorage.setItem('theme', theme);
-
-                // Sincronizar todos los toggles
-                document.querySelectorAll('[id$="-input"][id*="theme-toggle"]').forEach(inp => {
-                    if (inp) inp.checked = (theme === 'dark');
-                });
-            }
-
-            function currentTheme() {
-                return localStorage.getItem('theme') || 'light';
-            }
-
-            window.theme = {
-                apply: applyTheme,
-                toggle: () => applyTheme(currentTheme() === 'dark' ? 'light' : 'dark'),
-                init: () => applyTheme(currentTheme())
-            };
-
-            // Inicialización inmediata
-            window.theme.init();
-
-            // Delegación de eventos
-            document.addEventListener('change', (e) => {
-                if (e.target &&
-                    e.target.id &&
-                    e.target.id.includes('theme-toggle') &&
-                    e.target.type === 'checkbox') {
-                    window.theme.apply(e.target.checked ? 'dark' : 'light');
-                }
-            }, true);
-        })
-        ();
-    </script>
 @endonce
+

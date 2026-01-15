@@ -53,7 +53,7 @@
                 <label for="theme" class="block font-semibold theme-text text-sm mb-2">
                     Tema
                 </label>
-                <select id="theme" name="theme" x-model="current.theme" @change="persistTheme($event)"
+                <select id="theme" name="theme" x-model="current.theme" @change="setThemeFromSelect()"
                     class="block w-full rounded-lg border theme-bd bg-[var(--bg)] px-4 py-3 theme-text focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all">
                     <option value="system">Predeterminado (sistema)</option>
                     <option value="light">Claro</option>

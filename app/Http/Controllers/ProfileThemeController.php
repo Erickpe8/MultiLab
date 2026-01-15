@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class ProfileThemeController extends Controller
@@ -17,26 +18,27 @@ class ProfileThemeController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        if (! $request->isJson()) {
-            return response()->json([
-                'message' => 'Se requiere un cuerpo JSON válido.',
-            ], 415);
-        }
-
         $data = $request->validate([
             'theme' => ['required', 'string', Rule::in(self::ALLOWED_THEMES)],
         ]);
 
         /** @var \App\Models\User $user */
         $user = $request->user();
+        $theme = $data['theme'];
+        $persisted = 'local';
 
-        $user->forceFill([
-            'theme' => $data['theme'],
-        ])->save();
+        if (Schema::hasColumn($user->getTable(), 'theme')) {
+            $user->forceFill(['theme' => $theme])->save();
+            $persisted = 'db';
+        }
+
+        $applied = $theme === 'system' ? 'system' : $theme;
 
         return response()->json([
             'ok' => true,
-            'theme' => $user->theme,
+            'theme' => $theme,
+            'applied' => $applied,
+            'persisted' => $persisted,
         ]);
     }
 }
