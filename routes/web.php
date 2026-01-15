@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LegalController;
+use App\Modules\Profile\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ProfileThemeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +16,22 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// Laravel Boost sends GET requests from the browser logger; allow a no-op response to avoid MethodNotAllowed.
+Route::get('/_boost/browser-logs', fn () => response('', 204));
+
 /*
 |--------------------------------------------------------------------------
 | Legal Routes (Públicas)
 |--------------------------------------------------------------------------
 */
-    Route::prefix('legal')->name('legal.')->group(function () {
+Route::prefix('legal')->name('legal.')->group(function () {
     Route::view('/terms', 'legal.terms')->name('terms');
     Route::view('/privacy', 'legal.privacy')->name('privacy');
+    Route::view('/data-protection', 'legal.data-protection')->name('data-protection');
 });
 
 /*
@@ -32,13 +40,17 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // Profile
+    // Profile (vista + datos básicos)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Theme
+    Route::patch('/profile/theme', [ProfileThemeController::class, 'update'])->name('profile.theme.update');
+
     // Password
     Route::post('/password/verify', [PasswordController::class, 'verify'])->name('password.verify');
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 });
 

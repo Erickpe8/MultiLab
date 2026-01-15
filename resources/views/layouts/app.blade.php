@@ -16,10 +16,181 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <script>
-        (function() {
-            const saved = localStorage.getItem('theme') || 'light';
-            document.documentElement.dataset.theme = saved;
-            document.documentElement.classList.toggle('dark', saved === 'dark');
+        (function () {
+            const route = "{{ route('profile.theme.update') }}";
+            const allowedThemes = ['system', 'light', 'dark'];
+            const prefersDark = typeof window.matchMedia === 'function'
+                ? window.matchMedia('(prefers-color-scheme: dark)')
+                : {
+                    matches: false,
+                    addEventListener: null,
+                    addListener: null,
+                };
+            let currentTheme = 'system';
+
+            const normalize = (value) => {
+                if (typeof value !== 'string') {
+                    return 'system';
+                }
+                const lower = value.toLowerCase();
+                return allowedThemes.includes(lower) ? lower : 'system';
+            };
+
+            const resolvedApplied = (theme) => {
+                const normalized = normalize(theme);
+                if (normalized === 'dark') return 'dark';
+                if (normalized === 'light') return 'light';
+                return prefersDark.matches ? 'dark' : 'light';
+            };
+
+            const syncToggles = (applied) => {
+                document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
+                    if (toggle instanceof HTMLInputElement) {
+                        const shouldBeChecked = applied === 'dark';
+                        if (toggle.checked !== shouldBeChecked) {
+                            toggle.checked = shouldBeChecked;
+                        }
+                    }
+                });
+            };
+
+            const dispatchChange = (theme, applied) => {
+                window.dispatchEvent(new CustomEvent('theme:changed', {
+                    detail: { theme, applied },
+                }));
+            };
+
+            const applyTheme = (theme) => {
+                const normalized = normalize(theme);
+                const applied = resolvedApplied(normalized);
+                currentTheme = normalized;
+                document.documentElement.dataset.theme = normalized;
+                document.documentElement.classList.toggle('dark', applied === 'dark');
+                syncToggles(applied);
+                try {
+                    localStorage.setItem('theme', normalized);
+                } catch (_error) {
+                    // Silently ignore storage errors.
+                }
+                dispatchChange(normalized, applied);
+                return { theme: normalized, applied };
+            };
+
+            const persistedMode = (value) => (value === 'db' ? 'db' : 'local');
+
+            const persistTheme = async (themeValue) => {
+                const normalized = normalize(themeValue);
+                if (!route) {
+                    return {
+                        ok: false,
+                        theme: normalized,
+                        applied: resolvedApplied(normalized),
+                        persisted: 'local',
+                    };
+                }
+
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                };
+
+                if (token) {
+                    headers['X-CSRF-TOKEN'] = token;
+                }
+
+                let payload = {
+                    ok: false,
+                    theme: normalized,
+                    applied: resolvedApplied(normalized),
+                    persisted: 'local',
+                };
+
+                try {
+                    const response = await fetch(route, {
+                        method: 'PATCH',
+                        headers,
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ theme: normalized }),
+                    });
+
+                    const data = await response.json().catch(() => null);
+
+                    if (response.ok && data?.ok) {
+                        const serverTheme = normalize(data.theme ?? normalized);
+                        const applied = typeof data.applied === 'string'
+                            ? data.applied
+                            : resolvedApplied(serverTheme);
+                        payload = {
+                            ok: true,
+                            theme: serverTheme,
+                            applied,
+                            persisted: persistedMode(data.persisted),
+                        };
+                        applyTheme(serverTheme);
+                    } else {
+                        payload = {
+                            ...payload,
+                            error: data?.message ?? 'No se pudo guardar el tema.',
+                        };
+                    }
+                } catch (error) {
+                    payload = {
+                        ...payload,
+                        error: error?.message ?? 'Error de conexión.',
+                    };
+                }
+
+                return payload;
+            };
+
+            const setTheme = (themeValue, options = { persist: true }) => {
+                const result = applyTheme(themeValue);
+                if (options.persist) {
+                    persistTheme(result.theme);
+                }
+                return result;
+            };
+
+            const toggleTheme = () => {
+                const applied = resolvedApplied(currentTheme);
+                const next = applied === 'dark' ? 'light' : 'dark';
+                return setTheme(next);
+            };
+
+            const handleSystemChange = () => {
+                if (currentTheme === 'system') {
+                    applyTheme('system');
+                }
+            };
+
+            if (typeof prefersDark.addEventListener === 'function') {
+                prefersDark.addEventListener('change', handleSystemChange);
+            } else if (typeof prefersDark.addListener === 'function') {
+                prefersDark.addListener(handleSystemChange);
+            }
+
+            document.addEventListener('change', (event) => {
+                const target = event.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (target.matches('[data-theme-toggle]') && target instanceof HTMLInputElement) {
+                    setTheme(target.checked ? 'dark' : 'light');
+                }
+            });
+
+            const stored = normalize(localStorage.getItem('theme'));
+
+            window.theme = {
+                normalize,
+                apply: applyTheme,
+                persist: persistTheme,
+                set: setTheme,
+                toggle: toggleTheme,
+                current: () => currentTheme,
+            };
+
+            applyTheme(stored);
         })();
     </script>
 
@@ -87,14 +258,14 @@
     <!-- Sistema de notificaciones global -->
     <script>
         // Función global para mostrar notificaciones
-        window.showNotification = function(message, type = 'info') {
+        window.showNotification = function (message, type = 'info') {
             const notify = document.getElementById('notify');
             const notifyMessage = document.getElementById('notify-message');
             const notifyIcon = document.getElementById('notify-icon');
             const notifyCard = document.getElementById('notify-card');
             const notifyIconWrap = document.getElementById('notify-icon-wrap');
 
-            if (!notify || !notifyMessage) return;
+            if (!notify || !notifyMessage || !notifyCard || !notifyIconWrap || !notifyIcon) return;
 
             // Configurar colores e iconos según el tipo
             const configs = {
@@ -126,17 +297,20 @@
 
             const config = configs[type] || configs.info;
 
-            // Limpiar clases anteriores
-            notifyCard.className = notifyCard.className.replace(/border-l-\w+-\d+/g, '');
-            notifyIconWrap.className = notifyIconWrap.className.replace(/bg-\w+-\d+\/?\d*/g, '');
-            notifyIcon.className = notifyIcon.className.replace(/text-\w+-\d+/g, '');
-
-            // Aplicar nuevas clases
+            // ✅ FIX: Nada de className.replace (revienta con SVG).
+            // Limpiar clases de borde (en el card)
+            notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
             notifyCard.classList.add(config.border);
-            notifyIconWrap.className = `inline-flex items-center justify-center w-9 h-9 rounded-full ${config.iconBg}`;
-            notifyIcon.className = `w-10 h-10 ${config.iconColor}`;
 
-            // Cambiar el ícono
+            // Aplicar clases al wrapper del ícono
+            notifyIconWrap.className = 'inline-flex items-center justify-center w-9 h-9 rounded-full';
+            config.iconBg.split(' ').forEach(cls => notifyIconWrap.classList.add(cls));
+
+            // Aplicar clases al SVG ícono (classList funciona con SVG)
+            notifyIcon.className = 'w-10 h-10';
+            config.iconColor.split(' ').forEach(cls => notifyIcon.classList.add(cls));
+
+            // Cambiar el ícono (paths dentro del svg)
             notifyIcon.innerHTML = config.icon;
 
             // Mostrar mensaje
@@ -144,7 +318,8 @@
             notify.classList.remove('hidden', '-translate-y-2', 'opacity-0');
 
             // Auto-cerrar después de 5 segundos
-            setTimeout(() => {
+            clearTimeout(window.__notifyTimer);
+            window.__notifyTimer = setTimeout(() => {
                 notify.classList.add('-translate-y-2', 'opacity-0');
                 setTimeout(() => notify.classList.add('hidden'), 300);
             }, 5000);

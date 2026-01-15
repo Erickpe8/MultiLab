@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-
 class UserSeeder extends Seeder
 {
     private const PASSWORD = 'Password123*';
@@ -93,7 +91,7 @@ class UserSeeder extends Seeder
                 array_merge(
                     $definition['attributes'],
                     [
-                        'password'  => Hash::make(self::PASSWORD),
+                        'password'  => self::PASSWORD,
                         'is_active' => true,
                     ]
                 )

@@ -15,15 +15,26 @@ class PasswordController extends Controller
     public function verify(Request $request)
     {
         $request->validate([
-            'current_password' => ['required', 'string']
+            'current_password' => ['required', 'string'],
         ]);
 
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Unauthenticated',
+            ], 401);
+        }
+
         $isValid = Hash::check(
-            $request->current_password,
-            $request->user()->password
+            $request->input('current_password'),
+            $user->password
         );
 
-        return response()->json(['valid' => $isValid]);
+        return response()->json([
+            'valid' => $isValid,
+        ]);
     }
 
     /**
@@ -40,6 +51,6 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ])->save();
 
-        return back()->with('status', 'password-updated');
+        return back()->with('success', 'Contraseña actualizada correctamente.');
     }
 }

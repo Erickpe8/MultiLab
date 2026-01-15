@@ -31,6 +31,7 @@ class User extends Authenticatable
         // Datos base
         'email',
         'password',
+        'profile_photo_path',
 
         // Campos institucionales opcionales
         'gender',

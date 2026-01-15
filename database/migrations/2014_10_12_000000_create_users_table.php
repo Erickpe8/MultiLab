@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('gender', 10)->nullable();  // 'M', 'F', 'Otro' / 'No especifica'
 
             $table->string('email')->unique();         // Correo institucional (o principal)
+            $table->string('profile_photo_path')->nullable(); // Avatar 
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
