@@ -16,7 +16,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <script>
-        (function() {
+        (function () {
             const saved = localStorage.getItem('theme') || 'light';
             document.documentElement.dataset.theme = saved;
             document.documentElement.classList.toggle('dark', saved === 'dark');
@@ -84,14 +84,14 @@
     <!-- Sistema de notificaciones global -->
     <script>
         // Función global para mostrar notificaciones
-        window.showNotification = function(message, type = 'info') {
+        window.showNotification = function (message, type = 'info') {
             const notify = document.getElementById('notify');
             const notifyMessage = document.getElementById('notify-message');
             const notifyIcon = document.getElementById('notify-icon');
             const notifyCard = document.getElementById('notify-card');
             const notifyIconWrap = document.getElementById('notify-icon-wrap');
 
-            if (!notify || !notifyMessage) return;
+            if (!notify || !notifyMessage || !notifyCard || !notifyIconWrap || !notifyIcon) return;
 
             // Configurar colores e iconos según el tipo
             const configs = {
@@ -123,17 +123,20 @@
 
             const config = configs[type] || configs.info;
 
-            // Limpiar clases anteriores
-            notifyCard.className = notifyCard.className.replace(/border-l-\w+-\d+/g, '');
-            notifyIconWrap.className = notifyIconWrap.className.replace(/bg-\w+-\d+\/?\d*/g, '');
-            notifyIcon.className = notifyIcon.className.replace(/text-\w+-\d+/g, '');
-
-            // Aplicar nuevas clases
+            // ✅ FIX: Nada de className.replace (revienta con SVG).
+            // Limpiar clases de borde (en el card)
+            notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
             notifyCard.classList.add(config.border);
-            notifyIconWrap.className = `inline-flex items-center justify-center w-9 h-9 rounded-full ${config.iconBg}`;
-            notifyIcon.className = `w-10 h-10 ${config.iconColor}`;
 
-            // Cambiar el ícono
+            // Aplicar clases al wrapper del ícono
+            notifyIconWrap.className = 'inline-flex items-center justify-center w-9 h-9 rounded-full';
+            config.iconBg.split(' ').forEach(cls => notifyIconWrap.classList.add(cls));
+
+            // Aplicar clases al SVG ícono (classList funciona con SVG)
+            notifyIcon.className = 'w-10 h-10';
+            config.iconColor.split(' ').forEach(cls => notifyIcon.classList.add(cls));
+
+            // Cambiar el ícono (paths dentro del svg)
             notifyIcon.innerHTML = config.icon;
 
             // Mostrar mensaje
@@ -141,7 +144,8 @@
             notify.classList.remove('hidden', '-translate-y-2', 'opacity-0');
 
             // Auto-cerrar después de 5 segundos
-            setTimeout(() => {
+            clearTimeout(window.__notifyTimer);
+            window.__notifyTimer = setTimeout(() => {
                 notify.classList.add('-translate-y-2', 'opacity-0');
                 setTimeout(() => notify.classList.add('hidden'), 300);
             }, 5000);

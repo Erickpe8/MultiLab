@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
 class UserTestSeeder extends Seeder
 {
     public function run(): void
@@ -21,7 +19,7 @@ class UserTestSeeder extends Seeder
             'second_surname' => 'Software',
 
             'email'          => 'superadmin@multilab.test',
-            'password'       => Hash::make('password123'),
+            'password'       => 'password123',
 
             'document_type'  => null,
             'document_number'=> null,
@@ -42,7 +40,7 @@ class UserTestSeeder extends Seeder
             'second_surname' => null,
 
             'email'          => 'auxiliar@multilab.test',
-            'password'       => Hash::make('password123'),
+            'password'       => 'password123',
 
             'document_type'  => null,
             'document_number'=> null,
@@ -63,7 +61,7 @@ class UserTestSeeder extends Seeder
             'second_surname' => null,
 
             'email'          => 'docente@multilab.test',
-            'password'       => Hash::make('password123'),
+            'password'       => 'password123',
 
             'document_type'  => null,
             'document_number'=> null,
@@ -84,7 +82,7 @@ class UserTestSeeder extends Seeder
             'second_surname' => null,
 
             'email'          => 'estudiante@multilab.test',
-            'password'       => Hash::make('password123'),
+            'password'       => 'password123',
 
             'document_type'  => null,
             'document_number'=> null,
