@@ -25,4 +25,15 @@ class ProfileAvatarUpdateRequest extends FormRequest
             'avatar' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'avatar.required' => 'Selecciona una imagen para el avatar.',
+            'avatar.file' => 'El avatar debe ser un archivo válido.',
+            'avatar.image' => 'El avatar debe ser una imagen.',
+            'avatar.mimes' => 'El avatar solo puede ser JPG, JPEG, PNG o WEBP.',
+            'avatar.max' => 'El avatar no puede superar 2 MB.',
+        ];
+    }
 }

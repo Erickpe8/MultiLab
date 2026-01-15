@@ -1,10 +1,10 @@
 @php
-$avatarInitials = collect([$user->first_name, $user->first_surname])
-    ->filter()
-    ->map(fn($segment) => mb_strtoupper(mb_substr($segment, 0, 1)))
-    ->implode('');
+    $avatarInitials = collect([$user->first_name, $user->first_surname])
+        ->filter()
+        ->map(fn($segment) => mb_strtoupper(mb_substr($segment, 0, 1)))
+        ->implode('');
 
-$avatarInitials = $avatarInitials !== '' ? $avatarInitials : 'U';
+    $avatarInitials = $avatarInitials !== '' ? $avatarInitials : 'U';
 @endphp
 
 <x-ui.section-card title="Información básica"

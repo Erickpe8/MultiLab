@@ -10,9 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -52,9 +52,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('success', 'Perfil actualizado correctamente.');
     }
 
-    /**
-     * Update only the user's avatar.
-     */
     public function updateAvatar(ProfileAvatarUpdateRequest $request): RedirectResponse|JsonResponse
     {
         $user = auth()->user();
@@ -63,47 +60,20 @@ class ProfileController extends Controller
 
         if (! $avatarFile) {
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se recibió ninguna imagen.',
-                ], 422);
+                return response()->json(['ok' => false], 422);
             }
 
             return Redirect::route('profile.edit');
         }
 
-        try {
-            $path = $this->storeAvatarFile($avatarFile, $previousPhoto, $user->getKey());
-        } catch (ValidationException $exception) {
-            throw $exception;
-        } catch (\Throwable $exception) {
-            Log::error('Error updateAvatar', [
-                'user_id' => $user->getKey(),
-                'error' => $exception->getMessage(),
-            ]);
-
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se pudo guardar la foto de perfil. Intenta de nuevo más tarde.',
-                ], 500);
-            }
-
-            throw $exception;
-        }
-
-        $user->forceFill([
-            'profile_photo_path' => $path,
-        ])->save();
-
-        $payload = [
-            'success' => true,
-            'path' => $path,
-            'url' => Storage::disk('public')->url($path),
-        ];
+        $user->profile_photo_path = $this->storeAvatarFile($avatarFile, $previousPhoto, $user->getKey());
+        $user->save();
 
         if ($request->wantsJson()) {
-            return response()->json($payload);
+            return response()->json([
+                'ok' => true,
+                'profile_photo_url' => Storage::disk('public')->url($path),
+            ]);
         }
 
         return Redirect::route('profile.edit')->with('success', 'Foto de perfil actualizada correctamente.');
@@ -124,8 +94,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        // FIX: cubre false / null / vacío
-        if (! $path) {
+        if ($path === false) {
             throw ValidationException::withMessages([
                 'avatar' => 'No se pudo procesar la imagen.',
             ]);

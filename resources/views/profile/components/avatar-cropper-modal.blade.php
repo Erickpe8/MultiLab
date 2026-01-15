@@ -1,3 +1,7 @@
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+@endpush
+
 <!-- Overlay -->
 <div x-cloak x-show="cropOpen" x-transition.opacity class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm"
     @click="closeCropper()" aria-hidden="true"></div>
@@ -100,3 +104,7 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+@endpush
