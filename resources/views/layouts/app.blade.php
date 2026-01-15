@@ -9,7 +9,13 @@
     <!-- Título y Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/ICONFESC.png?v=2') }}">
     <link rel="shortcut icon" href="{{ asset('images/ICONFESC.png?v=2') }}" type="image/png">
-    <title>{{ config('app.name', 'MultiLab') }}</title>
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ config('app.name', 'MultiLab') }}
+        @else
+            {{ config('app.name', 'MultiLab') }}
+        @endif
+    </title>
 
     <!-- Tipografías -->
     <link rel="preconnect" href="https://fonts.bunny.net">

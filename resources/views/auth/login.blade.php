@@ -1,4 +1,4 @@
-@section('title', 'Iniciar sesión')
+@section('title', 'Login')
 
 <x-guest-layout>
     @if (session('status'))

@@ -1,6 +1,6 @@
 @extends('legal.layout')
 
-@section('title', 'Política de privacidad')
+@section('title', 'Privacidad de Datos')
 
 @php
     $backRoute = auth()->check()

@@ -1,6 +1,6 @@
 @extends('legal.layout')
 
-@section('title', 'Términos y condiciones')
+@section('title', 'Términos y Condiciones')
 
 @php
     $backRoute = auth()->check()
