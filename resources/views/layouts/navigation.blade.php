@@ -8,7 +8,7 @@
     <div
         class="h-16 px-4 flex items-center justify-between border-b border-[var(--border)]
                 bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
-        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 group">
+        <a href="{{ url('/dashboard') }}" class="inline-flex items-center gap-2 group">
             <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC"
                 class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
@@ -44,16 +44,16 @@ $user = Auth::user();
                 Principal
             </p>
 
-            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+            <x-nav-link :href="url('/dashboard')" :active="request()->is('dashboard')"
                 class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     transition-all duration-200 group
-                    {{ request()->routeIs('dashboard')
+                    {{ request()->is('dashboard')
     ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                 {{-- Home icon --}}
                 <svg xmlns="http://www.w3.org/2000/svg"
                     class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                            {{ request()->routeIs('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}"
+                            {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -146,20 +146,20 @@ $user = Auth::user();
             <p class="uppercase text-[10px] tracking-[0.15em] text-[var(--text)]/50 px-3 mb-2 font-bold">
                 Módulos
             </p>
-            <div
-                class="mx-3 px-3 py-3 rounded-lg text-xs italic
-                        bg-gradient-to-br from-[var(--border)]/10 to-transparent
-                        border border-[var(--border)]/30
-                        text-[var(--text)]/60">
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[var(--accent)]/50" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Próximamente más modulos…</span>
-                </div>
-            </div>
+
+            <x-nav-link :href="route('filament.dashboard.resources.loans.index')" :active="request()->routeIs('filament.dashboard.resources.loans.*')"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-200 group
+                    {{ request()->routeIs('filament.dashboard.resources.loans.*')
+    ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
+    : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                {{-- Prestamo icon --}}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                    {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
+                </svg>
+                <span>Préstamos</span>
+            </x-nav-link>
         </div>
     </div>
 

@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Modules\Profile\Http\Controllers\ProfileController;
-use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileThemeController;
@@ -51,9 +50,7 @@ Route::middleware('auth')->group(function () {
 
     // Password
     Route::post('/password/verify', [PasswordController::class, 'verify'])->name('password.verify');
-
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 });
 

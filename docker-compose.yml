@@ -24,6 +24,7 @@ services:
             -   app-network
 
     app:
+        user: "${UID:-1000}:${GID:-1000}"
         build: .
         container_name: multilab-laravel
         working_dir: /var/www

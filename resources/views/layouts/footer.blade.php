@@ -5,7 +5,7 @@
             {{-- Logo --}}
             <div class="flex items-center gap-2">
                 <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-7 w-auto" />
-                <span class="font-bold text-[var(--text)] text-sm">Mutilab</span>
+                <span class="font-bold text-[var(--text)] text-sm">MultiLab</span>
             </div>
 
             {{-- Links --}}
@@ -13,31 +13,30 @@
 
                 {{-- Legal --}}
                 <div class="flex items-center gap-3">
-                    <span
-                        class="hidden sm:inline text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                    <span class="hidden sm:inline text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                         Legal
                     </span>
 
                     <a href="{{ route('legal.terms') }}" @guest target="_blank" rel="noopener noreferrer" @endguest
-                        class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
-                               hover:text-[var(--accent)] transition-colors group">
+                       class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
+                              hover:text-[var(--accent)] transition-colors group">
                         <svg class="w-3.5 h-3.5 text-[var(--accent)]/50 group-hover:text-[var(--accent)] transition-colors"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Política del Sistema
+                        Términos y Condiciones
                     </a>
 
                     <span class="text-[var(--text-muted)]/70">|</span>
 
                     <a href="{{ route('legal.privacy') }}" @guest target="_blank" rel="noopener noreferrer" @endguest
-                        class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
-                               hover:text-[var(--accent)] transition-colors group">
+                       class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
+                              hover:text-[var(--accent)] transition-colors group">
                         <svg class="w-3.5 h-3.5 text-[var(--accent)]/50 group-hover:text-[var(--accent)] transition-colors"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                         Privacidad de Datos
                     </a>
@@ -48,18 +47,19 @@
 
                 {{-- Información --}}
                 <div class="flex items-center gap-3">
-                    <span
-                        class="hidden sm:inline text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                    <span class="hidden sm:inline text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                         Información
                     </span>
 
                     {{-- Dispara evento global (funciona en guest y auth) --}}
-                    <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-team-modal'))" class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
-                               hover:text-[var(--accent)] transition-colors group">
+                    <button type="button"
+                            onclick="window.dispatchEvent(new CustomEvent('open-team-modal'))"
+                            class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
+                                   hover:text-[var(--accent)] transition-colors group">
                         <svg class="w-3.5 h-3.5 text-[var(--accent)]/50 group-hover:text-[var(--accent)] transition-colors"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                         Equipo de Desarrollo
                     </button>

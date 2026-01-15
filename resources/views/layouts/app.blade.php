@@ -196,6 +196,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @filamentStyles
+    @livewireStyles
 </head>
 
 <body class="font-sans antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
@@ -343,6 +346,9 @@
     @endif
 
     @stack('scripts')
+
+    @filamentScripts
+    @livewireScripts
 </body>
 
 </html>
