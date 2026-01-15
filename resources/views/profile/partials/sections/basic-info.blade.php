@@ -1,57 +1,6 @@
-@php
-    $avatarInitials = collect([$user->first_name, $user->first_surname])
-        ->filter()
-        ->map(fn($segment) => mb_strtoupper(mb_substr($segment, 0, 1)))
-        ->implode('');
-
-    $avatarInitials = $avatarInitials !== '' ? $avatarInitials : 'U';
-@endphp
-
-<x-ui.section-card title="Información básica"
-    subtitle="Actualiza los datos personales, tu foto y las preferencias que definen tu experiencia en el portal.">
+﻿<x-ui.section-card title="Información básica"
+    subtitle="Actualiza los datos personales y las preferencias que definen tu experiencia en el portal.">
     <div class="space-y-6">
-
-        {{-- Avatar card (BLANCA) --}}
-        <div
-            class="flex flex-col gap-4 rounded-xl border border-[color:var(--border)] bg-white p-4 md:flex-row md:items-center md:gap-6">
-            <div class="shrink-0">
-                <div class="relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-[var(--border)] bg-white">
-                    <img x-show="avatarPreview" :src="avatarPreview" alt="Avatar" class="w-full h-full object-cover"
-                        style="display: none;" />
-                    <div x-show="!avatarPreview"
-                        class="w-full h-full flex items-center justify-center font-bold text-lg text-[var(--text)]">
-                        {{ $avatarInitials }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex-1 space-y-2 min-w-0">
-                <h4 class="text-lg font-bold text-[var(--text)]">Avatar</h4>
-                <p class="text-sm text-[var(--text-muted)]">
-                    Personaliza tu cuenta con una foto institucional o profesional. Solo JPG, PNG o WEBP (máx. 2 MB).
-                </p>
-
-                <div class="flex flex-wrap items-center gap-3">
-                    <input id="avatar" name="avatar" type="file" accept="image/png,image/jpeg,image/webp" class="hidden"
-                        x-ref="avatarInput" @change="handleAvatarChange($event)">
-
-                    <label for="avatar"
-                        class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold bg-[var(--primary)] text-white hover:opacity-90 transition cursor-pointer">
-                        Cambiar foto
-                    </label>
-
-                    <span class="text-xs text-[var(--text-muted)] truncate"
-                        x-text="avatarChanged ? 'Imagen lista para guardar' : 'Sin cambios'"></span>
-                </div>
-
-                @error('avatar')
-                    <p class="text-xs text-red-600">{{ $message }}</p>
-                @enderror
-
-                <p x-cloak x-show="avatarClientError" x-text="avatarClientError" class="text-xs text-red-600"
-                    style="display: none;"></p>
-            </div>
-        </div>
 
         {{-- Nombres --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -80,21 +29,6 @@
             </div>
         </div>
 
-        {{-- Warnings --}}
-        <div class="space-y-3">
-            @if ($avatarWarning)
-                <p class="text-sm text-red-600 border border-red-200 rounded-lg px-3 py-2 bg-red-50/60">
-                    {{ $avatarWarning }}
-                </p>
-            @endif
-            @if ($storageLinkMissing)
-                <p class="text-sm text-red-600 border border-red-200 rounded-lg px-3 py-2 bg-red-50/60">
-                    El enlace simbólico <code>public/storage</code> no existe. Ejecuta <code>php artisan storage:link</code>
-                    y verifica permisos.
-                </p>
-            @endif
-        </div>
-
         {{-- Apellidos --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -110,8 +44,7 @@
             </div>
 
             <div>
-                <label for="second_surname" class="block font-semibold theme-text text-base mb-2">Segundo
-                    apellido</label>
+                <label for="second_surname" class="block font-semibold theme-text text-base mb-2">Segundo apellido</label>
                 <input id="second_surname" name="second_surname" type="text" x-model="current.second_surname"
                     autocomplete="family-name" class="block w-full rounded-lg border theme-bd bg-white px-4 py-2.5 theme-text
                            placeholder:text-[color:var(--muted)]
@@ -163,13 +96,13 @@
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                             <div class="flex-1 space-y-1">
-                                <p class="text-sm verification-warning-text">Tu dirección de correo no ha sido verificada.
-                                </p>
+                                <p class="text-sm verification-warning-text">Tu dirección de correo no ha sido verificada.</p>
                                 <button type="button" form="send-verification" onclick="this.form.submit()"
                                     class="text-sm font-medium verification-warning-link hover:underline transition-all">
                                     Reenviar enlace de verificación
                                 </button>
                             </div>
+
                         </div>
 
                     </div>

@@ -1,4 +1,3 @@
-<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
 <script>
     /**
      * Aplica el tema al documento según la opción indicada.
@@ -30,5 +29,5 @@
                 showNotification('Corrige los campos marcados y vuelve a intentarlo.', 'error');
             }
         @endif
-        });
+    });
 </script>

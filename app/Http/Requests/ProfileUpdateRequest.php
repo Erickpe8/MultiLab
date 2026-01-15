@@ -52,7 +52,6 @@ class ProfileUpdateRequest extends FormRequest
             'digest_frequency' => ['required', Rule::in(['none', 'daily', 'weekly'])],
             'theme' => ['required', Rule::in(['system', 'light', 'dark'])],
             'compact_mode' => ['boolean'],
-            'avatar' => ['nullable', 'file', 'image', 'max:2048', 'mimes:jpeg,jpg,png,webp'],
             'phone' => ['nullable', 'string', 'max:64'],
             'mobile' => ['nullable', 'string', 'max:64'],
             'phone_extension' => ['nullable', 'string', 'max:16'],
@@ -93,11 +92,6 @@ class ProfileUpdateRequest extends FormRequest
             'theme.in' => 'Selecciona un tema válido.',
 
             'compact_mode.boolean' => 'El modo compacto debe ser verdadero o falso.',
-
-            'avatar.file' => 'El avatar debe ser un archivo válido.',
-            'avatar.image' => 'El avatar debe ser una imagen.',
-            'avatar.max' => 'El avatar no puede superar 2 MB.',
-            'avatar.mimes' => 'El avatar solo puede ser JPG, JPEG, PNG o WEBP.',
 
             'phone.string' => 'El teléfono debe ser texto.',
             'phone.max' => 'El teléfono no puede exceder 64 caracteres.',

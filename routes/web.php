@@ -46,9 +46,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Avatar
-    Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-
     // Theme
     Route::patch('/profile/theme', [ProfileThemeController::class, 'update'])->name('profile.theme.update');
 

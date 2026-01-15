@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -60,7 +59,7 @@ class User extends Authenticatable
     /**
      * Atributo virtual: name.
      */
-    protected $appends = ['name', 'display_role_label', 'profile_photo_url'];
+    protected $appends = ['name', 'display_role_label'];
 
     /**
      * ---------------------------
@@ -75,15 +74,6 @@ class User extends Authenticatable
             $this->first_surname,
             $this->second_surname,
         ])));
-    }
-
-    public function getProfilePhotoUrlAttribute(): ?string
-    {
-        if (! $this->profile_photo_path) {
-            return null;
-        }
-
-        return Storage::disk('public')->url($this->profile_photo_path);
     }
 
     /**
