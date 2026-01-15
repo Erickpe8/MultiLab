@@ -5,7 +5,6 @@
             {{-- Logo --}}
             <div class="flex items-center gap-2">
                 <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-7 w-auto" />
-                <span class="font-bold text-[var(--text)] text-sm">SystemPOA</span>
             </div>
 
             {{-- Links --}}
@@ -26,7 +25,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Política del Sistema
+                        Términos y Condiciones
                     </a>
 
                     <span class="text-[var(--text-muted)]/70">|</span>

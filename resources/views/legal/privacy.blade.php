@@ -9,7 +9,9 @@
         <div class="flex items-center gap-3">
             @php
                 $backRoute = auth()->check()
-                    ? route('dashboard')
+                    ? (\Illuminate\Support\Facades\Route::has('filament.dashboard.pages.dashboard')
+                        ? route('filament.dashboard.pages.dashboard')
+                        : url('/dashboard'))
                     : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
             @endphp
             <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
