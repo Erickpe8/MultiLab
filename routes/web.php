@@ -16,10 +16,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 // Laravel Boost sends GET requests from the browser logger; allow a no-op response to avoid MethodNotAllowed.
 Route::get('/_boost/browser-logs', fn () => response('', 204));
 
