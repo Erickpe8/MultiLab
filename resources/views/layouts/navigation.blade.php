@@ -160,6 +160,25 @@ $user = Auth::user();
                 </svg>
                 <span>Préstamos</span>
             </x-nav-link>
+
+            @if (auth()->user()?->hasAnyRole(['docente', 'superadmin', 'aux_admin']))
+                <x-nav-link :href="route('filament.dashboard.resources.classroom-loans.index')" :active="request()->routeIs('filament.dashboard.resources.classroom-loans.*')"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                        transition-all duration-200 group
+                        {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*')
+        ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
+        : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    {{-- Aula B201 icon --}}
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                                {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M9 21V9m6 12V9" />
+                    </svg>
+                    <span>Aula B201</span>
+                </x-nav-link>
+            @endif
         </div>
     </div>
 

@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'role' => 'Administrador',
+                'role' => 'superadmin',
                 'attributes' => [
                     'first_name'     => 'Admin',
                     'middle_name'    => null,
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 ],
             ],
             [
-                'role' => 'Director de Programa',
+                'role' => 'aux_admin',
                 'attributes' => [
                     'first_name'     => 'Jesus',
                     'middle_name'    => 'Antonio',
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
                 ],
             ],
             [
-                'role' => 'Estudiante',
+                'role' => 'estudiante',
                 'attributes' => [
                     'first_name'     => 'Juliana',
                     'middle_name'    => null,
@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
                 ],
             ],
             [
-                'role' => 'Auxiliar Administrativo',
+                'role' => 'aux_admin',
                 'attributes' => [
                     'first_name'     => 'Auxiliar',
                     'middle_name'    => null,
@@ -68,7 +68,7 @@ class UserSeeder extends Seeder
                 ],
             ],
             [
-                'role' => 'Docente',
+                'role' => 'docente',
                 'attributes' => [
                     'first_name'     => 'Carlos',
                     'middle_name'    => null,

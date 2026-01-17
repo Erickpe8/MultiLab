@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
     {{-- Usuarios Registrados --}}
-    <a href="{{ route('superadmin.users') }}" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
+    <a href="{{ route('user-management.index') }}" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
               hover:shadow-md hover:border-[var(--primary)]/40 transition">
 
         <div class="flex items-center gap-3 mb-3">
@@ -26,7 +26,7 @@
 
 
     {{-- Solicitudes Pendientes --}}
-    <a href="{{ route('superadmin.users') }}#pendientes" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
+    <a href="{{ route('user-management.index') }}#pendientes" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
               hover:shadow-md hover:border-yellow-400/60 transition">
 
         <div class="flex items-center gap-3 mb-3">
@@ -51,7 +51,7 @@
 
 
     {{-- Usuarios Preaprobados --}}
-    <a href="{{ route('superadmin.users') }}#preaprobados" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
+    <a href="{{ route('user-management.index') }}#preaprobados" class="block group bg-white p-6 rounded-xl shadow-sm border border-gray-200
             hover:shadow-md hover:border-indigo-400/60 transition">
 
         <div class="flex items-center gap-3 mb-3">
