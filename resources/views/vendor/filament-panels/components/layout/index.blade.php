@@ -1,28 +1,12 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@php
+    $livewire ??= null;
+@endphp
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    @stack('head_start')
-    {{ \Filament\Facades\Filament::renderHook('panels::head.start') }}
-
-    <!-- Título y Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/ICONFESC.png?v=2') }}">
-    <link rel="shortcut icon" href="{{ asset('images/ICONFESC.png?v=2') }}" type="image/png">
-    <title>
-        @hasSection('title')
-            @yield('title') | {{ config('app.name', 'MultiLab') }}
-        @else
-            {{ config('app.name', 'MultiLab') }}
-        @endif
-    </title>
-
-    <!-- Tipografías -->
+@push('styles')
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    @vite(['resources/css/app.css'])
 
     <script>
         (function () {
@@ -202,31 +186,19 @@
             applyTheme(stored);
         })();
     </script>
+@endpush
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    @livewireStyles
-    @filamentStyles
-    {{ \Filament\Facades\Filament::renderHook('panels::head.end') }}
-    @stack('head_end')
-</head>
-
-<body class="font-sans antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
-    {{ \Filament\Facades\Filament::renderHook('panels::body.start') }}
-    @stack('body_start')
-    <div class="min-h-screen flex flex-col">
+<x-filament-panels::layout.base :livewire="$livewire">
+    <div class="min-h-screen flex flex-col bg-[var(--bg)] font-sans antialiased" x-data="{ sidebarOpen: false }">
         <div class="flex flex-1">
-            <!-- Sidebar fijo en escritorio / off-canvas en móvil -->
             @include('layouts.navigation')
 
-            <!-- Overlay móvil -->
             <div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" x-transition.opacity
                 @click="sidebarOpen=false" style="display: none;"></div>
 
-            <!-- Contenido -->
             <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
-                <!-- Topbar móvil -->
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
+
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
                     <div class="h-14 px-4 flex items-center justify-between">
                         <button @click="sidebarOpen = true"
@@ -244,6 +216,8 @@
                     </div>
                 </div>
 
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+
                 @if (isset($header))
                     <header class="bg-[var(--card)] border-b border-[var(--border)]">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -252,25 +226,30 @@
                     </header>
                 @endif
 
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
+
                 <main class="flex-1">
+                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_START, scopes: $livewire?->getRenderHookScopes()) }}
+
                     {{ $slot }}
+
+                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_END, scopes: $livewire?->getRenderHookScopes()) }}
                 </main>
 
-                <!-- Footer -->
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire?->getRenderHookScopes()) }}
+
                 @include('layouts.footer')
             </div>
         </div>
     </div>
 
-    <!-- Componente de notificaciones -->
     <x-notify />
 
-    <!-- Flowbite (opcional) -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
-    <!-- Sistema de notificaciones global -->
     <script>
-        // Función global para mostrar notificaciones
         window.showNotification = function (message, type = 'info') {
             const notify = document.getElementById('notify');
             const notifyMessage = document.getElementById('notify-message');
@@ -280,7 +259,6 @@
 
             if (!notify || !notifyMessage || !notifyCard || !notifyIconWrap || !notifyIcon) return;
 
-            // Configurar colores e iconos según el tipo
             const configs = {
                 success: {
                     border: 'border-green-500',
@@ -310,27 +288,20 @@
 
             const config = configs[type] || configs.info;
 
-            // ✅ FIX: Nada de className.replace (revienta con SVG).
-            // Limpiar clases de borde (en el card)
             notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
             notifyCard.classList.add(config.border);
 
-            // Aplicar clases al wrapper del ícono
             notifyIconWrap.className = 'inline-flex items-center justify-center w-9 h-9 rounded-full';
             config.iconBg.split(' ').forEach(cls => notifyIconWrap.classList.add(cls));
 
-            // Aplicar clases al SVG ícono (classList funciona con SVG)
             notifyIcon.className = 'w-10 h-10';
             config.iconColor.split(' ').forEach(cls => notifyIcon.classList.add(cls));
 
-            // Cambiar el ícono (paths dentro del svg)
             notifyIcon.innerHTML = config.icon;
 
-            // Mostrar mensaje
             notifyMessage.textContent = message;
             notify.classList.remove('hidden', '-translate-y-2', 'opacity-0');
 
-            // Auto-cerrar después de 5 segundos
             clearTimeout(window.__notifyTimer);
             window.__notifyTimer = setTimeout(() => {
                 notify.classList.add('-translate-y-2', 'opacity-0');
@@ -338,7 +309,6 @@
             }, 5000);
         };
 
-        // Cerrar al hacer clic en el botón X
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('notify-close')?.addEventListener('click', () => {
                 const notify = document.getElementById('notify');
@@ -348,7 +318,6 @@
         });
     </script>
 
-    {{-- Notificación desde sesión --}}
     @if (session('notify'))
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -357,13 +326,4 @@
             });
         </script>
     @endif
-
-    @stack('scripts')
-
-    @livewireScripts
-    @filamentScripts
-    @stack('body_end')
-    {{ \Filament\Facades\Filament::renderHook('panels::body.end') }}
-</body>
-
-</html>
+</x-filament-panels::layout.base>
