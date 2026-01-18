@@ -44,22 +44,25 @@ $user = Auth::user();
                 Principal
             </p>
 
-            <x-nav-link :href="url('/dashboard')" :active="request()->is('dashboard')"
-                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+            <button
+                onclick="window.location.href='{{ url('/dashboard') }}'"
+                class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     transition-all duration-200 group
                     {{ request()->is('dashboard')
-    ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
+    ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                {{-- Home icon --}}
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                            {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span>Dashboard</span>
-            </x-nav-link>
+                <div class="flex items-center gap-3">
+                    {{-- Home icon --}}
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                                {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Dashboard</span>
+                </div>
+            </button>
         </div>
 
         {{-- ==========================================
@@ -78,7 +81,7 @@ $user = Auth::user();
                         class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                             transition-all duration-200 group
                             {{ request()->routeIs('user-management.*')
-        ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
+        ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
         : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                         <div class="flex items-center gap-3">
                             {{-- Users icon --}}
@@ -88,7 +91,7 @@ $user = Auth::user();
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
-                            <span>Control de Usuarios</span>
+                            <span class="{{ request()->routeIs('user-management.*') ? 'text-white' : '' }}">Control de Usuarios</span>
                         </div>
                         {{-- Chevron --}}
                         <svg class="w-4 h-4 transition-transform duration-200"
@@ -147,37 +150,43 @@ $user = Auth::user();
                 Módulos
             </p>
 
-            <x-nav-link :href="route('filament.dashboard.resources.loans.index')" :active="request()->routeIs('filament.dashboard.resources.loans.*')"
-                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+            <button
+                onclick="window.location.href=`{{ route('filament.dashboard.resources.loans.index') }}`"
+                class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     transition-all duration-200 group
                     {{ request()->routeIs('filament.dashboard.resources.loans.*')
-    ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg'
+    ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                {{-- Prestamo icon --}}
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                    {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
-                </svg>
-                <span>Préstamos</span>
-            </x-nav-link>
+                <div class="flex items-center gap-3">
+                    {{-- Prestamo icon --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                        {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
+                    </svg>
+                    <span class="{{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : '' }}">Préstamos</span>
+                </div>
+            </button>
 
             @if (auth()->user()?->hasAnyRole(['docente', 'superadmin', 'aux_admin']))
-                <x-nav-link :href="route('filament.dashboard.resources.classroom-loans.index')" :active="request()->routeIs('filament.dashboard.resources.classroom-loans.*')"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                <button
+                    onclick="window.location.href=`{{ route('filament.dashboard.resources.classroom-loans.index') }}`"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                         transition-all duration-200 group
                         {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*')
         ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
         : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                    {{-- Aula B201 icon --}}
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                                {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M9 21V9m6 12V9" />
-                    </svg>
-                    <span>Aula B201</span>
-                </x-nav-link>
+                    <div class="flex items-center gap-3">
+                        {{-- Aula B201 icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
+                                    {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M9 21V9m6 12V9" />
+                        </svg>
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : '' }}">Aula B201</span>
+                    </div>
+                </button>
             @endif
         </div>
     </div>
