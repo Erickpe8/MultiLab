@@ -147,6 +147,30 @@ $user = Auth::user();
                 Módulos
             </p>
 
+            {{-- Links para Admin y SuperAdmin --}}
+            @if (auth()->user()?->hasAnyRole(['superadmin', 'aux_admin']))
+                <x-nav-link :href="route('filament.dashboard.resources.materials.index')" :active="request()->routeIs('filament.dashboard.resources.materials.*')"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg' : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM6 10v6a2 2 0 002 2h8a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2zM12 2v3" />
+                    </svg>
+                    <span>Materiales</span>
+                </x-nav-link>
+
+                <x-nav-link :href="route('filament.dashboard.resources.assets.index')" :active="request()->routeIs('filament.dashboard.resources.assets.*')"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg' : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17L15 17L15 7L9 7L9 17Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12L7 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 12L19 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 17L22 17" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L12 5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19L12 22" />
+                    </svg>
+                    <span>Activos</span>
+                </x-nav-link>
+            @endif
+
             <x-nav-link :href="route('filament.dashboard.resources.loans.index')" :active="request()->routeIs('filament.dashboard.resources.loans.*')"
                 class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                     transition-all duration-200 group
