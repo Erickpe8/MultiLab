@@ -1,3 +1,5 @@
+@section('title', 'Administración de Usuarios')
+
 <x-app-layout>
 
     <div class="p-6 space-y-6">
@@ -39,4 +41,3 @@
     @endpush
 
 </x-app-layout>
-

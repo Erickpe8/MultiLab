@@ -1,4 +1,4 @@
-@section('title', 'Configuración de perfil')
+@section('title', 'Perfil')
 
 <x-app-layout>
     <x-slot name="header">

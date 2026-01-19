@@ -30,7 +30,19 @@ class AdminPanelProvider extends PanelProvider
             ->login(false)
             ->homeUrl('/dashboard')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50 => '#fde8e8',
+                    100 => '#fad1d1',
+                    200 => '#f5b5b5',
+                    300 => '#f19898',
+                    400 => '#dd4a4a',
+                    500 => '#8E1616',
+                    600 => '#dd4a4a',
+                    700 => '#b93b3b',
+                    800 => '#8E1616',
+                    900 => '#6c1010',
+                    950 => '#4a0b0b',
+                ],
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

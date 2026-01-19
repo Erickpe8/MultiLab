@@ -6,10 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    @stack('head_start')
+    {{ \Filament\Facades\Filament::renderHook('panels::head.start') }}
+
     <!-- Título y Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/ICONFESC.png?v=2') }}">
     <link rel="shortcut icon" href="{{ asset('images/ICONFESC.png?v=2') }}" type="image/png">
-    <title>{{ config('app.name', 'MultiLab') }}</title>
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ config('app.name', 'MultiLab') }}
+        @else
+            {{ config('app.name', 'MultiLab') }}
+        @endif
+    </title>
 
     <!-- Tipografías -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -197,11 +206,15 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @filamentStyles
     @livewireStyles
+    @filamentStyles
+    {{ \Filament\Facades\Filament::renderHook('panels::head.end') }}
+    @stack('head_end')
 </head>
 
 <body class="font-sans antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
+    {{ \Filament\Facades\Filament::renderHook('panels::body.start') }}
+    @stack('body_start')
     <div class="min-h-screen flex flex-col">
         <div class="flex flex-1">
             <!-- Sidebar fijo en escritorio / off-canvas en móvil -->
@@ -347,8 +360,10 @@
 
     @stack('scripts')
 
-    @filamentScripts
     @livewireScripts
+    @filamentScripts
+    @stack('body_end')
+    {{ \Filament\Facades\Filament::renderHook('panels::body.end') }}
 </body>
 
 </html>

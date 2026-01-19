@@ -1,36 +1,35 @@
-@section('title', 'Política de privacidad')
+@extends('legal.layout')
+
+@section('title', 'Privacidad de Datos')
 
 @php
-    $layout = auth()->check() ? 'app-layout' : 'guest-layout';
+    $backRoute = auth()->check()
+        ? (\Illuminate\Support\Facades\Route::has('filament.dashboard.pages.dashboard')
+            ? route('filament.dashboard.pages.dashboard')
+            : url('/dashboard'))
+        : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
 @endphp
 
-<x-dynamic-component :component="$layout">
-    <x-slot name="header">
-        <div class="flex items-center gap-3">
-            @php
-                $backRoute = auth()->check()
-                    ? (\Illuminate\Support\Facades\Route::has('filament.dashboard.pages.dashboard')
-                        ? route('filament.dashboard.pages.dashboard')
-                        : url('/dashboard'))
-                    : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
-            @endphp
-            <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </a>
-            <div>
-                <h2 class="font-semibold text-2xl text-[var(--text)] leading-tight">
-                    Privacidad de Datos
-                </h2>
-                <p class="mt-1 text-sm text-[var(--text-muted)]">
-                    Política de Privacidad y Tratamiento de Datos Personales en MultiLab
-                </p>
-            </div>
+@section('legal-header')
+    <div class="flex items-center gap-3">
+        <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
+        <div>
+            <h2 class="font-semibold text-2xl text-[var(--text)] leading-tight">
+                Privacidad de Datos
+            </h2>
+            <p class="mt-1 text-sm text-[var(--text-muted)]">
+                Política de Privacidad y Tratamiento de Datos Personales en MultiLab
+            </p>
         </div>
-    </x-slot>
+    </div>
+@endsection
 
+@section('legal-content')
     <div class="py-8 sm:py-10 bg-[var(--bg)] min-h-screen">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <article class="bg-[var(--card)] rounded-xl border border-[var(--border)] shadow-lg overflow-hidden">
@@ -623,4 +622,4 @@
             </article>
         </div>
     </div>
-</x-dynamic-component>
+@endsection
