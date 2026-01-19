@@ -56,7 +56,15 @@ class LoanResource extends AppResource
                         Forms\Components\DateTimePicker::make('due_at')
                             ->required(),
                         Forms\Components\DateTimePicker::make('return_at'),
-                        Forms\Components\TextInput::make('status')
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'abierto' => 'Abierto',
+                                'devuelto' => 'Devuelto',
+                                'vencido' => 'Vencido',
+                                'con_multa' => 'Con Multa',
+                                'perdido' => 'Perdido',
+                            ])
+                            ->default('abierto')
                             ->required(),
                         Forms\Components\Textarea::make('notes')
                             ->columnSpanFull(),
@@ -82,7 +90,18 @@ class LoanResource extends AppResource
                                     ->numeric()
                                     ->default(0),
                             ])
-                            ->columns(3),
+                            ->columns(3)
+                            ->saveRelationshipsUsing(function ($record, $state) {
+                                $materialsToAttach = collect($state)->mapWithKeys(function ($item) {
+                                    return [
+                                        $item['material_id'] => [
+                                            'loan_qty' => $item['loan_qty'],
+                                            'returned_qty' => $item['returned_qty'],
+                                        ],
+                                    ];
+                                });
+                                $record->materials()->sync($materialsToAttach);
+                            }),
 
                         Forms\Components\Repeater::make('assets')
                             ->relationship()
