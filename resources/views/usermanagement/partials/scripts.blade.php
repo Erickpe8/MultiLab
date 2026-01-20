@@ -1,4 +1,36 @@
 {{-- resources/views/usermanagement/partials/scripts.blade.php --}}
+@php
+    $badgeActiveIcon = trim(view('components.ui.icon', [
+        'name' => 'exito',
+        'size' => 'xs',
+        'class' => 'w-3 h-3 mr-1'
+    ])->render());
+    $badgeInactiveIcon = trim(view('components.ui.icon', [
+        'name' => 'eliminar',
+        'size' => 'xs',
+        'class' => 'w-3 h-3 mr-1'
+    ])->render());
+    $spinnerIcon = trim(view('components.ui.icon', [
+        'name' => 'refrescar',
+        'size' => 'sm',
+        'class' => 'animate-spin w-5 h-5'
+    ])->render());
+    $notificationSuccessIcon = trim(view('components.ui.icon', [
+        'name' => 'exito',
+        'size' => 'sm',
+        'class' => 'text-white'
+    ])->render());
+    $notificationErrorIcon = trim(view('components.ui.icon', [
+        'name' => 'eliminar',
+        'size' => 'sm',
+        'class' => 'text-white'
+    ])->render());
+    $notificationInfoIcon = trim(view('components.ui.icon', [
+        'name' => 'info',
+        'size' => 'sm',
+        'class' => 'text-white'
+    ])->render());
+@endphp
 <script>
     /**
      * User Management JavaScript
@@ -8,7 +40,7 @@
     // ============================================
     // HELPER: Get CSRF Token
     // ============================================
-    function getCsrfToken() {
+function getCsrfToken() {
         const metaToken = document.querySelector('meta[name="csrf-token"]');
         if (metaToken) {
             return metaToken.content;
@@ -94,30 +126,35 @@
                 statusLabel.innerHTML = '<span class="text-green-600 dark:text-green-400 font-semibold">Activo</span>';
             } else {
                 statusLabel.innerHTML = '<span class="text-red-600 dark:text-red-400 font-semibold">Inactivo</span>';
-            }
-        }
+    }
+}
+
+const badgeActiveIcon = {!! json_encode($badgeActiveIcon) !!};
+const badgeInactiveIcon = {!! json_encode($badgeInactiveIcon) !!};
+const spinnerIcon = {!! json_encode($spinnerIcon) !!};
+const notificationIcons = {
+    success: {!! json_encode($notificationSuccessIcon) !!},
+    error: {!! json_encode($notificationErrorIcon) !!},
+    info: {!! json_encode($notificationInfoIcon) !!},
+};
 
         // Actualizar badge de estado en la tarjeta de usuario
         if (statusBadge) {
             if (isActive) {
-                statusBadge.innerHTML = `
+            statusBadge.innerHTML = `
                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
                                 bg-green-500/20 text-green-700 dark:text-green-300
                                 border border-green-500/30">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
+                        ${badgeActiveIcon}
                         Activo
                     </span>
                 `;
             } else {
-                statusBadge.innerHTML = `
+            statusBadge.innerHTML = `
                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
                                 bg-red-500/20 text-red-700 dark:text-red-300
                                 border border-red-500/30">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                        </svg>
+                        ${badgeInactiveIcon}
                         Inactivo
                     </span>
                 `;
@@ -243,10 +280,7 @@
         submitBtn.disabled = true;
         const originalHTML = submitBtn.innerHTML;
         submitBtn.innerHTML = `
-            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            ${spinnerIcon}
             <span>Procesando...</span>
         `;
 
@@ -309,10 +343,7 @@
         submitBtn.disabled = true;
         const originalHTML = submitBtn.innerHTML;
         submitBtn.innerHTML = `
-            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            ${spinnerIcon}
             <span>Actualizando...</span>
         `;
 
@@ -375,10 +406,7 @@
         confirmBtn.disabled = true;
         const originalHTML = confirmBtn.innerHTML;
         confirmBtn.innerHTML = `
-            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            ${spinnerIcon}
             <span>Rechazando...</span>
         `;
 
@@ -434,10 +462,7 @@
         confirmBtn.disabled = true;
         const originalHTML = confirmBtn.innerHTML;
         confirmBtn.innerHTML = `
-            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            ${spinnerIcon}
             <span>Eliminando...</span>
         `;
 
@@ -483,21 +508,15 @@
         const colors = {
             success: {
                 bg: 'bg-green-500',
-                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>`
+                icon: notificationIcons.success
             },
             error: {
                 bg: 'bg-red-500',
-                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>`
+                icon: notificationIcons.error
             },
             info: {
                 bg: 'bg-blue-500',
-                icon: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                </svg>`
+                icon: notificationIcons.info
             }
         };
 
