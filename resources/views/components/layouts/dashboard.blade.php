@@ -40,7 +40,7 @@
         </main>
 
         {{-- Footer --}}
-        <x-dashboard.footer />
+        @include('layouts.footer')
 
         {{-- Modal equipo desarrollador --}}
         <x-dashboard.team-dialog />

@@ -14,6 +14,12 @@
         </a>
         {{-- Switch de tema --}}
         <x-theme-toggle id="theme-toggle-side" size="md" />
+
+        @if (filament()->auth()->check())
+            @livewire(Filament\Livewire\DatabaseNotifications::class, [
+                'lazy' => false, // Temporalmente deshabilitado para depuración
+            ])
+        @endif
     </div>
 
     <!-- Usuario -->

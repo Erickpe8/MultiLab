@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\ClassroomLoanResource\Pages;
 
 use App\Filament\Resources\ClassroomLoanResource;
-use Filament\Actions;
 use App\Filament\Resources\Pages\AppEditRecord;
+use App\Notifications\LoanApproved;
+use Filament\Actions;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class EditClassroomLoan extends AppEditRecord
 {
@@ -32,6 +34,16 @@ class EditClassroomLoan extends AppEditRecord
         $data = $this->mergeStartAndTime($data, 'actual_start_at', 'actual_end_time', 'actual_end_at');
 
         return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        if ($this->record->wasChanged('approved_by') && $this->record->approved_by !== null) {
+            $requester = $this->record->requester; // Assuming ClassroomLoan model has 'requester' relationship
+            if ($requester) {
+                Notification::send($requester, new LoanApproved($this->record));
+            }
+        }
     }
 
     protected function splitDateTimeIntoTime(array $data, string $sourceKey, string $timeKey): array

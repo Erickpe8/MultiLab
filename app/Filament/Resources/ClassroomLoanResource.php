@@ -15,7 +15,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,8 +23,11 @@ class ClassroomLoanResource extends Resource
     protected static ?string $model = ClassroomLoan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+
     protected static ?string $navigationGroup = 'Aula B201';
+
     protected static ?string $modelLabel = 'Reserva de aula';
+
     protected static ?string $pluralModelLabel = 'Reservas Aula B201';
 
     public static function getNavigationBadge(): ?string
@@ -58,16 +60,18 @@ class ClassroomLoanResource extends Resource
                             ->label('Docente solicitante')
                             ->default(Auth::id())
                             ->disabled(fn () => Auth::user()->hasRole('docente'))
+                            ->dehydrated()
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->required(),
                         Forms\Components\Select::make('approved_by')
-                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
+                            ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
-                            ->preload(),
+                            ->preload()
+                            ->visible(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
                             ->maxLength(120)
@@ -218,7 +222,7 @@ class ClassroomLoanResource extends Resource
                                 }
 
                                 return collect($snapshot)
-                                    ->map(fn ($value, $key) => e($key) . ': ' . e($value))
+                                    ->map(fn ($value, $key) => e($key).': '.e($value))
                                     ->implode('<br>');
                             })
                             ->columnSpanFull()
@@ -375,6 +379,7 @@ class ClassroomLoanResource extends Resource
         return [
             'index' => Pages\ListClassroomLoans::route('/'),
             'create' => Pages\CreateClassroomLoan::route('/create'),
+            'view' => Pages\ViewClassroomLoan::route('/{record}'),
             'edit' => Pages\EditClassroomLoan::route('/{record}/edit'),
         ];
     }

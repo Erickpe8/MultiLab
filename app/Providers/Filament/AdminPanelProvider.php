@@ -29,6 +29,8 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->login(false)
             ->homeUrl('/dashboard')
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->colors([
                 'primary' => [
                     50 => '#fde8e8',
