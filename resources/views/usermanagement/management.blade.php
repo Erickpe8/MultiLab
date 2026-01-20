@@ -2,7 +2,7 @@
 
 <x-app-layout>
 
-    <div class="p-6 space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         <div class="flex items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold text-[var(--text)]">Gestión de Usuarios</h1>

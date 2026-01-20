@@ -5,6 +5,7 @@ use App\Modules\Profile\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileThemeController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,10 @@ Route::prefix('legal')->name('legal.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('verified')
+        ->name('dashboard');
+
     // Profile (vista + datos básicos)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -1,197 +1,132 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Multilab FESC · Panel principal
-                </h2>
-                <p class="text-sm text-gray-500">
-                    Bienvenido, {{ auth()->user()->name }}.
-                </p>
-            </div>
+        <div class="flex flex-col gap-1">
+            <p class="text-xs uppercase tracking-[0.3em] text-[var(--text-muted)]">Panel de Control</p>
+            <h1 class="text-2xl font-semibold text-[var(--text)]">Panel de Control</h1>
         </div>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm space-y-3">
-                <div class="rounded-xl border border-[#D84040]/30 bg-[#1D1616]/5 px-4 py-3">
-                    <p class="text-sm text-gray-700">
-                        Este panel muestra accesos y módulos según tu rol en Multilab
-                        (@foreach(auth()->user()->roles as $role)
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 mx-1 rounded text-xs bg-[#D84040]/10 text-[#8E1616]">
-                                {{ $role->name }}
+    @php
+        $sections = [
+            [
+                'tag' => 'Administración',
+                'title' => 'Control y vigilancia',
+                'subtitle' => 'Supervisa accesos, permisos y solicitudes críticas.',
+                'cards' => [
+                    [
+                        'title' => 'Usuarios Activos',
+                        'description' => 'Revisa los usuarios con sesiones activas y accesos vigentes.',
+                        'icon' => 'heroicon-o-user-group',
+                        'route' => 'user-management.index',
+                        'badge' => 'Usuarios',
+                        'cta' => 'Ver panel de usuarios',
+                    ],
+                    [
+                        'title' => 'Solicitudes Pendientes',
+                        'description' => 'Aprueba registros nuevos o solicitudes de actualización.',
+                        'icon' => 'heroicon-o-clock',
+                        'route' => 'user-management.pending',
+                        'badge' => 'Flujos',
+                        'cta' => 'Revisar pendientes',
+                    ],
+                    [
+                        'title' => 'Usuarios Bloqueados',
+                        'description' => 'Identifica cuentas suspendidas o bloqueadas por seguridad.',
+                        'icon' => 'heroicon-o-user-minus',
+                        'route' => 'user-management.blocked',
+                        'badge' => 'Seguridad',
+                        'cta' => 'Ver bloqueos',
+                    ],
+                ],
+            ],
+            [
+                'tag' => 'Módulos',
+                'title' => 'Accesos clave',
+                'subtitle' => 'Navega rápido a los módulos que gestionan préstamos y aulas.',
+                'cards' => [
+                    [
+                        'title' => 'Préstamos',
+                        'description' => 'Administra solicitudes, entregas y devoluciones de equipos.',
+                        'icon' => 'heroicon-o-credit-card',
+                        'route' => 'filament.dashboard.resources.loans.index',
+                        'badge' => 'Operaciones',
+                        'cta' => 'Abrir módulo',
+                    ],
+                    [
+                        'title' => 'Aula B201',
+                        'description' => 'Consulta ocupación, reservas y disponibilidad del laboratorio.',
+                        'icon' => 'heroicon-o-building-office',
+                        'route' => 'filament.dashboard.resources.classroom-loans.index',
+                        'badge' => 'Espacios',
+                        'cta' => 'Ver aula B201',
+                    ],
+                ],
+            ],
+
+    <div class="space-y-8">
+        <section class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm backdrop-blur-sm">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Bienvenido</p>
+                    <h2 class="text-2xl font-semibold text-[var(--text)]">¡Hola, {{ auth()->user()->name }}!</h2>
+                    <p class="mt-1 text-sm text-[var(--text-muted)]">
+                        Accede a las secciones principales desde este panel personalizado.
+                    </p>
+                </div>
+                <div class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--border)]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+                    <x-ui.icon name="heroicon-o-shield-check" size="sm" class="text-[var(--primary)]" />
+                    Cuenta activa
+                </div>
+            </div>
+        </section>
+
+        @foreach ($sections as $section)
+            <section class="space-y-4">
+                <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">{{ $section['tag'] }}</p>
+                        <h2 class="text-xl font-semibold text-[var(--text)]">{{ $section['title'] }}</h2>
+                        @if (! empty($section['subtitle']))
+                            <p class="text-sm text-[var(--text-muted)]">{{ $section['subtitle'] }}</p>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($section['cards'] as $card)
+                        @php
+                            $routeName = $card['route'] ?? null;
+                            $hasRoute = $routeName ? \Illuminate\Support\Facades\Route::has($routeName) : false;
+                            $href = $hasRoute ? route($routeName) : ($card['href'] ?? '#');
+                        @endphp
+
+                        <a href="{{ $href }}"
+                            @if (! $hasRoute)
+                                aria-disabled="true"
+                            @endif
+                            class="group block min-h-full rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 py-6 text-[var(--text)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $hasRoute ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]' : 'cursor-not-allowed opacity-70' }}">
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--border)]/30 text-[var(--primary)]">
+                                    <x-ui.icon :name="$card['icon']" size="lg" />
+                                </div>
+                                <span class="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-[var(--text-muted)]">
+                                    {{ $card['badge'] ?? 'Acceso' }}
+                                </span>
+                            </div>
+
+                            <h3 class="mt-6 text-lg font-semibold text-[var(--text)]">{{ $card['title'] }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
+                                {{ $card['description'] }}
+                            </p>
+
+                            <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] group-hover:underline">
+                                {{ $card['cta'] ?? 'Ir al módulo' }}
+                                <x-ui.icon name="siguiente" size="sm" class="text-[var(--accent)]" />
                             </span>
-                        @endforeach
-                        ).
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                {{-- ============================
-                SUPERADMIN (Director Programa)
-                ============================ --}}
-                @role('superadmin')
-                {{-- Gestión de usuarios --}}
-                <a href="{{ route('admin.users.index') }}" class="group block rounded-2xl border border-[#D84040]/40 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#8E1616] via-[#D84040] to-[#1D1616]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Gestión de usuarios
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Crear, editar y gestionar docentes, estudiantes y personal con acceso al sistema.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Administrar usuarios
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-
-                {{-- Configuración e indicadores --}}
-                <div class="rounded-2xl border border-[#D84040]/30 bg-[#1D1616]/90 text-[#EEEEEE] shadow-soft p-5">
-                    <h3 class="text-lg font-semibold mb-1">
-                        Visión general de Multilab
-                    </h3>
-                    <p class="text-sm text-[#EEEEEE]/90 mb-3">
-                        Próximamente podrás visualizar indicadores clave: inventario, préstamos activos,
-                        equipos en mantenimiento y uso por programa académico.
-                    </p>
-                    <p class="text-xs text-[#EEEEEE]/70">
-                        Rol: Director de Programa (Superadmin).
-                    </p>
-                </div>
-                @endrole
-
-                {{-- ==========================================
-                INVENTARIO (superadmin + aux_admin)
-                ========================================== --}}
-                @hasanyrole('superadmin|aux_admin')
-                <a href="{{ route('inventory.assets.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#1D1616] via-[#8E1616] to-[#D84040]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Gestión de activos
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Administrar equipos, dispositivos y recursos tecnológicos de los laboratorios.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ir al inventario de activos
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-
-                <a href="{{ route('inventory.materials.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#D84040] via-[#8E1616] to-[#1D1616]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Gestión de materiales
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Controlar insumos, elementos de préstamo y consumibles.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ir al inventario de materiales
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-                @endhasanyrole
-
-                {{-- ==========================================
-                PRÉSTAMOS Y RESERVAS (superadmin, aux, docente)
-                ========================================== --}}
-                @hasanyrole('superadmin|aux_admin|docente')
-                <a href="{{ route('loans.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#8E1616] via-[#D84040] to-[#1D1616]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Préstamos tecnológicos
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Gestionar solicitudes, entregas, devoluciones y seguimiento de equipos.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ver préstamos
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-
-                <a href="{{ route('reservations.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#1D1616] via-[#D84040] to-[#8E1616]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Reservas de laboratorio
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Programar uso de equipos y espacios en horarios específicos.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ver reservas
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-                @endhasanyrole
-
-                {{-- ==========================================
-                ESTUDIANTE (vista simplificada)
-                ========================================== --}}
-                @role('estudiante')
-                <a href="{{ route('reservations.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#D84040] via-[#8E1616] to-[#1D1616]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Mis reservas
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Consulta tus reservas activas y el historial de solicitudes realizadas.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ver mis reservas
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-
-                <a href="{{ route('loans.index') }}" class="group block rounded-2xl border border-[#D84040]/30 bg-white shadow-soft
-                              hover:shadow-lg transition hover:-translate-y-1 overflow-hidden">
-                    <div class="h-1.5 bg-gradient-to-r from-[#1D1616] via-[#8E1616] to-[#D84040]"></div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-semibold text-[#8E1616] mb-1">
-                            Mis préstamos
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-3">
-                            Revisa tus equipos actualmente prestados y fechas de devolución.
-                        </p>
-                        <span
-                            class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
-                            Ver mis préstamos
-                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
-                        </span>
-                    </div>
-                </a>
-                @endrole
+                        </a>
+                    @endforeach
                 </div>
             </section>
-        </div>
+        @endforeach
     </div>
 </x-app-layout>
