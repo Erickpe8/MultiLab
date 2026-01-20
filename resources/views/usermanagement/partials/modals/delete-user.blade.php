@@ -5,10 +5,7 @@
         <div class="flex items-start gap-4 mb-6">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-700
                         flex items-center justify-center shrink-0 animate-pulse">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <x-ui.icon name="eliminar" size="lg" class="text-white" />
             </div>
             <div class="flex-1">
                 <h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-1">
@@ -42,35 +39,23 @@
             </p>
             <ul class="space-y-2 text-xs text-red-600 dark:text-red-400">
                 <li class="flex items-start gap-2">
-                    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <x-ui.icon name="error" size="sm"
+                        class="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                     <span>Toda su información personal y de contacto</span>
                 </li>
                 <li class="flex items-start gap-2">
-                    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <x-ui.icon name="error" size="sm"
+                        class="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                     <span>Todos sus archivos y documentos cargados</span>
                 </li>
                 <li class="flex items-start gap-2">
-                    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <x-ui.icon name="error" size="sm"
+                        class="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                     <span>Su historial completo de actividad</span>
                 </li>
                 <li class="flex items-start gap-2">
-                    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <x-ui.icon name="error" size="sm"
+                        class="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                     <span>Todas sus configuraciones y preferencias</span>
                 </li>
             </ul>
@@ -94,10 +79,7 @@
                     class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700
                            text-white font-semibold hover:shadow-lg hover:scale-[1.02]
                            active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <x-ui.icon name="eliminar" size="sm" class="text-white" />
                 <span>Sí, Eliminar Permanentemente</span>
             </button>
         </div>
