@@ -35,19 +35,16 @@
             <img src="{{ asset('images/logo-fesc.png') }}" alt="Logo FESC" class="h-8 w-auto">
             <span class="font-semibold text-multilab-blue dark:text-multilab-gray">Multilab</span>
         </a>
-        <button
-            type="button"
-            data-sidebar-close
-            class="lg:hidden inline-flex items-center justify-center p-2 rounded-md
-                   text-multilab-dark dark:text-multilab-gray
-                   hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
-            aria-label="Cerrar sidebar"
-        >
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-        </button>
+            <button
+                type="button"
+                data-sidebar-close
+                class="lg:hidden inline-flex items-center justify-center p-2 rounded-md
+                       text-multilab-dark dark:text-multilab-gray
+                       hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
+                aria-label="Cerrar sidebar"
+            >
+                <x-ui.icon name="cerrar" size="lg" />
+            </button>
     </div>
 
     {{-- Usuario --}}
