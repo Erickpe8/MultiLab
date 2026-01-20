@@ -15,6 +15,8 @@ class ObservationsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'type';
 
+    protected static ?string $title = 'Observaciones';
+
     public function form(Form $form): Form
     {
         return $form
@@ -50,8 +52,8 @@ class ObservationsRelationManager extends RelationManager
                     ->rows(4)
                     ->required(),
                 Forms\Components\KeyValue::make('metadata')
-                    ->label('Metadatos')
-                    ->keyLabel('Clave')
+                    ->label('Datos')
+                    ->keyLabel('Descripción')
                     ->valueLabel('Valor')
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('evidence_path')
@@ -104,7 +106,9 @@ class ObservationsRelationManager extends RelationManager
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label('Crear Nueva observación')
+                    ->modalHeading('Crear Nueva Observación'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
