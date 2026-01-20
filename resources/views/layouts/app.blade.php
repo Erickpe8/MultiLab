@@ -225,17 +225,14 @@
                 @click="sidebarOpen=false" style="display: none;"></div>
 
             <!-- Contenido -->
-            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
+            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col lg:pl-8">
                 <!-- Topbar móvil -->
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
                     <div class="h-14 px-4 flex items-center justify-between">
                         <button @click="sidebarOpen = true"
                             class="p-2 rounded-md text-[var(--text)] hover:text-[var(--accent)] hover:bg-[var(--border)]/20 transition-colors"
                             aria-label="Abrir menú">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                            <x-ui.icon name="menu" size="lg" />
                         </button>
                         <div class="text-sm text-[var(--text)] truncate">
                             MultiLab
@@ -253,7 +250,9 @@
                 @endif
 
                 <main class="flex-1">
-                    {{ $slot }}
+                    <div class="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+                        {{ $slot }}
+                    </div>
                 </main>
 
                 <!-- Footer -->

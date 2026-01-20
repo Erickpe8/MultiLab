@@ -12,25 +12,23 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm space-y-3">
+                <div class="rounded-xl border border-[#D84040]/30 bg-[#1D1616]/5 px-4 py-3">
+                    <p class="text-sm text-gray-700">
+                        Este panel muestra accesos y módulos según tu rol en Multilab
+                        (@foreach(auth()->user()->roles as $role)
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 mx-1 rounded text-xs bg-[#D84040]/10 text-[#8E1616]">
+                                {{ $role->name }}
+                            </span>
+                        @endforeach
+                        ).
+                    </p>
+                </div>
 
-            {{-- Mensaje superior opcional --}}
-            <div class="mb-6 rounded-xl border border-[#D84040]/30 bg-[#1D1616]/5 px-4 py-3">
-                <p class="text-sm text-gray-700">
-                    Este panel muestra accesos y módulos según tu rol en Multilab
-                    (@foreach(auth()->user()->roles as $role)
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 mx-1 rounded text-xs bg-[#D84040]/10 text-[#8E1616]">
-                            {{ $role->name }}
-                        </span>
-                    @endforeach
-                    ).
-                </p>
-            </div>
-
-            {{-- GRID GENERAL DE CARDS --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 {{-- ============================
                 SUPERADMIN (Director Programa)
@@ -50,11 +48,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Administrar usuarios
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -91,11 +85,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ir al inventario de activos
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -113,11 +103,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ir al inventario de materiales
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -140,11 +126,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ver préstamos
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -162,11 +144,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ver reservas
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -189,11 +167,7 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ver mis reservas
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
@@ -211,17 +185,13 @@
                         <span
                             class="inline-flex items-center text-sm font-semibold text-[#D84040] group-hover:underline">
                             Ver mis préstamos
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                            <x-ui.icon name="siguiente" size="sm" class="ml-1 text-current" />
                         </span>
                     </div>
                 </a>
                 @endrole
-
-            </div>
+                </div>
+            </section>
         </div>
     </div>
 </x-app-layout>
