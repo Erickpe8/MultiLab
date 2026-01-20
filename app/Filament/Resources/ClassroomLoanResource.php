@@ -8,11 +8,15 @@ use App\Filament\Resources\ClassroomLoanResource\RelationManagers\WorkstationsRe
 use App\Models\ClassroomLoan;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
 
 class ClassroomLoanResource extends Resource
 {
@@ -45,16 +49,17 @@ class ClassroomLoanResource extends Resource
                             ->label('Aula')
                             ->default('B201')
                             ->maxLength(20)
+                            ->readonly()
                             ->required(),
                         Forms\Components\Select::make('requested_by')
-                            ->relationship('requester', 'first_name')
+                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role('docente'))
                             ->label('Docente solicitante')
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->required(),
                         Forms\Components\Select::make('approved_by')
-                            ->relationship('approver', 'first_name')
+                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
@@ -84,18 +89,29 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\DateTimePicker::make('scheduled_start_at')
                             ->label('Inicio programado')
                             ->seconds(false)
-                            ->required(),
-                        Forms\Components\DateTimePicker::make('scheduled_end_at')
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if (! $state) {
+                                    return;
+                                }
+
+                                $start = Carbon::parse($state);
+
+                                $set('scheduled_end_time', $start->copy()->addHour()->format('H:i'));
+                            }),
+                        Forms\Components\TimePicker::make('scheduled_end_time')
                             ->label('Fin programado')
                             ->seconds(false)
-                            ->required()
-                            ->after('scheduled_start_at'),
+                            ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora')
+                            ->required(),
                         Forms\Components\DateTimePicker::make('actual_start_at')
                             ->label('Inicio real')
                             ->seconds(false),
-                        Forms\Components\DateTimePicker::make('actual_end_at')
+                        Forms\Components\TimePicker::make('actual_end_time')
                             ->label('Fin real')
-                            ->seconds(false),
+                            ->seconds(false)
+                            ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora'),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Control de PCs')
@@ -137,6 +153,118 @@ class ClassroomLoanResource extends Resource
                     ])
                     ->columns(1)
                     ->collapsible(),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                InfoSection::make('Información general')
+                    ->schema([
+                        TextEntry::make('classroom_code')->label('Aula'),
+                        TextEntry::make('requester.name')->label('Docente solicitante'),
+                        TextEntry::make('approver.name')->label('Aprobado por')->placeholder('—'),
+                        TextEntry::make('subject')->label('Asignatura/Sesión'),
+                        TextEntry::make('purpose')->label('Propósito')->placeholder('—')->columnSpanFull(),
+                        TextEntry::make('status')
+                            ->label('Estado')
+                            ->formatStateUsing(fn (string $state) => match ($state) {
+                                'pendiente' => 'Pendiente',
+                                'aprobado' => 'Aprobado',
+                                'rechazado' => 'Rechazado',
+                                'en_uso' => 'En uso',
+                                'finalizado' => 'Finalizado',
+                                'cancelado' => 'Cancelado',
+                                default => ucfirst($state),
+                            }),
+                    ])
+                    ->columns(2),
+                InfoSection::make('Agenda')
+                    ->schema([
+                        TextEntry::make('scheduled_start_at')
+                            ->label('Inicio programado')
+                            ->dateTime('d/m/Y H:i'),
+                        TextEntry::make('scheduled_end_at')
+                            ->label('Fin programado')
+                            ->dateTime('d/m/Y H:i')
+                            ->placeholder('—'),
+                        TextEntry::make('actual_start_at')
+                            ->label('Inicio real')
+                            ->dateTime('d/m/Y H:i')
+                            ->placeholder('—'),
+                        TextEntry::make('actual_end_at')
+                            ->label('Fin real')
+                            ->dateTime('d/m/Y H:i')
+                            ->placeholder('—'),
+                    ])
+                    ->columns(2),
+                InfoSection::make('Control de PCs')
+                    ->schema([
+                        TextEntry::make('pc_required')->label('PCs requeridos'),
+                        TextEntry::make('pc_in_use')->label('PCs en uso'),
+                        TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
+                        TextEntry::make('workstations_snapshot')
+                            ->label('Estado rápido de estaciones')
+                            ->state(function (ClassroomLoan $record): string {
+                                $snapshot = $record->workstations_snapshot;
+
+                                if (! is_array($snapshot) || empty($snapshot)) {
+                                    return '—';
+                                }
+
+                                return collect($snapshot)
+                                    ->map(fn ($value, $key) => e($key) . ': ' . e($value))
+                                    ->implode('<br>');
+                            })
+                            ->columnSpanFull()
+                            ->html(),
+                    ])
+                    ->columns(3),
+                InfoSection::make('Estado de estaciones')
+                    ->schema([
+                        TextEntry::make('workstations_summary')
+                            ->label('Estaciones asignadas')
+                            ->bulleted()
+                            ->state(function (ClassroomLoan $record) {
+                                if ($record->workstations->isEmpty()) {
+                                    return null;
+                                }
+
+                                return $record->workstations->map(function ($workstation) {
+                                    $label = $workstation->label;
+                                    $code = $workstation->code ? " ({$workstation->code})" : '';
+
+                                    $status = match ($workstation->pivot->status) {
+                                        'reservado' => 'Reservado',
+                                        'en_uso' => 'En uso',
+                                        'liberado' => 'Liberado',
+                                        'inactivo' => 'Inactivo',
+                                        default => '—',
+                                    };
+
+                                    $assigned = $workstation->pivot->assigned_user
+                                        ? " · Usuario: {$workstation->pivot->assigned_user}"
+                                        : '';
+
+                                    return "{$label}{$code} — {$status}{$assigned}";
+                                })->toArray();
+                            })
+                            ->placeholder('Sin estaciones asignadas'),
+                    ])
+                    ->columns(1),
+                InfoSection::make('Notas')
+                    ->schema([
+                        TextEntry::make('access_instructions')
+                            ->label('Instrucciones de acceso')
+                            ->markdown()
+                            ->placeholder('—'),
+                        TextEntry::make('notes')
+                            ->label('Notas internas')
+                            ->markdown()
+                            ->placeholder('—'),
+                    ])
+                    ->columns(1),
             ]);
     }
 
