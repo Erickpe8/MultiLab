@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ClassroomLoanResource extends Resource
 {
@@ -50,10 +51,13 @@ class ClassroomLoanResource extends Resource
                             ->default('B201')
                             ->maxLength(20)
                             ->readonly()
+                            ->disabled()
                             ->required(),
                         Forms\Components\Select::make('requested_by')
-                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role('docente'))
+                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role(['docente', 'superadmin', 'aux_admin']))
                             ->label('Docente solicitante')
+                            ->default(Auth::id())
+                            ->disabled(fn () => Auth::user()->hasRole('docente'))
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
