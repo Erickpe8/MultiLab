@@ -1,72 +1,115 @@
 {{-- resources/views/usermanagement/partials/blocked-users.blade.php --}}
+@php
+    use Illuminate\Support\Str;
+@endphp
 <div class="space-y-4">
-    <div class="flex flex-col gap-2 pb-4 border-b border-[var(--border)]">
+    <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
         <div class="flex items-center gap-3">
             <div
-                class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-red-600/10 flex items-center justify-center">
-                <x-ui.icon name="user-minus" size="lg" class="text-red-600 dark:text-red-400" />
+                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-600/10
+                        flex items-center justify-center">
+                <x-ui.icon name="lock-closed" size="lg" class="text-red-500 dark:text-red-300" />
             </div>
             <div>
-                <h3 class="text-lg font-bold text-[var(--text)]">Usuarios Bloqueados</h3>
+                <h3 class="text-lg font-bold text-[var(--text)]">
+                    Usuarios Bloqueados
+                </h3>
                 <p class="text-sm text-[var(--text-muted)]">
-                    Las cuentas suspendidas por seguridad se muestran aquí; desbloqueos serán notificados al equipo.
+                    {{ $blockedUsers->total() }} {{ Str::plural('usuario bloqueado', $blockedUsers->total()) }}
                 </p>
             </div>
         </div>
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-xs font-semibold text-red-600 uppercase tracking-[0.35em]">
-            <x-ui.icon name="lock-closed" size="xs" class="text-red-600" />
-            Estado: bloqueado
-        </div>
+        <p class="text-sm text-[var(--text-muted)]">
+            Solo verás cuentas suspendidas. Usa la búsqueda para localizar nombres, correos o roles y reactivar rápidamente.
+        </p>
     </div>
 
-    <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        @foreach (request()->except('blocked_search', 'blocked_page', 'view') as $key => $value)
+    <form method="GET" id="blocked-users-filter-form" class="flex flex-col gap-3">
+        @foreach (request()->except('blocked_search', 'blocked_role', 'blocked_page', 'view') as $key => $value)
             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
         @endforeach
+        <input type="hidden" name="view" value="blocked">
 
-        <div class="relative">
-            <input type="hidden" name="view" value="blocked">
-            <input type="text" name="blocked_search" value="{{ request('blocked_search') }}"
-                placeholder="Buscar por nombre o email..."
-                class="w-full pl-10 pr-4 py-2 rounded-lg border border-[var(--border)]
-                      bg-[var(--card)] text-[var(--text)] text-sm
-                      focus:ring-2 focus:ring-red-500 focus:border-transparent
-                      placeholder:text-[var(--text-muted)] transition-all">
-            <x-ui.icon name="buscar" size="sm"
-                class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div class="flex-1 relative">
+                <input type="text" name="blocked_search" id="blocked-search-input"
+                    value="{{ request('blocked_search') }}"
+                    placeholder="Buscar por nombre o correo"
+                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-[var(--border)]
+                          bg-[var(--card)] text-[var(--text)] text-sm
+                          focus:ring-2 focus:ring-red-500 focus:border-transparent
+                          placeholder:text-[var(--text-muted)] transition-all">
+                <x-ui.icon name="buscar" size="sm"
+                    class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
+            </div>
+
+            <div class="relative w-full sm:w-64">
+                <label for="blocked-role-select" class="sr-only">Rol</label>
+                <select name="blocked_role" id="blocked-role-select"
+                    class="w-full px-4 py-2 rounded-lg border border-[var(--border)]
+                           bg-[var(--card)] text-[var(--text)] text-sm
+                           focus:ring-2 focus:ring-red-500 focus:border-transparent
+                           appearance-none transition-all">
+                    <option value="">Todos los roles</option>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->name }}"
+                            {{ request('blocked_role') === $role->name ? 'selected' : '' }}>
+                            {{ ucfirst($role->name) }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-ui.icon name="expandir" size="sm"
+                    class="absolute right-3 top-2.5 text-[var(--text-muted)] pointer-events-none" />
+            </div>
         </div>
 
-        <div class="flex gap-2">
-            <button type="submit"
-                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
-                       bg-red-600 hover:bg-red-700 text-white text-sm font-medium
-                       transition-colors">
-                <x-ui.icon name="filtrar" size="sm" class="text-white" />
-                Filtrar
-            </button>
-            @if (request('blocked_search'))
-                <a href="{{ route('user-management.index', array_filter(request()->except('blocked_search', 'blocked_page'))) }}"
-                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg
-                          border border-[var(--border)] text-[var(--text)] text-sm font-medium
-                          hover:bg-[var(--border)]/5 transition-colors">
-                    <x-ui.icon name="cerrar" size="sm" class="text-[var(--text)]" />
-                    Limpiar
+        @if (request('blocked_search') || request('blocked_role'))
+            <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-[var(--text-muted)]">
+                <span>
+                    Filtrando por:
+                    @if (request('blocked_search'))
+                        “{{ request('blocked_search') }}”
+                    @endif
+                    @if (request('blocked_role'))
+                        ({{ ucfirst(request('blocked_role')) }})
+                    @endif
+                </span>
+                <a href="{{ route('user-management.index', ['view' => 'blocked']) }}"
+                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full border border-[var(--border)]
+                          bg-[var(--card)] text-[var(--text)] hover:border-[var(--accent)]/60 transition-colors">
+                    <x-ui.icon name="cerrar" size="xs" class="text-[var(--text-muted)]" />
+                    Limpiar filtros
                 </a>
-            @endif
-        </div>
+            </div>
+        @endif
     </form>
 
     <div id="blocked-users-container">
         @if ($blockedUsers->count() > 0)
             <div class="overflow-x-auto rounded-lg border border-[var(--border)]">
-                <table class="w-full text-sm">
+                <table class="w-full" id="blocked-users-table">
                     <thead>
-                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)] text-[var(--text-muted)] uppercase tracking-[0.3em] text-xs">
-                            <th class="px-6 py-3 text-left">Usuario</th>
-                            <th class="px-6 py-3 text-left hidden md:table-cell">Email</th>
-                            <th class="px-6 py-3 text-left hidden lg:table-cell">Rol</th>
-                            <th class="px-6 py-3 text-center">Estado</th>
-                            <th class="px-6 py-3 text-right">Acciones</th>
+                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)]">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                Usuario
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
+                                Email
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
+                                Rol
+                            </th>
+                            <th
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th
+                                class="px-6 py-3 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                Acciones
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[var(--border)]">
@@ -74,8 +117,8 @@
                             @php
                                 $mainRole = $user->roles->first()->name ?? 'Sin rol';
                             @endphp
-                            <tr>
-                                <td class="px-6 py-4">
+                            <tr class="hover:bg-[var(--border)]/5 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div
                                             class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-rose-500
@@ -144,18 +187,55 @@
                     <x-ui.icon name="lock-closed" size="xl" class="w-10 h-10 text-red-600 dark:text-red-400" />
                 </div>
                 <h4 class="text-lg font-semibold text-[var(--text)] mb-1">
-                    No hay usuarios bloqueados
+                    @if (request('blocked_search') || request('blocked_role'))
+                        No se encontraron resultados
+                    @else
+                        No hay usuarios bloqueados
+                    @endif
                 </h4>
                 <p class="text-sm text-[var(--text-muted)] mb-4">
-                    Las cuentas bloqueadas aparecerán aquí una vez que se active el nuevo flujo.
+                    @if (request('blocked_search') || request('blocked_role'))
+                        Ajusta los filtros o limpia la búsqueda para reintentar.
+                    @else
+                        Las cuentas bloqueadas aparecerán aquí una vez que sean suspendidas.
+                    @endif
                 </p>
-                <button type="button"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/30 text-red-600 text-sm font-semibold
-                           hover:bg-red-500/10 transition-colors cursor-not-allowed opacity-70">
-                    <x-ui.icon name="lock-open" size="sm" class="text-red-600" />
-                    En desarrollo
-                </button>
+                @if (request('blocked_search') || request('blocked_role'))
+                    <a href="{{ route('user-management.index', ['view' => 'blocked']) }}"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                              bg-[var(--primary)] text-white font-medium
+                              hover:bg-[var(--primary)]/90 transition-colors">
+                        <x-ui.icon name="cerrar" size="sm" class="text-white" />
+                        Limpiar filtros
+                    </a>
+                @endif
             </div>
         @endif
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('blocked-users-filter-form');
+        const searchInput = document.getElementById('blocked-search-input');
+        const roleSelect = document.getElementById('blocked-role-select');
+        let debounceTimeout;
+
+        const submitForm = () => {
+            if (form) {
+                form.submit();
+            }
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(submitForm, 400);
+            });
+        }
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', submitForm);
+        }
+    });
+</script>

@@ -20,28 +20,32 @@
             </div>
         </div>
 
-        <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach (request()->except('active_search', 'active_role', 'active_page') as $key => $value)
+        <form method="GET" id="active-users-filter-form"
+            class="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+            @foreach (request()->except('active_search', 'active_role', 'view', 'active_page') as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach
+            <input type="hidden" name="view" value="active">
 
-            <div class="relative">
-                <input type="text" name="active_search" value="{{ request('active_search') }}"
-                    placeholder="Buscar por nombre o email..."
-                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-[var(--border)]
-                              bg-[var(--card)] text-[var(--text)] text-sm
-                              focus:ring-2 focus:ring-green-500 focus:border-transparent
-                              placeholder:text-[var(--text-muted)] transition-all">
-                <x-ui.icon name="buscar" size="sm"
-                    class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
+            <div class="flex-1 min-w-0">
+                <div class="relative">
+                    <input type="text" name="active_search" id="active-search-input"
+                        value="{{ request('active_search') }}"
+                        placeholder="Buscar por nombre o correo"
+                        class="w-full h-10 rounded-xl border border-[var(--border)] bg-[var(--card)]
+                              text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] px-4 transition-all
+                              focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20">
+                    <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
+                        <x-ui.icon name="buscar" size="sm" class="text-[var(--text-muted)]" />
+                    </div>
+                </div>
             </div>
 
-            <div class="relative">
-                <select name="active_role"
-                    class="w-full px-4 py-2 rounded-lg border border-[var(--border)]
-                               bg-[var(--card)] text-[var(--text)] text-sm
-                               focus:ring-2 focus:ring-green-500 focus:border-transparent
-                               transition-all appearance-none">
+            <div class="w-full md:w-auto relative">
+                <label for="active-role-select" class="sr-only">Rol</label>
+                <select name="active_role" id="active-role-select"
+                    class="w-full md:w-56 h-10 rounded-xl border border-[var(--border)] bg-[var(--card)]
+                           text-sm text-[var(--text)] px-3 transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20">
                     <option value="">Todos los roles</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role->name }}"
@@ -54,28 +58,27 @@
                     class="absolute right-3 top-3 text-[var(--text-muted)] pointer-events-none" />
             </div>
 
-            <div class="flex gap-2">
-                <button type="submit"
-                    class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
-                               bg-green-600 hover:bg-green-700 text-white text-sm font-medium
-                               transition-colors">
-                    <x-ui.icon name="filtrar" size="sm" class="text-white" />
-                    Filtrar
-                </button>
-
-                @if (request('active_search') || request('active_role'))
-                    <a href="{{ route('user-management.index', array_filter(request()->except('active_search', 'active_role', 'active_page'))) }}"
-                        class="inline-flex items-center justify-center px-4 py-2 rounded-lg
-                              border border-[var(--border)] text-[var(--text)] text-sm font-medium
-                              hover:bg-[var(--border)]/5 transition-colors">
-                        <x-ui.icon name="cerrar" size="sm" class="text-[var(--text)]" />
+            @if (request('active_search') || request('active_role'))
+                <div class="text-[var(--text)] text-xs font-semibold flex items-center gap-2">
+                    <span>Filtros activos:</span>
+                    <span class="text-[var(--text-muted)]">
+                        @if (request('active_search'))
+                            “{{ request('active_search') }}”
+                        @endif
+                        @if (request('active_role'))
+                            ({{ ucfirst(request('active_role')) }})
+                        @endif
+                    </span>
+                    <a href="{{ route('user-management.index', ['view' => 'active']) }}"
+                        class="text-[var(--accent)] hover:underline">
+                        Limpiar
                     </a>
-                @endif
-            </div>
+                </div>
+            @endif
         </form>
     </div>
 
-    <div id="active-users-container">
+        <div id="active-users-container" class="mt-4">
         @if ($activeUsers->count() > 0)
             <div class="overflow-x-auto rounded-lg border border-[var(--border)]">
                 <table class="w-full" id="active-users-table">
@@ -122,8 +125,32 @@
                                             </div>
                                             <div class="text-sm text-[var(--text-muted)] md:hidden">
                                                 {{ $user->email }}
-                                            </div>
-                                        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('active-users-filter-form');
+                const searchInput = document.getElementById('active-search-input');
+                const roleSelect = document.getElementById('active-role-select');
+                let debounceTimeout;
+
+                const submitForm = () => {
+                    if (form) {
+                        form.submit();
+                    }
+                };
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', function () {
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = setTimeout(submitForm, 400);
+                    });
+                }
+
+                if (roleSelect) {
+                    roleSelect.addEventListener('change', submitForm);
+                }
+            });
+        </script>
+    </div>
                                     </div>
                                 </td>
 

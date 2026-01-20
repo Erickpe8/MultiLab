@@ -25,6 +25,7 @@ class UserManagementController extends Controller
         $activeSearch     = $request->get('active_search', '');
         $activeRoleFilter = $request->get('active_role', '');
         $blockedSearch    = $request->get('blocked_search', '');
+        $blockedRoleFilter = $request->get('blocked_role', '');
         $pendingPerPage   = $request->get('pending_per_page', 10);
         $activePerPage    = $request->get('active_per_page', 10);
         $blockedPerPage   = $request->get('blocked_per_page', 10);
@@ -86,6 +87,12 @@ class UserManagementController extends Controller
                 });
             }
 
+            if ($blockedRoleFilter !== '') {
+                $blockedQuery->whereHas('roles', function ($q) use ($blockedRoleFilter) {
+                    $q->where('name', $blockedRoleFilter);
+                });
+            }
+
             $blockedUsers = $blockedQuery
                 ->orderBy('created_at', 'desc')
                 ->paginate($blockedPerPage, ['*'], 'blocked_page')
@@ -109,7 +116,8 @@ class UserManagementController extends Controller
             'activeSearch',
             'blockedSearch',
             'activeRoleFilter',
-            'blockedPerPage'
+            'blockedPerPage',
+            'blockedRoleFilter'
         ));
     }
 
