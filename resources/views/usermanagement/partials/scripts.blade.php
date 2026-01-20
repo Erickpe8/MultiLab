@@ -37,10 +37,19 @@
      * Handles all client-side interactions for user management
      */
 
+    const badgeActiveIcon = {!! json_encode($badgeActiveIcon) !!};
+    const badgeInactiveIcon = {!! json_encode($badgeInactiveIcon) !!};
+    const spinnerIcon = {!! json_encode($spinnerIcon) !!};
+    const notificationIcons = {
+        success: {!! json_encode($notificationSuccessIcon) !!},
+        error: {!! json_encode($notificationErrorIcon) !!},
+        info: {!! json_encode($notificationInfoIcon) !!}
+    };
+
     // ============================================
     // HELPER: Get CSRF Token
     // ============================================
-function getCsrfToken() {
+    function getCsrfToken() {
         const metaToken = document.querySelector('meta[name="csrf-token"]');
         if (metaToken) {
             return metaToken.content;
@@ -115,42 +124,28 @@ function getCsrfToken() {
         if (roleSelect) roleSelect.value = currentRole || '';
         if (areaInput) areaInput.value = currentArea || '';
 
-        // Configurar el toggle del estado
         if (isActiveCheckbox) {
             isActiveCheckbox.checked = isActive;
+            isActiveCheckbox.disabled = true;
         }
 
-        // Actualizar label del toggle
         if (statusLabel) {
-            if (isActive) {
-                statusLabel.innerHTML = '<span class="text-green-600 dark:text-green-400 font-semibold">Activo</span>';
-            } else {
-                statusLabel.innerHTML = '<span class="text-red-600 dark:text-red-400 font-semibold">Inactivo</span>';
-    }
-}
+            statusLabel.innerHTML = isActive
+                ? '<span class="text-green-600 dark:text-green-400 font-semibold">Activo</span>'
+                : '<span class="text-red-600 dark:text-red-400 font-semibold">Inactivo</span>';
+        }
 
-const badgeActiveIcon = {!! json_encode($badgeActiveIcon) !!};
-const badgeInactiveIcon = {!! json_encode($badgeInactiveIcon) !!};
-const spinnerIcon = {!! json_encode($spinnerIcon) !!};
-const notificationIcons = {
-    success: {!! json_encode($notificationSuccessIcon) !!},
-    error: {!! json_encode($notificationErrorIcon) !!},
-    info: {!! json_encode($notificationInfoIcon) !!},
-};
-
-        // Actualizar badge de estado en la tarjeta de usuario
         if (statusBadge) {
-            if (isActive) {
-            statusBadge.innerHTML = `
+            statusBadge.innerHTML = isActive
+                ? `
                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
                                 bg-green-500/20 text-green-700 dark:text-green-300
                                 border border-green-500/30">
                         ${badgeActiveIcon}
                         Activo
                     </span>
-                `;
-            } else {
-            statusBadge.innerHTML = `
+                `
+                : `
                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
                                 bg-red-500/20 text-red-700 dark:text-red-300
                                 border border-red-500/30">
@@ -158,7 +153,6 @@ const notificationIcons = {
                         Inactivo
                     </span>
                 `;
-            }
         }
 
         window.dispatchEvent(new CustomEvent('open-modal', {
@@ -329,7 +323,6 @@ const notificationIcons = {
         const userId = document.getElementById('edit-user-id').value;
         const role = document.getElementById('edit-role').value;
         const area = document.getElementById('edit-area').value;
-        const isActive = document.getElementById('edit-is-active').checked;
         const form = event.target;
         const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -338,7 +331,7 @@ const notificationIcons = {
             return;
         }
 
-        console.log('📤 Submitting edit role form:', { userId, role, area, isActive });
+        console.log('📤 Submitting edit role form:', { userId, role, area });
 
         submitBtn.disabled = true;
         const originalHTML = submitBtn.innerHTML;
@@ -363,7 +356,6 @@ const notificationIcons = {
                 body: JSON.stringify({
                     role: role,
                     area: area || null,
-                    is_active: isActive
                 })
             });
 
@@ -381,6 +373,72 @@ const notificationIcons = {
             window.notify?.show(error.message || 'Error de conexión', 'error');
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalHTML;
+        }
+    }
+
+    async function confirmBlockUser(userId, userName, button) {
+        if (!userId) {
+            window.notify?.show('ID de usuario inválido', 'error');
+            return;
+        }
+
+        if (!window.confirm(`¿Bloquear a ${userName}? Esta acción suspenderá su acceso.`)) {
+            return;
+        }
+
+        await handleBlockToggle(`/user-management/${userId}/block`, button, `Usuario ${userName} bloqueado correctamente.`);
+    }
+
+    async function confirmUnblockUser(userId, userName, button) {
+        if (!userId) {
+            window.notify?.show('ID de usuario inválido', 'error');
+            return;
+        }
+
+        if (!window.confirm(`¿Desbloquear a ${userName}?`)) {
+            return;
+        }
+
+        await handleBlockToggle(`/user-management/${userId}/unblock`, button, `Usuario ${userName} desbloqueado correctamente.`);
+    }
+
+    async function handleBlockToggle(url, button, successMessage) {
+        const targetBtn = button || document.createElement('button');
+        const originalHTML = targetBtn.innerHTML;
+        targetBtn.disabled = true;
+        targetBtn.innerHTML = `
+            ${spinnerIcon}
+            <span>Procesando...</span>
+        `;
+
+        try {
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                throw new Error('CSRF token no encontrado');
+            }
+
+            const response = await fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                window.notify?.show(data.message || successMessage, 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                throw new Error(data.error || data.message || 'Error de conexión');
+            }
+        } catch (error) {
+            console.error('❌ Error:', error);
+            window.notify?.show(error.message || 'Error de conexión', 'error');
+            targetBtn.disabled = false;
+            targetBtn.innerHTML = originalHTML;
         }
     }
 

@@ -15,15 +15,16 @@
                 'cards' => [
                     [
                         'title' => 'Usuarios Activos',
-                        'description' => 'Revisa los usuarios con sesiones activas y accesos vigentes.',
+                        'description' => 'Usuarios con acceso vigente y roles asignados.',
                         'icon' => 'heroicon-o-user-group',
                         'route' => 'user-management.index',
+                        'params' => ['view' => 'active'],
                         'badge' => 'Usuarios',
-                        'cta' => 'Ver panel de usuarios',
+                        'cta' => 'Ver usuarios',
                     ],
                     [
                         'title' => 'Solicitudes Pendientes',
-                        'description' => 'Aprueba registros nuevos o solicitudes de actualización.',
+                        'description' => 'Registros nuevos en revisión por el equipo de vigilancia.',
                         'icon' => 'heroicon-o-clock',
                         'route' => 'user-management.pending',
                         'badge' => 'Flujos',
@@ -31,7 +32,7 @@
                     ],
                     [
                         'title' => 'Usuarios Bloqueados',
-                        'description' => 'Identifica cuentas suspendidas o bloqueadas por seguridad.',
+                        'description' => 'Cuentas suspendidas temporalmente por control de seguridad.',
                         'icon' => 'heroicon-o-user-minus',
                         'route' => 'user-management.blocked',
                         'badge' => 'Seguridad',
@@ -62,18 +63,24 @@
                     ],
                 ],
             ],
+        ];
+    @endphp
 
     <div class="space-y-8">
         <section class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm backdrop-blur-sm">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Bienvenido</p>
-                    <h2 class="text-2xl font-semibold text-[var(--text)]">¡Hola, {{ auth()->user()->name }}!</h2>
+                    <h2 class="text-2xl font-semibold text-[var(--text)]">
+                        ¡Hola, {{ auth()->user()->name }}!
+                    </h2>
                     <p class="mt-1 text-sm text-[var(--text-muted)]">
                         Accede a las secciones principales desde este panel personalizado.
                     </p>
                 </div>
-                <div class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--border)]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--border)]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
                     <x-ui.icon name="heroicon-o-shield-check" size="sm" class="text-[var(--primary)]" />
                     Cuenta activa
                 </div>
@@ -86,7 +93,7 @@
                     <div>
                         <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">{{ $section['tag'] }}</p>
                         <h2 class="text-xl font-semibold text-[var(--text)]">{{ $section['title'] }}</h2>
-                        @if (! empty($section['subtitle']))
+                        @if (!empty($section['subtitle']))
                             <p class="text-sm text-[var(--text-muted)]">{{ $section['subtitle'] }}</p>
                         @endif
                     </div>
@@ -96,33 +103,45 @@
                     @foreach ($section['cards'] as $card)
                         @php
                             $routeName = $card['route'] ?? null;
+                            $routeParams = $card['params'] ?? [];
                             $hasRoute = $routeName ? \Illuminate\Support\Facades\Route::has($routeName) : false;
-                            $href = $hasRoute ? route($routeName) : ($card['href'] ?? '#');
+                            $href = $hasRoute ? route($routeName, $routeParams) : ($card['href'] ?? '#');
                         @endphp
 
                         <a href="{{ $href }}"
-                            @if (! $hasRoute)
-                                aria-disabled="true"
-                            @endif
+                            aria-disabled="{{ $hasRoute ? 'false' : 'true' }}"
                             class="group block min-h-full rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 py-6 text-[var(--text)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $hasRoute ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]' : 'cursor-not-allowed opacity-70' }}">
                             <div class="flex items-center justify-between gap-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--border)]/30 text-[var(--primary)]">
-                                    <x-ui.icon :name="$card['icon']" size="lg" />
+                                <div
+                                    class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--border)]/30 text-[var(--primary)]">
+                                    {{-- OJO: aquí NO uses :name en Blade si no estás seguro; usa name con {{ }} --}}
+                                    <x-ui.icon name="{{ $card['icon'] }}" size="lg" />
                                 </div>
+
                                 <span class="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-[var(--text-muted)]">
                                     {{ $card['badge'] ?? 'Acceso' }}
                                 </span>
                             </div>
 
                             <h3 class="mt-6 text-lg font-semibold text-[var(--text)]">{{ $card['title'] }}</h3>
+
                             <p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
                                 {{ $card['description'] }}
                             </p>
 
-                            <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] group-hover:underline">
-                                {{ $card['cta'] ?? 'Ir al módulo' }}
-                                <x-ui.icon name="siguiente" size="sm" class="text-[var(--accent)]" />
-                            </span>
+                            <div class="mt-4 flex flex-col gap-2">
+                                <span
+                                    class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] {{ $hasRoute ? 'group-hover:underline' : '' }}">
+                                    {{ $card['cta'] ?? 'Ir al módulo' }}
+                                    <x-ui.icon name="siguiente" size="sm" class="text-[var(--accent)]" />
+                                </span>
+                                @unless ($hasRoute)
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.35em] text-[var(--text-muted)]">
+                                        <x-ui.icon name="advertencia" size="xs" class="text-yellow-500" />
+                                        Próximamente
+                                    </span>
+                                @endunless
+                            </div>
                         </a>
                     @endforeach
                 </div>

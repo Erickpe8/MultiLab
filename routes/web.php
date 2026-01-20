@@ -65,9 +65,15 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
     ->name('user-management.')
     ->group(function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::get('/pending', fn () => redirect()->route('user-management.index', ['view' => 'pending']))
+            ->name('pending');
+        Route::get('/blocked', fn () => redirect()->route('user-management.index', ['view' => 'blocked']))
+            ->name('blocked');
         Route::post('{user}/approve', [UserManagementController::class, 'approve'])->name('approve');
         Route::delete('{user}/reject', [UserManagementController::class, 'reject'])->name('reject');
         Route::patch('{user}/deactivate', [UserManagementController::class, 'deactivate'])->name('deactivate');
+        Route::patch('{user}/block', [UserManagementController::class, 'block'])->name('block');
+        Route::patch('{user}/unblock', [UserManagementController::class, 'unblock'])->name('unblock');
         Route::put('{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
         Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
     });

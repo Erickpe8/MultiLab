@@ -57,14 +57,14 @@
                                 Estado del Usuario
                             </label>
                             <p class="text-xs text-[var(--text-muted)] mt-0.5">
-                                Activa o desactiva el acceso del usuario al sistema
+                                El estado de bloqueo/desbloqueo se gestiona desde los botones correspondientes.
                             </p>
                         </div>
                     </div>
 
                     <!-- Toggle Switch -->
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="edit-is-active" name="is_active" class="sr-only peer" checked>
+                    <label class="relative inline-flex items-center cursor-not-allowed">
+                        <input type="checkbox" id="edit-is-active" class="sr-only peer" checked disabled>
                         <div
                             class="w-14 h-7 bg-gray-300 dark:bg-gray-600 rounded-full peer
                                     peer-checked:after:translate-x-full peer-checked:after:border-white

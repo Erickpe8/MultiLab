@@ -150,27 +150,38 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button type="button"
-                                            onclick="openEditRoleModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($mainRole) }}', '', {{ $user->is_active ? 'true' : 'false' }})"
-                                            class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                                    bg-blue-500/10 text-blue-600 dark:text-blue-400
-                                                    hover:bg-blue-500/20 transition-all
-                                                    border border-blue-500/20 hover:border-blue-500/40"
-                                            title="Editar usuario">
-                                            <x-ui.icon name="editar" size="sm"
-                                                class="text-blue-600 dark:text-blue-400" />
-                                        </button>
+                                    <button type="button"
+                                        onclick="openEditRoleModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($mainRole) }}', '', {{ $user->is_active ? 'true' : 'false' }})"
+                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
+                                                bg-blue-500/10 text-blue-600 dark:text-blue-400
+                                                hover:bg-blue-500/20 transition-all
+                                                border border-blue-500/20 hover:border-blue-500/40"
+                                        title="Editar usuario">
+                                        <x-ui.icon name="editar" size="sm"
+                                            class="text-blue-600 dark:text-blue-400" />
+                                    </button>
 
-                                        <button type="button"
-                                            onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                            class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                                   bg-red-500/10 text-red-600 dark:text-red-400
-                                                   hover:bg-red-500/20 transition-all
-                                                   border border-red-500/20 hover:border-red-500/40"
-                                            title="Eliminar usuario">
-                                            <x-ui.icon name="eliminar" size="sm"
-                                                class="text-red-600 dark:text-red-400" />
-                                        </button>
+                                    <button type="button"
+                                        onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', this)"
+                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
+                                               bg-amber-500/10 text-amber-600 dark:text-amber-400
+                                               hover:bg-amber-500/20 transition-all
+                                               border border-amber-500/20 hover:border-amber-500/40"
+                                        title="Bloquear usuario">
+                                        <x-ui.icon name="lock-closed" size="sm"
+                                            class="text-amber-600 dark:text-amber-400" />
+                                    </button>
+
+                                    <button type="button"
+                                        onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
+                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
+                                               bg-red-500/10 text-red-600 dark:text-red-400
+                                               hover:bg-red-500/20 transition-all
+                                               border border-red-500/20 hover:border-red-500/40"
+                                        title="Eliminar usuario">
+                                        <x-ui.icon name="eliminar" size="sm"
+                                            class="text-red-600 dark:text-red-400" />
+                                    </button>
                                     </div>
                                 </td>
                             </tr>

@@ -215,7 +215,7 @@
 <body class="font-sans antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
     {{ \Filament\Facades\Filament::renderHook('panels::body.start') }}
     @stack('body_start')
-    <div class="min-h-screen flex flex-col">
+    <div class="min-h-screen flex bg-[var(--bg)]">
         <div class="flex flex-1">
             <!-- Sidebar fijo en escritorio / off-canvas en móvil -->
             @include('layouts.navigation')
@@ -225,7 +225,7 @@
                 @click="sidebarOpen=false" style="display: none;"></div>
 
             <!-- Contenido -->
-            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col lg:pl-8">
+            <div class="flex-1 flex flex-col min-h-screen">
                 <!-- Topbar móvil -->
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
                     <div class="h-14 px-4 flex items-center justify-between">
@@ -249,8 +249,8 @@
                     </header>
                 @endif
 
-                <main class="flex-1">
-                    <div class="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+                <main class="flex-1 flex flex-col">
+                    <div class="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
                         {{ $slot }}
                     </div>
                 </main>

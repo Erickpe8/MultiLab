@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,18 +17,23 @@ class UserManagementController extends Controller
             abort(403, 'No tienes permisos para acceder a esta sección.');
         }
 
-        $view = $request->get('view', 'pending');
+        $requestedView = $request->get('view', 'active');
+        $allowedViews = ['active', 'pending', 'blocked'];
+        $view = in_array($requestedView, $allowedViews, true) ? $requestedView : 'active';
 
         $pendingSearch    = $request->get('pending_search', '');
         $activeSearch     = $request->get('active_search', '');
         $activeRoleFilter = $request->get('active_role', '');
+        $blockedSearch    = $request->get('blocked_search', '');
         $pendingPerPage   = $request->get('pending_per_page', 10);
         $activePerPage    = $request->get('active_per_page', 10);
+        $blockedPerPage   = $request->get('blocked_per_page', 10);
 
         $pendingUsers = collect();
 
         if ($view === 'pending') {
-            $pendingQuery = User::where('is_active', false);
+            $pendingQuery = User::where('is_active', false)
+                ->where('is_blocked', false);
 
             if ($pendingSearch !== '') {
                 $pendingQuery->where(function ($q) use ($pendingSearch) {
@@ -45,7 +51,9 @@ class UserManagementController extends Controller
         $activeUsers = collect();
 
         if ($view === 'active') {
-            $activeQuery = User::where('is_active', true)->with('roles');
+            $activeQuery = User::where('is_active', true)
+                ->where('is_blocked', false)
+                ->with('roles');
 
             if ($activeSearch !== '') {
                 $activeQuery->where(function ($q) use ($activeSearch) {
@@ -66,6 +74,24 @@ class UserManagementController extends Controller
                 ->withQueryString();
         }
 
+        $blockedUsers = collect();
+
+        if ($view === 'blocked') {
+            $blockedQuery = User::where('is_blocked', true)->with('roles');
+
+            if ($blockedSearch !== '') {
+                $blockedQuery->where(function ($q) use ($blockedSearch) {
+                    $q->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$blockedSearch}%")
+                        ->orWhere('email', 'like', "%{$blockedSearch}%");
+                });
+            }
+
+            $blockedUsers = $blockedQuery
+                ->orderBy('created_at', 'desc')
+                ->paginate($blockedPerPage, ['*'], 'blocked_page')
+                ->withQueryString();
+        }
+
         $roles = Role::whereIn('name', [
             'superadmin',
             'aux_admin',
@@ -77,10 +103,13 @@ class UserManagementController extends Controller
             'view',
             'pendingUsers',
             'activeUsers',
+            'blockedUsers',
             'roles',
             'pendingSearch',
             'activeSearch',
-            'activeRoleFilter'
+            'blockedSearch',
+            'activeRoleFilter',
+            'blockedPerPage'
         ));
     }
 
@@ -97,6 +126,7 @@ class UserManagementController extends Controller
 
             $validated = $request->validate([
                 'role' => 'required|exists:roles,name',
+                'area' => 'nullable|string|max:200',
             ]);
 
             Log::info('Aprobando usuario', [
@@ -108,11 +138,30 @@ class UserManagementController extends Controller
 
             DB::beginTransaction();
 
+            $before = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
             $user->is_active = true;
+            $user->is_blocked = false;
+            $user->area = $validated['area'] ?? null;
+            $user->role_name = $validated['role'];
             $user->save();
 
             $user->syncRoles([$validated['role']]);
             $user->refresh()->load('roles');
+
+            $after = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
+            $this->recordAudit($user, 'update', $before, $after);
 
             DB::commit();
 
@@ -168,6 +217,15 @@ class UserManagementController extends Controller
                 'rejected_by'=> auth()->id(),
             ]);
 
+            $before = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
+            $this->recordAudit($user, 'delete', $before, []);
+
             $user->delete();
 
             return response()->json([
@@ -193,21 +251,27 @@ class UserManagementController extends Controller
             }
 
             $validated = $request->validate([
-                'role'      => 'required|exists:roles,name',
-                'is_active' => 'required|boolean',
+                'role' => 'required|exists:roles,name',
+                'area' => 'nullable|string|max:200',
             ]);
 
             Log::info('Actualizando usuario', [
-                'user_id'       => $user->id,
-                'old_roles'     => $user->roles->pluck('name')->toArray(),
-                'new_role'      => $validated['role'],
-                'old_is_active' => $user->is_active,
-                'new_is_active' => $validated['is_active'],
+                'user_id'   => $user->id,
+                'old_roles' => $user->roles->pluck('name')->toArray(),
+                'new_role'  => $validated['role'],
             ]);
 
             DB::beginTransaction();
 
-            $user->is_active = $validated['is_active'];
+            $before = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
+            $user->role_name = $validated['role'];
+            $user->area = $validated['area'] ?? null;
             $user->save();
 
             $user->syncRoles([$validated['role']]);
@@ -215,11 +279,18 @@ class UserManagementController extends Controller
 
             DB::commit();
 
-            $statusMessage = $validated['is_active'] ? 'activado' : 'desactivado';
+            $after = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
+            $this->recordAudit($user, 'update', $before, $after);
 
             return response()->json([
                 'success' => true,
-                'message' => "Usuario {$user->name} actualizado correctamente. Estado: {$statusMessage}.",
+                'message' => "Usuario {$user->name} actualizado correctamente.",
                 'user'    => [
                     'id'        => $user->id,
                     'name'      => $user->name,
@@ -249,32 +320,17 @@ class UserManagementController extends Controller
 
     public function deactivate(User $user)
     {
-        try {
-            if (!auth()->user() || !auth()->user()->hasRole('superadmin')) {
-                return response()->json(['error' => 'No autorizado'], 403);
-            }
+        return $this->block($user);
+    }
 
-            Log::info('Desactivando usuario', [
-                'user_id'    => $user->id,
-                'user_email' => $user->email,
-            ]);
+    public function block(User $user)
+    {
+        return $this->toggleBlockState($user, true);
+    }
 
-            $user->is_active = false;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => "Usuario {$user->name} desactivado correctamente.",
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Error al desactivar usuario', [
-                'user_id' => $user->id,
-                'error'   => $e->getMessage(),
-            ]);
-            return response()->json([
-                'error' => 'Error al desactivar usuario: ' . $e->getMessage(),
-            ], 500);
-        }
+    public function unblock(User $user)
+    {
+        return $this->toggleBlockState($user, false);
     }
 
     public function destroy(User $user)
@@ -297,6 +353,15 @@ class UserManagementController extends Controller
                 'user_email' => $user->email,
                 'deleted_by' => auth()->id(),
             ]);
+
+            $before = [
+                'is_active' => $user->is_active,
+                'is_blocked' => $user->is_blocked,
+                'role_name' => $user->role_name,
+                'area' => $user->area,
+            ];
+
+            $this->recordAudit($user, 'delete', $before, []);
 
             $user->delete();
 
@@ -324,5 +389,77 @@ class UserManagementController extends Controller
 
         return view('usermanagement.partials.show-user', compact('user'));
     }
-}
 
+    /**
+     * Toggle the blocked flag for a user.
+     */
+    private function toggleBlockState(User $user, bool $block)
+    {
+        if (!auth()->user() || !auth()->user()->hasRole('superadmin')) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        if ($block && ($user->is_blocked || ! $user->is_active)) {
+            return response()->json(['error' => 'El usuario no está en un estado válido para bloquearse.'], 400);
+        }
+
+        if (! $block && ! $user->is_blocked) {
+            return response()->json(['error' => 'El usuario no está bloqueado actualmente.'], 400);
+        }
+
+        $before = [
+            'is_active' => $user->is_active,
+            'is_blocked' => $user->is_blocked,
+            'role_name' => $user->role_name,
+            'area' => $user->area,
+        ];
+
+        $user->is_blocked = $block;
+        $user->is_active = ! $block;
+        $user->save();
+
+        $after = [
+            'is_active' => $user->is_active,
+            'is_blocked' => $user->is_blocked,
+            'role_name' => $user->role_name,
+            'area' => $user->area,
+        ];
+
+        $this->recordAudit($user, 'update', $before, $after);
+
+        $actionVerb = $block ? 'bloqueado' : 'desbloqueado';
+
+        Log::info(ucfirst($actionVerb) . ' usuario', [
+            'user_id'    => $user->id,
+            'user_email' => $user->email,
+            'blocked_by' => auth()->id(),
+            'is_blocked' => $user->is_blocked,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Usuario {$user->name} {$actionVerb} correctamente.",
+            'user'    => [
+                'id'        => $user->id,
+                'is_blocked' => $user->is_blocked,
+            ],
+        ], 200);
+    }
+
+    /**
+     * Auditoría simple para cambios críticos.
+     */
+    private function recordAudit(User $user, string $action, array $before = [], array $after = []): void
+    {
+        AuditLog::create([
+            'table_name'  => 'users',
+            'row_pk'      => (string) $user->id,
+            'action'      => $action,
+            'before_json' => $before ?: null,
+            'after_json'  => $after ?: null,
+            'user_id'     => auth()->id(),
+            'ip'          => request()->ip(),
+            'user_agent'  => request()->userAgent(),
+        ]);
+    }
+}
