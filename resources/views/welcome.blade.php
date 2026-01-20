@@ -28,11 +28,14 @@
 
     <style>
         body {
+            background-color: var(--bg);
+            color: var(--text);
             background-image: url('{{ asset('images/FESC.jpg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .bg-overlay {
@@ -93,7 +96,7 @@
 
         {{-- HEADER --}}
         <header class="shrink-0 border-b border-[var(--border)]
-                       bg-white/70 dark:bg-[#0f1115]/80 backdrop-blur-md">
+                       bg-[var(--card)]/90 backdrop-blur-md">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
                 <a href="{{ route('welcome') }}" class="flex items-center gap-3">
                     <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-10 sm:h-11 w-auto" />
@@ -120,7 +123,7 @@
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
                                     class="px-4 py-2 rounded-xl border border-[var(--border)]
-                                           bg-white/60 dark:bg-[var(--bg)]/35
+                                           bg-[var(--card)]/80
                                            text-sm font-semibold text-[var(--text)]
                                            hover:border-[var(--accent)] hover:text-[var(--accent)]
                                            transition">
@@ -129,7 +132,6 @@
                             @endif
                         @endauth
 
-                        <x-theme-toggle id="theme-toggle-welcome" size="md" />
                     @endif
                 </nav>
             </div>
@@ -141,7 +143,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8 h-full min-h-0 items-stretch">
 
                     <section class="h-full min-h-0 rounded-2xl border border-[var(--border)]
-                                    bg-white dark:bg-[#0f1115] shadow-xl
+                                    bg-[var(--card)] shadow-soft
                                     overflow-hidden flex flex-col">
                         <div class="px-5 sm:px-6 py-4 border-b border-[var(--border)]">
                             <h2 class="text-base sm:text-lg font-extrabold text-[var(--text)]">
@@ -189,7 +191,7 @@
                     </section>
 
                     <section class="h-full min-h-0 relative rounded-2xl border border-[var(--border)]
-                                    bg-white dark:bg-[#0f1115] shadow-xl
+                                    bg-[var(--card)] shadow-soft
                                     overflow-hidden flex flex-col">
                         <div class="absolute inset-0 pointer-events-none">
                             <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-40"
@@ -214,11 +216,7 @@
                                     class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
                                            bg-[var(--accent)] text-white hover:bg-[var(--primary)]
                                            shadow-sm transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                    <x-ui.icon name="info" size="md" class="text-current" />
                                     Ver más
                                 </a>
                             </div>

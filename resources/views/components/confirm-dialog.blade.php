@@ -17,6 +17,13 @@
     <div x-transition
         class="relative w-full max-w-md rounded-2xl border border-[color:var(--border)]
             bg-[var(--card)] p-6 shadow-2xl">
+        @php
+            $mappedIcon = match ($icon) {
+                'danger' => 'error',
+                'warn' => 'advertencia',
+                default => 'info',
+            };
+        @endphp
         <div class="flex items-start gap-3">
             <div
                 class="mt-0.5 shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full
@@ -24,10 +31,7 @@
                 @elseif($icon === 'warn') bg-yellow-500/15 text-yellow-500
                 @else bg-[var(--accent)]/15 text-[var(--accent)] @endif">
                 <!-- ícono -->
-                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                </svg>
+                <x-ui.icon name="{{ $mappedIcon }}" size="xl" class="w-10 h-10" />
             </div>
             <div>
                 <h3 class="text-lg font-bold text-[var(--text)]">{{ $title }}</h3>

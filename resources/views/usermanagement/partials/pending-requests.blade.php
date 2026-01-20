@@ -7,11 +7,8 @@
                 <div
                     class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500/20 to-yellow-600/10
                             flex items-center justify-center">
-                    <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                    <x-ui.icon name="advertencia" size="lg"
+                        class="text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-[var(--text)]">
@@ -35,11 +32,8 @@
                               focus:ring-2 focus:ring-yellow-500 focus:border-transparent
                               placeholder:text-[var(--text-muted)] transition-all"
                     onchange="this.form.submit()">
-                <svg class="w-5 h-5 absolute left-3 top-2.5 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <x-ui.icon name="buscar" size="sm"
+                    class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
             </form>
         </div>
 
@@ -50,10 +44,7 @@
                     class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm
                           border border-[var(--border)] text-[var(--text)]
                           hover:bg-[var(--border)]/5 transition-colors">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <x-ui.icon name="cerrar" size="sm" class="text-current" />
                     Limpiar búsqueda
                 </a>
             </div>
@@ -120,10 +111,7 @@
                                 <!-- Fecha (oculto en tablet) -->
                                 <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                                     <div class="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
+                                        <x-ui.icon name="hora" size="sm" class="text-[var(--text-muted)]" />
                                         <span>{{ $user->created_at->format('d/m/Y') }}</span>
                                     </div>
                                     <div class="text-xs text-[var(--text-muted)] mt-0.5">
@@ -152,11 +140,7 @@
                                                    hover:shadow-lg hover:scale-105 active:scale-95
                                                    transition-all duration-200"
                                             title="Aprobar usuario">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 13l4 4L19 7" />
-                                            </svg>
+                                            <x-ui.icon name="exito" size="sm" class="text-white" />
                                             <span class="hidden sm:inline">Aprobar</span>
                                         </button>
                                         <button type="button"
@@ -166,11 +150,7 @@
                                                    hover:bg-red-500/20 transition-all
                                                    border border-red-500/20 hover:border-red-500/40"
                                             title="Rechazar solicitud">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
+                                            <x-ui.icon name="eliminar" size="sm" class="text-red-600 dark:text-red-400" />
                                         </button>
                                     </div>
                                 </td>
@@ -190,11 +170,7 @@
             <!-- Estado vacío -->
             <div class="text-center py-12">
                 <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-green-500/10 flex items-center justify-center">
-                    <svg class="w-10 h-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <x-ui.icon name="exito" size="xl" class="w-10 h-10 text-green-600 dark:text-green-400" />
                 </div>
                 <h4 class="text-lg font-semibold text-[var(--text)] mb-1">
                     @if (request('pending_search'))
@@ -215,10 +191,7 @@
                         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
                               bg-[var(--primary)] text-white font-medium
                               hover:bg-[var(--primary)]/90 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                    <x-ui.icon name="cerrar" size="sm" class="text-white" />
                         Limpiar búsqueda
                     </a>
                 @endif

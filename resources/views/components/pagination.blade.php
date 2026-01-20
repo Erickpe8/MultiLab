@@ -79,17 +79,13 @@
                 @if ($paginator->onFirstPage())
                     <span class="px-3 py-2 bg-[var(--background)] text-[var(--text-muted)] cursor-not-allowed
                                          border-r border-[var(--border)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
+                    <x-ui.icon name="atras" size="sm" class="text-current" />
                     </span>
                 @else
                     <a href="{{ $paginator->previousPageUrl() }}" class="px-3 py-2 bg-[var(--background)] text-[var(--text)]
                                       hover:bg-[var(--border)]/10 transition-colors border-r border-[var(--border)]
                                       focus:z-10 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <x-ui.icon name="atras" size="sm" class="text-current" />
                     </a>
                 @endif
 
@@ -121,15 +117,11 @@
                     <a href="{{ $paginator->nextPageUrl() }}" class="px-3 py-2 bg-[var(--background)] text-[var(--text)]
                                       hover:bg-[var(--border)]/10 transition-colors
                                       focus:z-10 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)]">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <x-ui.icon name="siguiente" size="sm" class="text-current" />
                     </a>
                 @else
                     <span class="px-3 py-2 bg-[var(--background)] text-[var(--text-muted)] cursor-not-allowed">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <x-ui.icon name="siguiente" size="sm" class="text-current" />
                     </span>
                 @endif
             </div>

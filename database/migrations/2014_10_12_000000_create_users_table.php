@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('gender', 10)->nullable();  // 'M', 'F', 'Otro' / 'No especifica'
 
             $table->string('email')->unique();         // Correo institucional (o principal)
-            $table->string('profile_photo_path')->nullable(); // Avatar 
+            $table->string('profile_photo_path')->nullable(); // Avatar
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('role_name')->nullable();           // Rol "principal" interno (para filtros rápidos)
             $table->string('area')->nullable();                // Área POA: educacion_superior, investigaciones, etc.
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_blocked')->default(false);
 
             $table->rememberToken();
             $table->timestamps();

@@ -5,6 +5,7 @@ use App\Modules\Profile\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileThemeController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,10 @@ Route::prefix('legal')->name('legal.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('verified')
+        ->name('dashboard');
+
     // Profile (vista + datos básicos)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -60,9 +65,15 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
     ->name('user-management.')
     ->group(function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::get('/pending', fn () => redirect()->route('user-management.index', ['view' => 'pending']))
+            ->name('pending');
+        Route::get('/blocked', fn () => redirect()->route('user-management.index', ['view' => 'blocked']))
+            ->name('blocked');
         Route::post('{user}/approve', [UserManagementController::class, 'approve'])->name('approve');
         Route::delete('{user}/reject', [UserManagementController::class, 'reject'])->name('reject');
         Route::patch('{user}/deactivate', [UserManagementController::class, 'deactivate'])->name('deactivate');
+        Route::patch('{user}/block', [UserManagementController::class, 'block'])->name('block');
+        Route::patch('{user}/unblock', [UserManagementController::class, 'unblock'])->name('unblock');
         Route::put('{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
         Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
     });

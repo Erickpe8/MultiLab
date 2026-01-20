@@ -116,8 +116,14 @@ SQL);
 
         // Eliminar índice por prefijo (MySQL)
         if (Schema::getConnection()->getDriverName() === 'mysql') {
-            // Nota: IF EXISTS está disponible en MySQL 8.0.13+. Si tu versión es anterior, omite IF EXISTS.
-            DB::statement('DROP INDEX IF EXISTS idx_locations_path_code ON locations');
+            $exists = DB::selectOne(
+                'select 1 from information_schema.statistics where table_schema = database() and table_name = ? and index_name = ? limit 1',
+                ['locations', 'idx_locations_path_code']
+            );
+
+            if ($exists !== null) {
+                DB::statement('DROP INDEX idx_locations_path_code ON locations');
+            }
         }
 
         Schema::dropIfExists('locations');
