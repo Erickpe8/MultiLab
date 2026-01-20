@@ -1,31 +1,27 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+<x-layouts.guest-auth title="Verificar correo electrónico" subtitle="Confirma tu dirección antes de continuar">
+    @php
+        $buttonClass = 'w-full h-11 rounded-xl font-semibold text-white bg-[#8E1616] hover:bg-[#D84040] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#D84040]/50 focus-visible:ring-offset-[var(--bg)]';
+    @endphp
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
+    <x-auth-session-status class="text-sm text-center text-[#8E1616]" :status="session('status')" />
 
-    <div class="mt-4 flex items-center justify-between">
+    <p class="text-sm text-center text-[color:var(--text-muted)]">
+        Gracias por registrarte. Antes de continuar, verifica tu correo electrónico haciendo clic en el enlace que te enviamos. Si no lo recibiste, podemos enviarte otro.
+    </p>
+
+    <div class="space-y-3">
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
+            <button type="submit" class="{{ $buttonClass }}">
+                Reenviar correo de verificación
+            </button>
         </form>
 
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('logout') }}" onsubmit="localStorage.clear(); sessionStorage.clear();">
             @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
+            <button type="submit" class="w-full h-11 rounded-xl border border-[var(--border)] text-sm font-semibold text-[#8E1616] hover:underline hover:border-[#D84040] transition">
+                Cerrar sesión
             </button>
         </form>
     </div>
-</x-guest-layout>
+</x-layouts.guest-auth>

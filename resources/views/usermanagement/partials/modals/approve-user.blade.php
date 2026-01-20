@@ -5,9 +5,7 @@
         <div class="flex items-start gap-4 mb-6">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600
                         flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
+                <x-ui.icon name="exito" size="lg" class="text-white" />
             </div>
             <div class="flex-1">
                 <h3 class="text-xl font-bold text-[var(--text)] mb-1">
@@ -20,9 +18,7 @@
             <button type="button"
                 @click="show = false"
                 class="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <x-ui.icon name="cerrar" size="sm" class="text-[var(--text-muted)] hover:text-[var(--text)]" />
             </button>
         </div>
 
@@ -63,10 +59,7 @@
                         @endforeach
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <x-ui.icon name="expandir" size="sm" class="text-[var(--text-muted)]" />
                     </div>
                 </div>
                 <p class="mt-1.5 text-xs text-[var(--text-muted)]">
@@ -103,9 +96,7 @@
                     class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600
                            text-white font-semibold hover:shadow-lg hover:scale-[1.02]
                            active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <x-ui.icon name="exito" size="sm" class="text-white" />
                     <span>Aprobar y Asignar</span>
                 </button>
             </div>

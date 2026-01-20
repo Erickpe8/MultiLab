@@ -6,10 +6,7 @@
             <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600
                         flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
+                <x-ui.icon name="editar" size="lg" class="text-white" />
             </div>
             <div class="flex-1">
                 <h3 class="text-xl font-bold text-[var(--text)] mb-1">
@@ -53,25 +50,21 @@
                         <div
                             class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-600/10
                                     flex items-center justify-center">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <x-ui.icon name="exito" size="sm" class="text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
                             <label for="edit-is-active" class="block text-sm font-semibold text-[var(--text)]">
                                 Estado del Usuario
                             </label>
                             <p class="text-xs text-[var(--text-muted)] mt-0.5">
-                                Activa o desactiva el acceso del usuario al sistema
+                                El estado de bloqueo/desbloqueo se gestiona desde los botones correspondientes.
                             </p>
                         </div>
                     </div>
 
                     <!-- Toggle Switch -->
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="edit-is-active" name="is_active" class="sr-only peer" checked>
+                    <label class="relative inline-flex items-center cursor-not-allowed">
+                        <input type="checkbox" id="edit-is-active" class="sr-only peer" checked disabled>
                         <div
                             class="w-14 h-7 bg-gray-300 dark:bg-gray-600 rounded-full peer
                                     peer-checked:after:translate-x-full peer-checked:after:border-white
@@ -104,10 +97,7 @@
                         @endforeach
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <x-ui.icon name="expandir" size="sm" class="text-[var(--text-muted)]" />
                     </div>
                 </div>
                 <p class="mt-1.5 text-xs text-[var(--text-muted)]">
@@ -133,12 +123,8 @@
 
             <!-- Warning Info -->
             <div class="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd" />
-                </svg>
+                <x-ui.icon name="info" size="sm"
+                    class="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <p class="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
                     Los cambios afectarán inmediatamente los permisos y accesos del usuario.
                 </p>
@@ -156,9 +142,7 @@
                     class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]
                            text-white font-semibold hover:shadow-lg hover:scale-[1.02]
                            active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <x-ui.icon name="exito" size="sm" class="text-white" />
                     <span>Guardar Cambios</span>
                 </button>
             </div>

@@ -26,10 +26,7 @@
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                     flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                            <x-ui.icon name="equipo-desarrollo" size="lg" class="text-white" />
                         </div>
 
                         <div>
@@ -40,10 +37,7 @@
 
                     <button @click="show = false" class="text-[var(--text)]/50 hover:text-[var(--accent)]
                                    p-2 rounded-lg hover:bg-[var(--border)]/20 transition-colors">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <x-ui.icon name="cerrar" size="sm" />
                     </button>
                 </div>
             </div>
@@ -75,10 +69,8 @@
                                               text-[var(--text-secondary)] hover:text-[var(--accent)]
                                               underline underline-offset-4">
                                         GitHub: @erickpe8
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
-                                        </svg>
+                                        <x-ui.icon name="heroicon-o-arrow-up-right-on-rectangle" size="sm"
+                                            class="text-current" />
                                     </a>
                                 </div>
 
@@ -127,10 +119,8 @@
                                               text-[var(--text-secondary)] hover:text-[var(--accent)]
                                               underline underline-offset-4">
                                         GitHub: @Aceros113
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
-                                        </svg>
+                                        <x-ui.icon name="heroicon-o-arrow-up-right-on-rectangle" size="sm"
+                                            class="text-current" />
                                     </a>
                                 </div>
 
@@ -177,10 +167,8 @@
                                               text-[var(--text-secondary)] hover:text-[var(--accent)]
                                               underline underline-offset-4">
                                         GitHub: @CarlosMantillaC
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M13 7h6m0 0v6m0-6L10 20l-3-3 10-10z" />
-                                        </svg>
+                                        <x-ui.icon name="heroicon-o-arrow-up-right-on-rectangle" size="sm"
+                                            class="text-current" />
                                     </a>
                                 </div>
 
@@ -207,12 +195,8 @@
                     <!-- Agradecimientos -->
                     <div class="mt-6 p-4 rounded-lg bg-[var(--border)]/10 border border-[var(--border)]/30">
                         <div class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-[var(--accent)] shrink-0 mt-0.5" fill="currentColor"
-                                viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <x-ui.icon name="agradecimiento" size="sm"
+                                class="text-[var(--accent)] shrink-0 mt-0.5" />
 
                             <div>
                                 <p class="text-sm font-semibold text-[var(--text)] mb-1">Agradecimientos especiales</p>

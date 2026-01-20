@@ -1,27 +1,28 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+<x-layouts.guest-auth title="Confirmar contraseña" subtitle="Reingresa tu contraseña para continuar">
+    @php
+        $inputClass = 'h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--card)]/70 px-4 text-sm text-[var(--text)] placeholder:text-[color:var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[#D84040]/40 focus:border-[#D84040] transition';
+        $buttonClass = 'w-full h-11 rounded-xl font-semibold text-white bg-[#8E1616] hover:bg-[#D84040] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#D84040]/50 focus-visible:ring-offset-[var(--bg)]';
+    @endphp
 
-    <form method="POST" action="{{ route('password.confirm') }}">
+    <p class="text-sm text-center text-[color:var(--text-muted)]">
+        {{ __('Esta es un área segura de la aplicación. Por favor confirma tu contraseña antes de continuar.') }}
+    </p>
+
+
+    <form method="POST" action="{{ route('password.confirm') }}" class="space-y-4">
         @csrf
 
-        <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <label for="password" class="block text-sm font-semibold text-[var(--text)] mb-1">
+                Contraseña
+            </label>
+            <input id="password" name="password" type="password" required autocomplete="current-password"
+                class="{{ $inputClass }}" />
+            <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[#D84040]" />
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="{{ $buttonClass }}">
+            Confirmar
+        </button>
     </form>
-</x-guest-layout>
+</x-layouts.guest-auth>

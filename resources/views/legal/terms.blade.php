@@ -13,10 +13,7 @@
 @section('legal-header')
     <div class="flex items-center gap-3">
         <a href="{{ $backRoute }}" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <x-ui.icon name="atras" size="sm" />
         </a>
 
         <div>
@@ -39,13 +36,10 @@
                 <div
                     class="px-6 sm:px-8 py-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                             flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
+                            <x-ui.icon name="documentos" size="lg" class="text-white" />
+                            </div>
                         <div>
                             <h1 class="text-2xl font-bold text-[var(--text)]">
                                 Términos y Condiciones de Uso – MultiLab
@@ -582,12 +576,8 @@
                         <!-- Aviso -->
                         <div class="mt-8 p-4 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30">
                             <div class="flex items-start gap-3">
-                                <svg class="w-5 h-5 text-[var(--accent)] shrink-0 mt-0.5" fill="currentColor"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                                <x-ui.icon name="advertencia" size="sm"
+                                    class="text-[var(--accent)] shrink-0 mt-0.5" />
                                 <div>
                                     <p class="text-sm font-semibold text-[var(--accent)] mb-1">
                                         Advertencia Legal Importante

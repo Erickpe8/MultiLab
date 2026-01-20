@@ -6,10 +6,7 @@
             <div
                 class="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600
                         flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+                <x-ui.icon name="advertencia" size="lg" class="text-white" />
             </div>
             <div class="flex-1">
                 <h3 class="text-xl font-bold text-[var(--text)] mb-1">
@@ -21,9 +18,7 @@
             </div>
             <button type="button" @click="show = false"
                 class="text-[var(--text-muted)] hover:text-[var(--text)] transition-colors">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <x-ui.icon name="cerrar" size="sm" class="text-[var(--text-muted)] hover:text-[var(--text)]" />
             </button>
         </div>
 
@@ -45,12 +40,8 @@
         <!-- Warning Message -->
         <div class="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <div class="flex gap-3">
-                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                        clip-rule="evenodd" />
-                </svg>
+                <x-ui.icon name="advertencia" size="sm"
+                    class="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <div>
                     <p class="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">
                         ¿Estás seguro de rechazar esta solicitud?
@@ -76,9 +67,7 @@
                 class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600
                        text-white font-semibold hover:shadow-lg hover:scale-[1.02]
                        active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <x-ui.icon name="eliminar" size="sm" class="text-white" />
                 <span>Rechazar Solicitud</span>
             </button>
         </div>

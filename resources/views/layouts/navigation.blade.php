@@ -1,9 +1,9 @@
 <nav x-cloak x-data="{ userManagementOpen: false }"
     class="fixed inset-y-0 left-0 z-40 w-64
         bg-[var(--card)] text-[var(--text)] border-r border-[var(--border)]
-        transform transition-transform duration-200 -translate-x-full lg:translate-x-0
+        transform transition-transform duration-200 -translate-x-full lg:static lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:sticky lg:top-0 lg:overflow-y-auto
         backdrop-blur-sm"
-    :class="{ 'translate-x-0': sidebarOpen }">
+    x-bind:class="{ 'translate-x-0': sidebarOpen }">
     <!-- Header / Logo + Theme toggle -->
     <div
         class="h-16 px-4 flex items-center justify-between border-b border-[var(--border)]
@@ -59,13 +59,8 @@ $user = Auth::user();
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                 <div class="flex items-center gap-3">
                     {{-- Home icon --}}
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                                {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
+                    <x-ui.icon name="inicio" size="lg"
+                        class="transition-transform duration-200 group-hover:scale-110 {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}" />
                     <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Dashboard</span>
                 </div>
             </button>
@@ -91,20 +86,15 @@ $user = Auth::user();
         : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                         <div class="flex items-center gap-3">
                             {{-- Users icon --}}
-                            <svg class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                                    {{ request()->routeIs('user-management.*') ? 'text-white' : 'text-[var(--accent)]' }}"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
+                            <x-ui.icon name="usuarios" size="lg"
+                                class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('user-management.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
                             <span class="{{ request()->routeIs('user-management.*') ? 'text-white' : '' }}">Control de Usuarios</span>
                         </div>
                         {{-- Chevron --}}
-                        <svg class="w-4 h-4 transition-transform duration-200"
-                            :class="{ 'rotate-180': userManagementOpen }"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <x-ui.icon name="expandir" size="sm"
+                            class="transition-transform duration-200"
+                            x-bind:class="{ 'rotate-180': userManagementOpen }" />
+
                     </button>
 
                     {{-- Submenu --}}
@@ -124,10 +114,7 @@ $user = Auth::user();
                                 {{ request()->routeIs('user-management.index')
         ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
         : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70' }}">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
+                        <x-ui.icon name="dashboard" size="sm" class="text-current" />
                             <span>Panel de Control</span>
                         </a>
 
@@ -187,14 +174,12 @@ $user = Auth::user();
                     {{ request()->routeIs('filament.dashboard.resources.loans.*')
     ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                <div class="flex items-center gap-3">
-                    {{-- Prestamo icon --}}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                        {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m-6 0v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
-                    </svg>
-                    <span class="{{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : '' }}">Préstamos</span>
-                </div>
+                    <div class="flex items-center gap-3">
+                        {{-- Prestamo icon --}}
+                        <x-ui.icon name="prestamos" size="lg"
+                            class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : '' }}">Préstamos</span>
+                    </div>
             </button>
 
             @if (auth()->user()?->hasAnyRole(['docente', 'superadmin', 'aux_admin']))
@@ -207,13 +192,8 @@ $user = Auth::user();
         : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                     <div class="flex items-center gap-3">
                         {{-- Aula B201 icon --}}
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="w-5 h-5 transition-transform duration-200 group-hover:scale-110
-                                    {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7M9 21V9m6 12V9" />
-                        </svg>
+                        <x-ui.icon name="aula" size="lg"
+                            class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
                         <span class="{{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : '' }}">Aula B201</span>
                     </div>
                 </button>
@@ -236,12 +216,9 @@ $user = Auth::user();
 
                 <span class="truncate text-[var(--text)]">Cuenta</span>
 
-                <svg class="h-4 w-4 text-[var(--accent)] transition-transform duration-200 group-hover:rotate-180"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path fill="currentColor" fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd" />
-                </svg>
+                <x-ui.icon name="expandir" size="sm"
+                    class="text-[var(--accent)] transition-transform duration-200"
+                    x-bind:class="{ 'rotate-180': open }" />
             </button>
         </x-slot>
 
@@ -252,11 +229,8 @@ $user = Auth::user();
                     text-[var(--accent)]
                     hover:bg-transparent hover:text-[var(--accent)]">
 
-                <svg class="w-4 h-4 text-[var(--accent)] transition-transform duration-200 group-hover:scale-110"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+                <x-ui.icon name="perfil" size="sm"
+                    class="text-[var(--accent)] transition-transform duration-200 group-hover:scale-110" />
 
                 <span>Perfil</span>
             </x-dropdown-link>
@@ -271,11 +245,8 @@ $user = Auth::user();
                         hover:bg-transparent hover:text-[var(--accent)]
                         transition-all">
 
-                    <svg class="w-4 h-4 text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-0.5"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
+                    <x-ui.icon name="logout" size="sm"
+                        class="text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-0.5" />
 
                     <span>Cerrar sesión</span>
                 </x-dropdown-link>

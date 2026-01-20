@@ -14,11 +14,8 @@
             <!-- ICONO -->
             <div id="notify-icon-wrap" class="inline-flex items-center justify-center w-9 h-9 rounded-full
                         bg-[color:var(--border)]/40 shrink-0">
-
-                <svg id="notify-icon" class="w-7 h-7 text-[var(--accent)] stroke-[2]" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor">
-                    <!-- se reemplaza dinámicamente -->
-                </svg>
+                <x-ui.icon id="notify-icon" name="info" size="xl"
+                    class="w-7 h-7 text-[var(--accent)] stroke-[2]" />
             </div>
 
             <!-- MENSAJE -->
@@ -30,9 +27,8 @@
                            text-[color:var(--text)]/60 hover:text-[var(--text)]
                            transition-colors shrink-0" aria-label="Cerrar">
 
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <x-ui.icon name="cerrar" size="sm"
+                    class="text-[color:var(--text)]/60 hover:text-[color:var(--text)] transition-colors" />
             </button>
         </div>
     </div>
