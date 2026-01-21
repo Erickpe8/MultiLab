@@ -28,7 +28,7 @@
             <div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" x-transition.opacity
                 @click="sidebarOpen=false" style="display: none;"></div>
 
-            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
+            <div class="flex-1 min-w-0 w-full @if(request()->routeIs('dashboard')) lg:ml-64 @elseif(request()->routeIs('filament.dashboard.resources.*')) lg:ml-8 lg:mr-8 @endif flex flex-col">
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
 
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
