@@ -42,7 +42,7 @@
                             <span x-text="expanded ? 'Ocultar información' : 'Ver qué se eliminaría'"></span>
                             <x-ui.icon name="expandir" size="sm"
                                 class="transition-transform duration-200 text-[var(--text)]/60"
-                                :class="{ 'rotate-180': expanded }" />
+                                x-bind:class="{ 'rotate-180': expanded }" />
                         </button>
 
                         <div x-show="expanded" x-transition:enter="transition ease-out duration-200"
