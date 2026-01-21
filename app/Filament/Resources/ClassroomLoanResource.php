@@ -87,18 +87,26 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('purpose')
                             ->label('Propósito')
                             ->maxLength(180),
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'pendiente' => 'Pendiente',
-                                'aprobado' => 'Aprobado',
-                                'rechazado' => 'Rechazado',
-                                'en_uso' => 'En uso',
-                                'finalizado' => 'Finalizado',
-                                'cancelado' => 'Cancelado',
-                            ])
-                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                        Forms\Components\Select::make('Estado')
+                            ->options(function () {
+                                $allOptions = [
+                                    'pendiente' => 'Pendiente',
+                                    'aprobado' => 'Aprobado',
+                                    'rechazado' => 'Rechazado',
+                                    'en_uso' => 'En uso',
+                                    'finalizado' => 'Finalizado',
+                                    'cancelado' => 'Cancelado',
+                                ];
+
+                                if (Auth::user()->hasRole('docente')) {
+                                    return collect($allOptions)->only(['pendiente', 'en_uso', 'finalizado', 'cancelado'])->toArray();
+                                }
+
+                                return $allOptions;
+                            })
+                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
                             ->default('pendiente')
-                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
                             ->native(false),
                     ])
                     ->columns(2),
