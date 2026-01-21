@@ -233,7 +233,7 @@
                 @click="sidebarOpen=false" style="display: none;"></div>
 
             <!-- Contenido -->
-            <div class="flex-1 flex flex-col min-h-screen">
+            <div class="flex-1 flex flex-col min-h-screen lg:ml-64">
                 <!-- Topbar móvil -->
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
                     <div class="h-14 px-4 flex items-center justify-between">

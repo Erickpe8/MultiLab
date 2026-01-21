@@ -204,7 +204,7 @@
             <div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" x-transition.opacity
                 @click="sidebarOpen=false" style="display: none;"></div>
 
-            <div class="flex-1 min-w-0 w-full @if(request()->routeIs('dashboard')) lg:ml-64 @elseif(request()->routeIs('filament.dashboard.resources.*')) lg:ml-8 lg:mr-8 @endif flex flex-col">
+            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
 
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
@@ -237,11 +237,13 @@
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
 
                 <main class="flex-1">
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_START, scopes: $livewire?->getRenderHookScopes()) }}
+                    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_START, scopes: $livewire?->getRenderHookScopes()) }}
 
-                    {{ $slot }}
+                        {{ $slot }}
 
-                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_END, scopes: $livewire?->getRenderHookScopes()) }}
+                        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_END, scopes: $livewire?->getRenderHookScopes()) }}
+                    </div>
                 </main>
 
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
