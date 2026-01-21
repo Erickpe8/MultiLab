@@ -7,6 +7,7 @@ use App\Filament\Resources\ClassroomLoanResource\RelationManagers\ObservationsRe
 use App\Filament\Resources\ClassroomLoanResource\RelationManagers\WorkstationsRelationManager;
 use App\Helpers\RoleHelper;
 use App\Models\ClassroomLoan;
+use App\Models\Computer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section as InfoSection;
@@ -141,19 +142,22 @@ class ClassroomLoanResource extends Resource
                             ->numeric()
                             ->default(0)
                             ->minValue(0)
-                            ->required(),
-                        Forms\Components\TextInput::make('pc_in_use')
-                            ->label('PCs en uso')
+                            ->required()
+                            ->dehydrated(),
+                        Forms\Components\TextInput::make('pc_disponibles')
+                            ->label('PCs disponibles')
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0)
-                            ->required(),
+                            ->default(fn () => Computer::query()->where('status', 'disponible')->count())
+                            ->disabled()
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
+                            ->dehydrated(),
                         Forms\Components\TextInput::make('pc_unavailable')
                             ->label('PCs no disponibles')
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0)
-                            ->required(),
+                            ->default(fn () => Computer::query()->where('status', 'no_disponible')->count())
+                            ->disabled()
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
+                            ->dehydrated(),
                         Forms\Components\KeyValue::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
                             ->keyLabel('Estación')
@@ -215,7 +219,7 @@ class ClassroomLoanResource extends Resource
                 InfoSection::make('Control de PCs')
                     ->schema([
                         TextEntry::make('pc_required')->label('PCs requeridos'),
-                        TextEntry::make('pc_in_use')->label('PCs en uso'),
+                        TextEntry::make('pc_disponibles')->label('PCs disponibles'),
                         TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
                         TextEntry::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')

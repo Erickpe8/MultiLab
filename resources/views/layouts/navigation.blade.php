@@ -165,6 +165,13 @@ $user = Auth::user();
                     </svg>
                     <span>Activos</span>
                 </x-nav-link>
+
+                <x-nav-link :href="route('filament.dashboard.resources.computers.index')" :active="request()->routeIs('filament.dashboard.resources.computers.*')"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group {{ request()->routeIs('filament.dashboard.resources.computers.*') ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg' : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <x-ui.icon name="heroicon-o-computer-desktop" size="lg"
+                        class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.computers.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
+                    <span>Computadores</span>
+                </x-nav-link>
             @endif
 
             <button
