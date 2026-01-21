@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClassroomLoanResource\Pages;
 use App\Filament\Resources\ClassroomLoanResource\RelationManagers\ObservationsRelationManager;
 use App\Filament\Resources\ClassroomLoanResource\RelationManagers\WorkstationsRelationManager;
+use App\Helpers\RoleHelper;
 use App\Models\ClassroomLoan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,6 +30,11 @@ class ClassroomLoanResource extends Resource
     protected static ?string $modelLabel = 'Reserva de aula';
 
     protected static ?string $pluralModelLabel = 'Reservas Aula B201';
+
+    public static function canViewAny(): bool
+    {
+        return RoleHelper::isLabStaff();
+    }
 
     public static function getNavigationBadge(): ?string
     {
