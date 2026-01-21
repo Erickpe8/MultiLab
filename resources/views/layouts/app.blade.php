@@ -53,14 +53,22 @@
             };
 
             const syncToggles = (applied) => {
-                document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
-                    if (toggle instanceof HTMLInputElement) {
-                        const shouldBeChecked = applied === 'dark';
-                        if (toggle.checked !== shouldBeChecked) {
-                            toggle.checked = shouldBeChecked;
+                const sync = () => {
+                    document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
+                        if (toggle instanceof HTMLInputElement) {
+                            const shouldBeChecked = applied === 'dark';
+                            if (toggle.checked !== shouldBeChecked) {
+                                toggle.checked = shouldBeChecked;
+                            }
                         }
-                    }
-                });
+                    });
+                };
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', sync);
+                } else {
+                    sync();
+                }
             };
 
             const dispatchChange = (theme, applied) => {
