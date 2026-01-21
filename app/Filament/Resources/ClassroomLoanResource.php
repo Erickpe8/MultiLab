@@ -74,10 +74,12 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\Select::make('approved_by')
                             ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
+                            ->default(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
-                            ->visible(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])),
+                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
                             ->maxLength(120)
@@ -94,7 +96,9 @@ class ClassroomLoanResource extends Resource
                                 'finalizado' => 'Finalizado',
                                 'cancelado' => 'Cancelado',
                             ])
-                            ->required()
+                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->default('pendiente')
+                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
                             ->native(false),
                     ])
                     ->columns(2),
