@@ -16,7 +16,11 @@ class CreateClassroomLoan extends AppCreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data = $this->mergeStartAndTime($data, 'scheduled_start_at', 'scheduled_end_time', 'scheduled_end_at');
-        $data = $this->mergeStartAndTime($data, 'actual_start_at', 'actual_end_time', 'actual_end_at');
+
+
+        if (!empty($data['approved_by'])) {
+            $data['status'] = 'aprobado';
+        }
 
         return $data;
     }

@@ -123,13 +123,7 @@ class ClassroomLoanResource extends Resource
                             ->seconds(false)
                             ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora')
                             ->required(),
-                        Forms\Components\DateTimePicker::make('actual_start_at')
-                            ->label('Inicio real')
-                            ->seconds(false),
-                        Forms\Components\TimePicker::make('actual_end_time')
-                            ->label('Fin real')
-                            ->seconds(false)
-                            ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora'),
+
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Control de PCs')
@@ -207,14 +201,7 @@ class ClassroomLoanResource extends Resource
                             ->label('Fin programado')
                             ->dateTime('d/m/Y H:i')
                             ->placeholder('—'),
-                        TextEntry::make('actual_start_at')
-                            ->label('Inicio real')
-                            ->dateTime('d/m/Y H:i')
-                            ->placeholder('—'),
-                        TextEntry::make('actual_end_at')
-                            ->label('Fin real')
-                            ->dateTime('d/m/Y H:i')
-                            ->placeholder('—'),
+
                     ])
                     ->columns(2),
                 InfoSection::make('Control de PCs')

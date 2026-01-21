@@ -23,7 +23,7 @@ class EditClassroomLoan extends AppEditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data = $this->splitDateTimeIntoTime($data, 'scheduled_end_at', 'scheduled_end_time');
-        $data = $this->splitDateTimeIntoTime($data, 'actual_end_at', 'actual_end_time');
+
 
         return $data;
     }
@@ -31,7 +31,11 @@ class EditClassroomLoan extends AppEditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data = $this->mergeStartAndTime($data, 'scheduled_start_at', 'scheduled_end_time', 'scheduled_end_at');
-        $data = $this->mergeStartAndTime($data, 'actual_start_at', 'actual_end_time', 'actual_end_at');
+
+
+        if (!empty($data['approved_by'])) {
+            $data['status'] = 'aprobado';
+        }
 
         return $data;
     }
@@ -52,7 +56,13 @@ class EditClassroomLoan extends AppEditRecord
             return $data;
         }
 
-        $data[$timeKey] = Carbon::parse($data[$sourceKey])->format('H:i');
+        $dateTime = $data[$sourceKey] instanceof Carbon
+            ? $data[$sourceKey]->copy()
+            : Carbon::parse($data[$sourceKey]);
+
+        $data[$timeKey] = $dateTime
+            ->setTimezone(config('app.timezone'))
+            ->format('H:i');
 
         return $data;
     }
