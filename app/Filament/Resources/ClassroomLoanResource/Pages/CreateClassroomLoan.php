@@ -19,7 +19,9 @@ class CreateClassroomLoan extends AppCreateRecord
         $data = $this->mergeStartAndTime($data, 'scheduled_start_at', 'scheduled_end_time', 'scheduled_end_at');
 
 
-        if (!empty($data['approved_by'])) {
+        $status = $data['status'] ?? null;
+
+        if (! empty($data['approved_by']) && ($status === null || $status === 'pendiente')) {
             $data['status'] = 'aprobado';
         }
 
