@@ -15,67 +15,114 @@ class MaterialSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get categories and units to associate materials
-        $toolsCategory = Category::where('code', 'tools')->first();
-        $componentsCategory = Category::where('code', 'electronic-components')->first();
-        $suppliesCategory = Category::where('code', 'practice-supplies')->first();
-
-        $unit = Unit::where('code', 'unit')->first();
-        $meter = Unit::where('code', 'meter')->first();
-        $pack = Unit::where('code', 'pack')->first();
-        $kit = Unit::where('code', 'kit')->first();
-
+        // Crear materiales con los IDs correctos
         $materials = [
+            // Herramientas
             [
-                'name' => 'Hammer',
-                'category_id' => $toolsCategory->id,
-                'unit_id' => $unit->id,
+                'name' => 'Martillo',
+                'category_code' => 'tools',
+                'unit_code' => 'unit',
+                'current_stock' => 15,
+            ],
+            [
+                'name' => 'Destornillador de Punta Plana #2',
+                'category_code' => 'tools',
+                'unit_code' => 'unit',
+                'current_stock' => 25,
+            ],
+            [
+                'name' => 'Destornillador de Punta Phillips #1',
+                'category_code' => 'tools',
+                'unit_code' => 'unit',
+                'current_stock' => 25,
+            ],
+            [
+                'name' => 'Pinzas de Electricista',
+                'category_code' => 'tools',
+                'unit_code' => 'unit',
                 'current_stock' => 10,
             ],
             [
-                'name' => 'Red LEDs (Pack of 100)',
-                'category_id' => $componentsCategory->id,
-                'unit_id' => $pack->id,
+                'name' => 'Multímetro Digital',
+                'category_code' => 'tools',
+                'unit_code' => 'unit',
+                'current_stock' => 5,
+            ],
+
+            // Componentes electrónicos
+            [
+                'name' => 'Memoria RAM DDR4 8GB',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'unit',
+                'current_stock' => 20,
+            ],
+            [
+                'name' => 'Disco SSD 256GB',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'unit',
+                'current_stock' => 15,
+            ],
+            [
+                'name' => 'Disco HDD 1TB',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'unit',
+                'current_stock' => 10,
+            ],
+            [
+                'name' => 'LED Rojo 5mm (Paquete de 100)',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'pack',
                 'current_stock' => 50,
             ],
             [
-                'name' => 'Hacksaw',
-                'category_id' => $toolsCategory->id,
-                'unit_id' => $unit->id,
-                'current_stock' => 5,
-            ],
-            [
-                'name' => '830-Point Protoboard',
-                'category_id' => $suppliesCategory->id,
-                'unit_id' => $unit->id,
+                'name' => 'Protoboard 830 puntos',
+                'category_code' => 'practice-supplies',
+                'unit_code' => 'unit',
                 'current_stock' => 30,
             ],
             [
-                'name' => 'UTP Cable',
-                'category_id' => $suppliesCategory->id,
-                'unit_id' => $meter->id,
-                'current_stock' => 200, // 200 meters
+                'name' => 'Cable UTP Cat6 (Metro)',
+                'category_code' => 'practice-supplies',
+                'unit_code' => 'meter',
+                'current_stock' => 200,
             ],
             [
-                'name' => 'Resistor Kit (500 pieces)',
-                'category_id' => $componentsCategory->id,
-                'unit_id' => $kit->id,
+                'name' => 'Kit de Resistencias (500 piezas)',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'kit',
                 'current_stock' => 20,
+            ],
+            [
+                'name' => 'Fuente de Poder ATX 500W',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'unit',
+                'current_stock' => 8,
+            ],
+            [
+                'name' => 'Tarjeta Madre MicroATX',
+                'category_code' => 'electronic-components',
+                'unit_code' => 'unit',
+                'current_stock' => 5,
             ],
         ];
 
-        foreach ($materials as $material) {
-            Material::create([
-                'name' => $material['name'],
-                'category_id' => $material['category_id'],
-                'unit_id' => $material['unit_id'],
-                'current_stock' => $material['current_stock'],
-                'uuid' => Str::uuid(),
-                'sku' => 'SKU-' . strtoupper(Str::random(8)),
-                'min_stock' => 10,
-                'max_stock' => 100,
-                'has_expiry' => false,
-            ]);
+        foreach ($materials as $materialData) {
+            $category = \App\Models\Category::where('code', $materialData['category_code'])->first();
+            $unit = \App\Models\Unit::where('code', $materialData['unit_code'])->first();
+
+            if ($category && $unit) {
+                Material::create([
+                    'name' => $materialData['name'],
+                    'category_id' => $category->id,
+                    'unit_id' => $unit->id,
+                    'current_stock' => $materialData['current_stock'],
+                    'uuid' => Str::uuid(),
+                    'sku' => 'SKU-' . strtoupper(Str::random(8)),
+                    'min_stock' => 5,
+                    'max_stock' => 100,
+                    'has_expiry' => false,
+                ]);
+            }
         }
     }
 }
