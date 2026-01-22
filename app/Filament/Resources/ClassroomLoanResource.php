@@ -298,7 +298,7 @@ class ClassroomLoanResource extends Resource
                     ->wrap(),
                 Tables\Columns\TextColumn::make('requester.name')
                     ->label('Docente')
-                    ->searchable()
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('scheduled_start_at')
                     ->label('Inicio')
@@ -346,7 +346,8 @@ class ClassroomLoanResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('Estado')
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
                     ->native(false)
                     ->options([
                         'pendiente' => 'Pendiente',
@@ -358,8 +359,10 @@ class ClassroomLoanResource extends Resource
                     ]),
                 Tables\Filters\Filter::make('fecha')
                     ->form([
-                        Forms\Components\DatePicker::make('Desde'),
-                        Forms\Components\DatePicker::make('Hasta'),
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Desde'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
