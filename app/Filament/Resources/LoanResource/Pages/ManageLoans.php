@@ -13,7 +13,11 @@ class ManageLoans extends AppManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('goToCreate')
+                ->label('Registrar préstamo')
+                ->icon('heroicon-o-plus-circle')
+                ->color('primary')
+                ->url(fn () => LoanResource::getUrl('create')),
         ];
     }
 }

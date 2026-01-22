@@ -10,10 +10,12 @@
 
     @role('superadmin')
         @include('cards.superadmin')
+        @include('cards.material-requests')
     @endrole
 
     @role('aux_admin')
         @include('cards.auxiliar')
+        @include('cards.material-requests')
     @endrole
 
     @role('docente')

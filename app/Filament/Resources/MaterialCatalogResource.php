@@ -6,6 +6,8 @@ use App\Filament\Resources\MaterialCatalogResource\Pages;
 use App\Helpers\RoleHelper;
 use App\Models\Material;
 use App\Models\MaterialRequest;
+use App\Models\User;
+use App\Notifications\NewMaterialRequestNotification;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Textarea;
@@ -17,7 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Illuminate\Validation\ValidationException;
 
 class MaterialCatalogResource extends AppResource
@@ -158,7 +160,7 @@ class MaterialCatalogResource extends AppResource
                             ]);
                         }
 
-                        MaterialRequest::create([
+                        $requestRecord = MaterialRequest::create([
                             'material_id' => $record->id,
                             'user_id' => $user->id,
                             'quantity' => $data['quantity'],
@@ -167,6 +169,15 @@ class MaterialCatalogResource extends AppResource
                             'status' => 'pendiente',
                             'notes' => $data['notes'] ?? null,
                         ]);
+
+                        $recipients = User::role(['superadmin', 'aux_admin'])->get();
+
+                        if ($recipients->isNotEmpty()) {
+                            NotificationFacade::send(
+                                $recipients,
+                                new NewMaterialRequestNotification($requestRecord->fresh('material', 'requester'))
+                            );
+                        }
                     })
                     ->successNotificationTitle('Solicitud enviada'),
             ])
