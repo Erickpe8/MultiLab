@@ -25,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Livewire::component('filament.livewire.database-notifications', \App\Livewire\Filament\CustomDatabaseNotifications::class);
+        Livewire::component(\App\Livewire\Filament\CustomDatabaseNotifications::class);
     }
 }
