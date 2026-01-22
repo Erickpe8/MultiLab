@@ -1,16 +1,16 @@
 <nav x-cloak x-data="{ userManagementOpen: false }"
-    class="fixed inset-y-0 left-0 z-40 w-64
+     class="fixed inset-y-0 left-0 z-40 w-64
         bg-[var(--card)] text-[var(--text)] border-r border-[var(--border)]
         transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 lg:overflow-y-auto
         backdrop-blur-sm"
-    x-bind:class="{ 'translate-x-0': sidebarOpen }">
+     x-bind:class="{ 'translate-x-0': sidebarOpen }">
     <!-- Header / Logo + Theme toggle -->
     <div
         class="h-16 px-4 flex items-center justify-between border-b border-[var(--border)]
                 bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
         <a href="{{ url('/dashboard') }}" class="inline-flex items-center gap-2 group">
             <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC"
-                class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
+                 class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
         {{-- Switch de tema --}}
         <x-theme-toggle id="theme-toggle-side" size="md" />
@@ -25,7 +25,7 @@
     <!-- Usuario -->
     <div class="px-4 py-4 border-b border-[var(--border)]">
         @php
-$user = Auth::user();
+            $user = Auth::user();
         @endphp
 
         <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
@@ -60,7 +60,7 @@ $user = Auth::user();
                 <div class="flex items-center gap-3">
                     {{-- Home icon --}}
                     <x-ui.icon name="inicio" size="lg"
-                        class="transition-transform duration-200 group-hover:scale-110 {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--accent)]' }}" />
+                               class="transition-transform duration-200 group-hover:scale-110 {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--text)]' }}" />
                     <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Dashboard</span>
                 </div>
             </button>
@@ -87,40 +87,40 @@ $user = Auth::user();
                         <div class="flex items-center gap-3">
                             {{-- Users icon --}}
                             <x-ui.icon name="usuarios" size="lg"
-                                class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('user-management.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
+                                       class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('user-management.*') ? 'text-white' : 'text-[var(--text)]' }}" />
                             <span class="{{ request()->routeIs('user-management.*') ? 'text-white' : '' }}">Control de Usuarios</span>
                         </div>
                         {{-- Chevron --}}
                         <x-ui.icon name="expandir" size="sm"
-                            class="transition-transform duration-200"
-                            x-bind:class="{ 'rotate-180': userManagementOpen }" />
+                                   class="transition-transform duration-200"
+                                   x-bind:class="{ 'rotate-180': userManagementOpen }" />
 
                     </button>
 
                     {{-- Submenu --}}
                     <div x-show="userManagementOpen"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 -translate-y-1"
-                        x-transition:enter-end="opacity-100 translate-y-0"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 translate-y-0"
-                        x-transition:leave-end="opacity-0 -translate-y-1"
-                        class="mt-2 ml-3 space-y-1 border-l-2 border-[var(--border)] pl-3">
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-1"
+                         class="mt-2 ml-3 space-y-1 border-l-2 border-[var(--border)] pl-3">
 
                         {{-- Panel Principal --}}
                         <a href="{{ route('user-management.index') }}"
-                            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
+                           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
                                 transition-all duration-200 group
                                 {{ request()->routeIs('user-management.index')
         ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
         : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70' }}">
-                        <x-ui.icon name="dashboard" size="sm" class="text-current" />
+                            <x-ui.icon name="dashboard" size="sm" class="text-current" />
                             <span>Panel de Control</span>
                         </a>
 
                         {{-- Badge de Pendientes --}}
                         @php
-    $pendingCount = \App\Models\User::where('is_active', false)->count();
+                            $pendingCount = \App\Models\User::where('is_active', false)->count();
                         @endphp
                         @if($pendingCount > 0)
                             <div class="px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
@@ -145,26 +145,40 @@ $user = Auth::user();
 
             {{-- Links para Admin y SuperAdmin --}}
             @if (auth()->user()?->hasAnyRole(['superadmin', 'aux_admin']))
-                <x-nav-link :href="route('filament.dashboard.resources.materials.index')" :active="request()->routeIs('filament.dashboard.resources.materials.*')"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg' : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM6 10v6a2 2 0 002 2h8a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2zM12 2v3" />
-                    </svg>
-                    <span>Materiales</span>
-                </x-nav-link>
+                <button
+                    onclick="window.location.href=`{{ route('filament.dashboard.resources.materials.index') }}`"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-200 group
+                    {{ request()->routeIs('filament.dashboard.resources.materials.*')
+    ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
+    : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-200 group-hover:scale-110 stroke-current {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : 'text-[var(--text)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke-width="1.5" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM6 10v6a2 2 0 002 2h8a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2zM12 2v3" />
+                        </svg>
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : '' }}">Materiales</span>
+                    </div>
+                </button>
 
-                <x-nav-link :href="route('filament.dashboard.resources.assets.index')" :active="request()->routeIs('filament.dashboard.resources.assets.*')"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg' : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : 'text-[var(--accent)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17L15 17L15 7L9 7L9 17Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12L7 12" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 12L19 12" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 17L22 17" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L12 5" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19L12 22" />
-                    </svg>
-                    <span>Activos</span>
-                </x-nav-link>
+                <button
+                    onclick="window.location.href=`{{ route('filament.dashboard.resources.assets.index') }}`"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                    transition-all duration-200 group
+                    {{ request()->routeIs('filament.dashboard.resources.assets.*')
+    ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
+    : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-200 group-hover:scale-110 stroke-current {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : 'text-[var(--text)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke-width="1.5" d="M9 17L15 17L15 7L9 7L9 17Z" />
+                            <path stroke-width="1.5" d="M5 12L7 12" />
+                            <path stroke-width="1.5" d="M17 12L19 12" />
+                            <path stroke-width="1.5" d="M2 17L22 17" />
+                            <path stroke-width="1.5" d="M12 2L12 5" />
+                            <path stroke-width="1.5" d="M12 19L12 22" />
+                        </svg>
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : '' }}">Activos</span>
+                    </div>
+                </button>
             @endif
 
             <button
@@ -174,13 +188,29 @@ $user = Auth::user();
                     {{ request()->routeIs('filament.dashboard.resources.loans.*')
     ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                    <div class="flex items-center gap-3">
-                        {{-- Prestamo icon --}}
-                        <x-ui.icon name="prestamos" size="lg"
-                            class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
-                        <span class="{{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : '' }}">Préstamos</span>
-                    </div>
+                <div class="flex items-center gap-3">
+                    {{-- Prestamo icon --}}
+                    <x-ui.icon name="prestamos" size="lg"
+                               class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : 'text-[var(--text)]' }}" />
+                    <span class="{{ request()->routeIs('filament.dashboard.resources.loans.*') ? 'text-white' : '' }}">Préstamos</span>
+                </div>
             </button>
+
+            @if (auth()->user()?->hasAnyRole(['superadmin', 'aux_admin']))
+                <button
+                    onclick="window.location.href=`{{ route('filament.dashboard.resources.computers.index') }}`"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                        transition-all duration-200 group
+                        {{ request()->routeIs('filament.dashboard.resources.computers.*')
+        ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
+        : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <div class="flex items-center gap-3">
+                        <x-ui.icon name="heroicon-o-computer-desktop" size="lg"
+                                   class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.computers.*') ? 'text-white' : 'text-[var(--text)]' }}" />
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.computers.*') ? 'text-white' : '' }}">Computadores</span>
+                    </div>
+                </button>
+            @endif
 
             @if (auth()->user()?->hasAnyRole(['docente', 'superadmin', 'aux_admin']))
                 <button
@@ -193,7 +223,7 @@ $user = Auth::user();
                     <div class="flex items-center gap-3">
                         {{-- Aula B201 icon --}}
                         <x-ui.icon name="aula" size="lg"
-                            class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--accent)]' }}" />
+                                   class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--text)]' }}" />
                         <span class="{{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : '' }}">Aula B201</span>
                     </div>
                 </button>
@@ -202,59 +232,59 @@ $user = Auth::user();
     </div>
 
     <!-- Footer: Cuenta / Cerrar sesión -->
-<div class="border-t border-[var(--border)] p-3
+    <div class="border-t border-[var(--border)] p-3
             bg-gradient-to-t from-[var(--primary)]/5 to-transparent">
 
-    <x-dropdown align="right" width="48">
-        <x-slot name="trigger">
-            <button class="w-full inline-flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg
+        <x-dropdown align="right" width="48">
+            <x-slot name="trigger">
+                <button class="w-full inline-flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg
                     text-sm font-medium transition-all duration-200
                     bg-gradient-to-r from-[var(--border)]/15 to-[var(--border)]/5
                     hover:from-[var(--primary)]/20 hover:to-[var(--accent)]/10
                     border border-[var(--border)]/30 hover:border-[var(--accent)]/30
                     group">
 
-                <span class="truncate text-[var(--text)]">Cuenta</span>
+                    <span class="truncate text-[var(--text)]">Cuenta</span>
 
-                <x-ui.icon name="expandir" size="sm"
-                    class="text-[var(--accent)] transition-transform duration-200"
-                    x-bind:class="{ 'rotate-180': open }" />
-            </button>
-        </x-slot>
+                    <x-ui.icon name="expandir" size="sm"
+                               class="text-[var(--accent)] transition-transform duration-200"
+                               x-bind:class="{ 'rotate-180': open }" />
+                </button>
+            </x-slot>
 
-        <x-slot name="content">
+            <x-slot name="content">
 
-            <!-- PERFIL -->
-            <x-dropdown-link :href="route('profile.edit')" class="flex items-center gap-2 group
+                <!-- PERFIL -->
+                <x-dropdown-link :href="route('profile.edit')" class="flex items-center gap-2 group
                     text-[var(--accent)]
                     hover:bg-transparent hover:text-[var(--accent)]">
 
-                <x-ui.icon name="perfil" size="sm"
-                    class="text-[var(--accent)] transition-transform duration-200 group-hover:scale-110" />
+                    <x-ui.icon name="perfil" size="sm"
+                               class="text-[var(--accent)] transition-transform duration-200 group-hover:scale-110" />
 
-                <span>Perfil</span>
-            </x-dropdown-link>
+                    <span>Perfil</span>
+                </x-dropdown-link>
 
-            <!-- CERRAR SESIÓN -->
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+                <!-- CERRAR SESIÓN -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
 
-                <x-dropdown-link :href="route('logout')"
-                    onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center gap-2 group
+                    <x-dropdown-link :href="route('logout')"
+                                     onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center gap-2 group
                         text-[var(--accent)]
                         hover:bg-transparent hover:text-[var(--accent)]
                         transition-all">
 
-                    <x-ui.icon name="logout" size="sm"
-                        class="text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-0.5" />
+                        <x-ui.icon name="logout" size="sm"
+                                   class="text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-0.5" />
 
-                    <span>Cerrar sesión</span>
-                </x-dropdown-link>
-            </form>
+                        <span>Cerrar sesión</span>
+                    </x-dropdown-link>
+                </form>
 
-        </x-slot>
-    </x-dropdown>
+            </x-slot>
+        </x-dropdown>
 
-</div>
+    </div>
 
 </nav>
