@@ -434,8 +434,10 @@ class LoanResource extends AppResource
                 //
             ])
                         ->actions([
-                            Tables\Actions\ViewAction::make(),
                             Tables\Actions\EditAction::make()
+                                ->label('Ver')
+                                ->icon('heroicon-o-eye')
+                                ->color('gray')
                                 ->modalWidth('4xl')
                                 ->after(function (Loan $record) {
                                     // Do nothing if the loan is already marked as returned
@@ -469,7 +471,6 @@ class LoanResource extends AppResource
                                             ->send();
                                     }
                                 }),
-                            Tables\Actions\DeleteAction::make(),
                         ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

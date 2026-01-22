@@ -143,6 +143,22 @@
                 Módulos
             </p>
 
+            @if (auth()->user()?->hasRole('estudiante'))
+                <button
+                    onclick="window.location.href=`{{ route('filament.dashboard.resources.material-catalogs.index') }}`"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                        transition-all duration-200 group
+                        {{ request()->routeIs('filament.dashboard.resources.material-catalogs.*')
+        ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
+        : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
+                    <div class="flex items-center gap-3">
+                        <x-ui.icon name="heroicon-o-academic-cap" size="lg"
+                                   class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.material-catalogs.*') ? 'text-white' : 'text-[var(--text)]' }}" />
+                        <span class="{{ request()->routeIs('filament.dashboard.resources.material-catalogs.*') ? 'text-white' : '' }}">Catálogo de Materiales</span>
+                    </div>
+                </button>
+            @endif
+
             {{-- Links para Admin y SuperAdmin --}}
             @if (auth()->user()?->hasAnyRole(['superadmin', 'aux_admin']))
                 <button
