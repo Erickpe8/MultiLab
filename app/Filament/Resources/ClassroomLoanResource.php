@@ -156,10 +156,13 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('pc_disponibles')
                             ->label('PCs disponibles')
                             ->numeric()
-                            ->default(fn () => Computer::query()->where('status', 'disponible')->count())
+                            ->default(fn () => static::getAvailableComputerCount())
+                            ->afterStateHydrated(function (Forms\Components\TextInput $component) {
+                                $component->state(static::getAvailableComputerCount());
+                            })
                             ->disabled()
-                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
-                            ->dehydrated(),
+                            ->dehydrated(false)
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null),
                         Forms\Components\TextInput::make('pc_unavailable')
                             ->label('PCs no disponibles')
                             ->numeric()
@@ -228,7 +231,9 @@ class ClassroomLoanResource extends Resource
                 InfoSection::make('Control de PCs')
                     ->schema([
                         TextEntry::make('pc_required')->label('PCs requeridos'),
-                        TextEntry::make('pc_disponibles')->label('PCs disponibles'),
+                        TextEntry::make('pc_disponibles')
+                            ->label('PCs disponibles')
+                            ->state(fn () => static::getAvailableComputerCount()),
                         TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
                         TextEntry::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
@@ -367,5 +372,10 @@ class ClassroomLoanResource extends Resource
             'view' => Pages\ViewClassroomLoan::route('/{record}'),
             'edit' => Pages\EditClassroomLoan::route('/{record}/edit'),
         ];
+    }
+
+    protected static function getAvailableComputerCount(): int
+    {
+        return Computer::query()->where('status', 'disponible')->count();
     }
 }
