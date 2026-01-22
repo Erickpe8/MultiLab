@@ -247,38 +247,6 @@ class ClassroomLoanResource extends Resource
                             ->html(),
                     ])
                     ->columns(3),
-                InfoSection::make('Estado de estaciones')
-                    ->schema([
-                        TextEntry::make('workstations_summary')
-                            ->label('Estaciones asignadas')
-                            ->bulleted()
-                            ->state(function (ClassroomLoan $record) {
-                                if ($record->workstations->isEmpty()) {
-                                    return null;
-                                }
-
-                                return $record->workstations->map(function ($workstation) {
-                                    $label = $workstation->label;
-                                    $code = $workstation->code ? " ({$workstation->code})" : '';
-
-                                    $status = match ($workstation->pivot->status) {
-                                        'reservado' => 'Reservado',
-                                        'en_uso' => 'En uso',
-                                        'liberado' => 'Liberado',
-                                        'inactivo' => 'Inactivo',
-                                        default => '—',
-                                    };
-
-                                    $assigned = $workstation->pivot->assigned_user
-                                        ? " · Usuario: {$workstation->pivot->assigned_user}"
-                                        : '';
-
-                                    return "{$label}{$code} — {$status}{$assigned}";
-                                })->toArray();
-                            })
-                            ->placeholder('Sin estaciones asignadas'),
-                    ])
-                    ->columns(1),
                 InfoSection::make('Notas')
                     ->schema([
                         TextEntry::make('access_instructions')

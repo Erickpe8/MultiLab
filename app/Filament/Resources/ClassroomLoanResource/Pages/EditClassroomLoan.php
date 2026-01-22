@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ClassroomLoanResource\Pages;
 
 use App\Filament\Resources\ClassroomLoanResource;
 use App\Filament\Resources\Pages\AppEditRecord;
+use App\Models\ClassroomWorkstation;
 use App\Notifications\LoanApproved;
 use Filament\Actions;
 use Illuminate\Support\Carbon;
@@ -18,6 +19,11 @@ class EditClassroomLoan extends AppEditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function afterFill(): void
+    {
+        $this->preloadWorkstations();
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
@@ -50,6 +56,36 @@ class EditClassroomLoan extends AppEditRecord
                 Notification::send($requester, new LoanApproved($this->record));
             }
         }
+    }
+
+    protected function preloadWorkstations(): void
+    {
+        if (! $this->record) {
+            return;
+        }
+
+        if ($this->record->workstations()->exists()) {
+            return;
+        }
+
+        ClassroomWorkstation::syncFromComputers();
+
+        $workstations = ClassroomWorkstation::query()->get();
+
+        if ($workstations->isEmpty()) {
+            return;
+        }
+
+        $payload = $workstations->mapWithKeys(fn ($workstation) => [
+            $workstation->id => [
+                'status' => 'reservado',
+                'assigned_user' => null,
+                'metrics' => null,
+                'notes' => null,
+            ],
+        ])->toArray();
+
+        $this->record->workstations()->sync($payload);
     }
 
     protected function splitDateTimeIntoTime(array $data, string $sourceKey, string $timeKey): array
