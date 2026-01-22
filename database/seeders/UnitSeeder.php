@@ -7,17 +7,15 @@ use App\Models\Unit;
 
 class UnitSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         $units = [
-            ['code' => 'unit', 'name' => 'Unit'],
-            ['code' => 'meter', 'name' => 'Meter'],
-            ['code' => 'pack', 'name' => 'Pack'],
+            ['code' => 'unit', 'name' => 'Unidad'],
+            ['code' => 'meter', 'name' => 'Metro'],
+            ['code' => 'pack', 'name' => 'Paquete'],
             ['code' => 'kit', 'name' => 'Kit'],
-            ['code' => 'box', 'name' => 'Box'],
+            ['code' => 'box', 'name' => 'Caja'],
         ];
 
         foreach ($units as $unit) {
