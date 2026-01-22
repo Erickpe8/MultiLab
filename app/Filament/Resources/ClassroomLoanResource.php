@@ -7,6 +7,7 @@ use App\Filament\Resources\ClassroomLoanResource\RelationManagers\ObservationsRe
 use App\Filament\Resources\ClassroomLoanResource\RelationManagers\WorkstationsRelationManager;
 use App\Helpers\RoleHelper;
 use App\Models\ClassroomLoan;
+use App\Models\Computer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section as InfoSection;
@@ -70,7 +71,8 @@ class ClassroomLoanResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->native(false),
                         Forms\Components\Select::make('approved_by')
                             ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
@@ -79,7 +81,8 @@ class ClassroomLoanResource extends Resource
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
-                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])),
+                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->native(false),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
                             ->maxLength(120)
@@ -128,8 +131,8 @@ class ClassroomLoanResource extends Resource
                             }),
                         Forms\Components\TimePicker::make('scheduled_end_time')
                             ->label('Fin programado')
+                            ->native(false)
                             ->seconds(false)
-                            ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora')
                             ->required(),
 
                     ])
@@ -141,19 +144,22 @@ class ClassroomLoanResource extends Resource
                             ->numeric()
                             ->default(0)
                             ->minValue(0)
-                            ->required(),
-                        Forms\Components\TextInput::make('pc_in_use')
-                            ->label('PCs en uso')
+                            ->required()
+                            ->dehydrated(),
+                        Forms\Components\TextInput::make('pc_disponibles')
+                            ->label('PCs disponibles')
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0)
-                            ->required(),
+                            ->default(fn () => Computer::query()->where('status', 'disponible')->count())
+                            ->disabled()
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
+                            ->dehydrated(),
                         Forms\Components\TextInput::make('pc_unavailable')
                             ->label('PCs no disponibles')
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0)
-                            ->required(),
+                            ->default(fn () => Computer::query()->where('status', 'no_disponible')->count())
+                            ->disabled()
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
+                            ->dehydrated(),
                         Forms\Components\KeyValue::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
                             ->keyLabel('Estación')
@@ -215,7 +221,7 @@ class ClassroomLoanResource extends Resource
                 InfoSection::make('Control de PCs')
                     ->schema([
                         TextEntry::make('pc_required')->label('PCs requeridos'),
-                        TextEntry::make('pc_in_use')->label('PCs en uso'),
+                        TextEntry::make('pc_disponibles')->label('PCs disponibles'),
                         TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
                         TextEntry::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
@@ -292,7 +298,7 @@ class ClassroomLoanResource extends Resource
                     ->wrap(),
                 Tables\Columns\TextColumn::make('requester.name')
                     ->label('Docente')
-                    ->searchable()
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('scheduled_start_at')
                     ->label('Inicio')
@@ -341,6 +347,8 @@ class ClassroomLoanResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->native(false)
                     ->options([
                         'pendiente' => 'Pendiente',
                         'aprobado' => 'Aprobado',
@@ -351,8 +359,10 @@ class ClassroomLoanResource extends Resource
                     ]),
                 Tables\Filters\Filter::make('fecha')
                     ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
+                        Forms\Components\DatePicker::make('from')
+                            ->label('Desde'),
+                        Forms\Components\DatePicker::make('until')
+                            ->label('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
