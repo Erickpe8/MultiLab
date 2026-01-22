@@ -7,6 +7,7 @@ use App\Filament\Resources\Pages\AppCreateRecord;
 use App\Models\User;
 use App\Notifications\LoanApprovalRequest;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 class CreateClassroomLoan extends AppCreateRecord
@@ -27,8 +28,15 @@ class CreateClassroomLoan extends AppCreateRecord
 
     protected function afterCreate(): void
     {
-        $admins = User::role(['superadmin', 'aux_admin'])->get();
-        Notification::send($admins, new LoanApprovalRequest($this->record));
+        $creatorId = Auth::id();
+
+        $admins = User::role(['superadmin', 'aux_admin'])
+            ->when($creatorId, fn ($query) => $query->where('id', '!=', $creatorId))
+            ->get();
+
+        if ($admins->isNotEmpty()) {
+            Notification::send($admins, new LoanApprovalRequest($this->record));
+        }
     }
 
     protected function mergeStartAndTime(array $data, string $dateKey, string $timeKey, string $targetKey): array

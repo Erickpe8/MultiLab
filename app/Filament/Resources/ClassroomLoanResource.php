@@ -77,6 +77,11 @@ class ClassroomLoanResource extends Resource
                             ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
                             ->default(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
+                            ->afterStateHydrated(function (Forms\Components\Select $component, $state) {
+                                if (blank($state) && Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])) {
+                                    $component->state(Auth::id());
+                                }
+                            })
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
@@ -90,7 +95,8 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('purpose')
                             ->label('Propósito')
                             ->maxLength(180),
-                        Forms\Components\Select::make('Estado')
+                        Forms\Components\Select::make('status')
+                            ->label('Estado')
                             ->options(function () {
                                 $allOptions = [
                                     'pendiente' => 'Pendiente',
@@ -127,14 +133,15 @@ class ClassroomLoanResource extends Resource
 
                                 $start = Carbon::parse($state);
 
-                                $set('scheduled_end_time', $start->copy()->addHour()->format('H:i'));
+                                $set('scheduled_end_time', $start->copy()->addHours(3)->format('Y-m-d H:i:s'));
                             }),
                         Forms\Components\TimePicker::make('scheduled_end_time')
                             ->label('Fin programado')
                             ->native(false)
+                            ->displayFormat('H:i')
+                            ->format('Y-m-d H:i:s')
                             ->seconds(false)
                             ->required(),
-
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Control de PCs')
