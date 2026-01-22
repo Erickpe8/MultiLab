@@ -153,9 +153,8 @@
     ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                     <div class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-200 group-hover:scale-110 stroke-current {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : 'text-[var(--text)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke-width="1.5" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM6 10v6a2 2 0 002 2h8a2 2 0 002-2v-6a2 2 0 00-2-2H8a2 2 0 00-2 2zM12 2v3" />
-                        </svg>
+                        <x-ui.icon name="inventario" size="lg"
+                                   class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : 'text-[var(--text)]' }}" />
                         <span class="{{ request()->routeIs('filament.dashboard.resources.materials.*') ? 'text-white' : '' }}">Materiales</span>
                     </div>
                 </button>
@@ -168,14 +167,8 @@
     ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
     : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
                     <div class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 transition-transform duration-200 group-hover:scale-110 stroke-current {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : 'text-[var(--text)]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke-width="1.5" d="M9 17L15 17L15 7L9 7L9 17Z" />
-                            <path stroke-width="1.5" d="M5 12L7 12" />
-                            <path stroke-width="1.5" d="M17 12L19 12" />
-                            <path stroke-width="1.5" d="M2 17L22 17" />
-                            <path stroke-width="1.5" d="M12 2L12 5" />
-                            <path stroke-width="1.5" d="M12 19L12 22" />
-                        </svg>
+                        <x-ui.icon name="heroicon-o-square-3-stack-3d" size="lg"
+                                   class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : 'text-[var(--text)]' }}" />
                         <span class="{{ request()->routeIs('filament.dashboard.resources.assets.*') ? 'text-white' : '' }}">Activos</span>
                     </div>
                 </button>
