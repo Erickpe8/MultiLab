@@ -70,7 +70,8 @@ class ClassroomLoanResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->native(false),
                         Forms\Components\Select::make('approved_by')
                             ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
@@ -79,7 +80,8 @@ class ClassroomLoanResource extends Resource
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
-                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])),
+                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->native(false),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
                             ->maxLength(120)
@@ -128,8 +130,8 @@ class ClassroomLoanResource extends Resource
                             }),
                         Forms\Components\TimePicker::make('scheduled_end_time')
                             ->label('Fin programado')
+                            ->native(false)
                             ->seconds(false)
-                            ->helperText('Haz clic en la esquina derecha del campo para seleccionar la hora')
                             ->required(),
 
                     ])
@@ -340,7 +342,8 @@ class ClassroomLoanResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
+                Tables\Filters\SelectFilter::make('Estado')
+                    ->native(false)
                     ->options([
                         'pendiente' => 'Pendiente',
                         'aprobado' => 'Aprobado',
@@ -351,8 +354,8 @@ class ClassroomLoanResource extends Resource
                     ]),
                 Tables\Filters\Filter::make('fecha')
                     ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
+                        Forms\Components\DatePicker::make('Desde'),
+                        Forms\Components\DatePicker::make('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
