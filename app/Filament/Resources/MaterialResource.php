@@ -7,9 +7,12 @@ use App\Filament\Resources\MaterialResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Material;
 use App\Models\Unit;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -26,63 +29,132 @@ class MaterialResource extends AppResource
     protected static ?string $model = Material::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationGroup = 'Warehouse Management';
+    protected static ?string $navigationGroup = 'Gestión de Inventario';
     protected static ?string $modelLabel = 'Material';
-    protected static ?string $pluralModelLabel = 'Materials';
+    protected static ?string $pluralModelLabel = 'Materiales';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Material Details')
-                    ->schema([
-                        TextInput::make('sku')
-                            ->label('SKU')
-                            ->unique(ignoreRecord: true)
-                            ->required()
-                            ->maxLength(255),
-                        TextInput::make('name')
-                            ->label('Name')
-                            ->required()
-                            ->maxLength(255),
-                        Select::make('category_id')
-                            ->label('Category')
-                            ->relationship('category', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                        Select::make('unit_id')
-                            ->label('Unit')
-                            ->relationship('unit', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                    ])
-                    ->columns(2),
+        return $form->schema([
+            Tabs::make('material_flow')
+                ->columnSpanFull()
+                ->tabs([
+                    Tab::make('Identidad & Clasificación')
+                        ->icon('heroicon-o-cube')
+                        ->schema([
+                            Forms\Components\Section::make('Ficha principal')
+                                ->description('Define cómo se identificará este material en reportes y etiquetas internas.')
+                                ->schema([
+                                    Forms\Components\Grid::make(12)
+                                        ->schema([
+                                            TextInput::make('sku')
+                                                ->label('Código SKU')
+                                                ->placeholder('Ej: CAB-00045')
+                                                ->helperText('Usa un código consistente para búsquedas más rápidas.')
+                                                ->unique(ignoreRecord: true)
+                                                ->required()
+                                                ->maxLength(255)
+                                                ->columnSpan(4),
+                                            TextInput::make('name')
+                                                ->label('Nombre comercial')
+                                                ->placeholder('Cables HDMI 1.5m')
+                                                ->helperText('Se mostrará en listados de préstamos e inventario.')
+                                                ->required()
+                                                ->maxLength(255)
+                                                ->columnSpan(8),
+                                            Select::make('category_id')
+                                                ->label('Categoría')
+                                                ->relationship('category', 'name')
+                                                ->searchable()
+                                                ->preload()
+                                                ->required()
+                                                ->helperText('Agrupa el material según su uso para facilitar filtros.')
+                                                ->columnSpan(6),
+                                            Select::make('unit_id')
+                                                ->label('Unidad de medida')
+                                                ->relationship('unit', 'name')
+                                                ->searchable()
+                                                ->preload()
+                                                ->required()
+                                                ->helperText('Define cómo se descuentan existencias (unidades, cajas, metros, etc.).')
+                                                ->columnSpan(6),
+                                        ]),
+                                ]),
+                        ]),
+                    Tab::make('Stock & Operación')
+                        ->icon('heroicon-o-chart-bar')
+                        ->schema([
+                            Forms\Components\Section::make('Parámetros de inventario')
+                                ->description('Controla cuándo alertar por reposición y el saldo disponible actual.')
+                                ->schema([
+                                    Forms\Components\Grid::make(12)
+                                        ->schema([
+                                            TextInput::make('min_stock')
+                                                ->label('Stock mínimo')
+                                                ->numeric()
+                                                ->default(0)
+                                                ->minValue(0)
+                                                ->helperText('Cuando el stock baje de este valor se considera en alerta.')
+                                                ->columnSpan(4),
+                                            TextInput::make('max_stock')
+                                                ->label('Stock máximo')
+                                                ->numeric()
+                                                ->default(0)
+                                                ->minValue(0)
+                                                ->helperText('Límite de seguridad para evitar sobreinventario.')
+                                                ->columnSpan(4),
+                                            TextInput::make('current_stock')
+                                                ->label('Stock actual')
+                                                ->numeric()
+                                                ->default(0)
+                                                ->minValue(0)
+                                                ->helperText('Se ajusta automáticamente con préstamos y devoluciones.')
+                                                ->columnSpan(4),
+                                        ]),
+                                    Forms\Components\Grid::make(12)
+                                        ->schema([
+                                            Forms\Components\Placeholder::make('stock_health')
+                                                ->label('Estado de stock')
+                                                ->content(function (Forms\Get $get) {
+                                                    $current = (int) ($get('current_stock') ?? 0);
+                                                    $min = (int) ($get('min_stock') ?? 0);
+                                                    $max = (int) ($get('max_stock') ?? 0);
 
-                Forms\Components\Section::make('Stock & Expiry Information')
-                    ->schema([
-                        TextInput::make('min_stock')
-                            ->label('Minimum Stock')
-                            ->numeric()
-                            ->default(0),
-                        TextInput::make('max_stock')
-                            ->label('Maximum Stock')
-                            ->numeric()
-                            ->default(0),
-                        TextInput::make('current_stock')
-                            ->label('Current Stock')
-                            ->numeric()
-                            ->default(0),
-                        Toggle::make('has_expiry')
-                            ->label('Has Expiry Date')
-                            ->live(),
-                        DatePicker::make('expiry_date')
-                            ->label('Expiry Date')
-                            ->visible(fn (Forms\Get $get) => $get('has_expiry')),
-                    ])
-                    ->columns(2),
-            ]);
+                                                    if ($current === 0) {
+                                                        return 'Sin existencias. Reponer de inmediato.';
+                                                    }
+
+                                                    if ($min > 0 && $current <= $min) {
+                                                        return 'En nivel crítico (≤ stock mínimo).';
+                                                    }
+
+                                                    if ($max > 0 && $current > $max) {
+                                                        return 'Por encima del stock objetivo. Evalúa redistribuir.';
+                                                    }
+
+                                                    return 'Saldo saludable.';
+                                                })
+                                                ->columnSpan(6),
+                                            Forms\Components\Placeholder::make('loan_overview')
+                                                ->label('Reservas/Préstamos activos')
+                                                ->content(function (Forms\Get $get, ?Material $record) {
+                                                    if (!$record || !$record->exists) {
+                                                        return 'Disponible al guardar el material.';
+                                                    }
+
+                                                    $onLoan = $record->quantity_on_loan ?? 0;
+
+                                                    return $onLoan > 0
+                                                        ? $onLoan . ' unidad' . ($onLoan === 1 ? '' : 'es') . ' actualmente prestada' . ($onLoan === 1 ? '' : 's') . '.'
+                                                        : 'Sin préstamos pendientes.';
+                                                })
+                                                ->columnSpan(6),
+                                        ]),
+                                ]),
+                        ]),
+                    
+                ]),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -90,64 +162,49 @@ class MaterialResource extends AppResource
         return $table
             ->columns([
                 TextColumn::make('sku')
-                    ->label('SKU')
+                    ->label('Código SKU')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label('Nombre')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('unit.name')
-                    ->label('Unit')
+                    ->label('Unidad')
                     ->sortable(),
                 TextColumn::make('current_stock')
-                    ->label('Current Stock')
-                    ->numeric()
-                    ->sortable(),
-                IconColumn::make('has_expiry')
-                    ->label('Has Expiry')
-                    ->boolean(),
-                TextColumn::make('expiry_date')
-                    ->label('Expiry Date')
-                    ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Stock Actual')
+                    ->numeric(),
+                TextColumn::make('quantity_on_loan')
+                    ->label('Cantidad Prestada')
+                    ->numeric(),
                 TextColumn::make('min_stock')
-                    ->label('Min. Stock')
+                    ->label('Stock Mín.')
                     ->numeric()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('max_stock')
-                    ->label('Max. Stock')
+                    ->label('Stock Máx.')
                     ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label('Updated At')
-                    ->dateTime()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('category')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->relationship('category', 'name'),
                 Tables\Filters\SelectFilter::make('unit')
-                    ->label('Unit')
+                    ->label('Unidad')
                     ->relationship('unit', 'name'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                ->label('Ver')
+                ->modalWidth('4xl')
+                ->icon('heroicon-o-eye')
+                ->color('gray'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

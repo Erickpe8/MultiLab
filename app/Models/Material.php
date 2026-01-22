@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class Material extends Model
 {
@@ -20,4 +21,17 @@ class Material extends Model
 
     public function category(): BelongsTo { return $this->belongsTo(Category::class); }
     public function unit(): BelongsTo { return $this->belongsTo(Unit::class); }
+
+    public function getQuantityOnLoanAttribute(): int
+    {
+        return Loan::whereHas('materials', function (Builder $query) {
+            $query->where('materials.id', $this->id);
+        })
+        ->whereNotIn('status', ['devuelto', 'perdido', 'cancelado'])
+        ->get()
+        ->sum(function ($loan) {
+            $pivot = $loan->materials->firstWhere('id', $this->id)->pivot;
+            return $pivot->loan_qty - $pivot->returned_qty;
+        });
+    }
 }

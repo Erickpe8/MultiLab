@@ -8,26 +8,24 @@ use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         $categories = [
             [
-                'name' => 'Tools',
+                'name' => 'Herramienta',
                 'description' => 'General purpose tools for mechanical and electronic work.',
             ],
             [
-                'name' => 'Electronic Components',
+                'name' => 'Componente Electrónico',
                 'description' => 'Resistors, capacitors, LEDs, integrated circuits, etc.',
             ],
             [
-                'name' => 'Practice Supplies',
+                'name' => 'Suministro de Práctica',
                 'description' => 'Protoboards, wires, and other consumables for labs.',
             ],
             [
-                'name' => 'Peripherals',
+                'name' => 'Periférico',
                 'description' => 'Keyboards, mice, monitors, and other computer peripherals.',
             ],
         ];

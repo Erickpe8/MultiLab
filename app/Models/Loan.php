@@ -18,10 +18,6 @@ class Loan extends Model
     public function borrower(): BelongsTo { return $this->belongsTo(User::class, 'user_id'); }
     public function issuer(): BelongsTo { return $this->belongsTo(User::class, 'issued_by'); }
 
-    public function assets(): BelongsToMany {
-        return $this->belongsToMany(Asset::class, 'loan_assets')
-            ->withPivot(['condition_out','condition_in','evidence_in_path']);
-    }
     public function materials(): BelongsToMany {
         return $this->belongsToMany(Material::class, 'loan_materials')
             ->withPivot(['loan_qty','returned_qty']);
