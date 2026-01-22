@@ -338,11 +338,6 @@ class ClassroomLoanResource extends Resource
                     ->numeric()
                     ->formatStateUsing(fn (ClassroomLoan $record) => "{$record->pc_in_use}/{$record->pc_required}")
                     ->tooltip('PCs en uso / requeridos'),
-                Tables\Columns\TextColumn::make('incidents_count')
-                    ->label('Incidencias')
-                    ->badge()
-                    ->color(fn ($state) => $state > 0 ? 'danger' : 'gray')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('classroom_code')
                     ->label('Aula')
                     ->toggleable(isToggledHiddenByDefault: true),
