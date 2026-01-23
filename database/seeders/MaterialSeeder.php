@@ -15,6 +15,49 @@ class MaterialSeeder extends Seeder
      */
     public function run(): void
     {
+        // Nos aseguramos de que existan las categorías necesarias
+        $requiredCategories = [
+            'tools' => [
+                'name' => 'Herramientas',
+                'description' => 'Herramientas manuales y de medición para laboratorio.',
+            ],
+            'electronic-components' => [
+                'name' => 'Componentes electrónicos',
+                'description' => 'Resistencias, memorias, tarjetas y componentes eléctricos.',
+            ],
+            'practice-supplies' => [
+                'name' => 'Suministros de práctica',
+                'description' => 'Consumibles como protoboards, cables y kits para ejercicios.',
+            ],
+        ];
+
+        foreach ($requiredCategories as $code => $data) {
+            Category::firstOrCreate(
+                ['code' => $code],
+                [
+                    'name' => $data['name'],
+                    'description' => $data['description'],
+                    'uuid' => Str::uuid(),
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // También garantizamos las unidades usadas en los registros
+        $requiredUnits = [
+            'unit' => 'Unidad',
+            'meter' => 'Metro',
+            'pack' => 'Paquete',
+            'kit' => 'Kit',
+        ];
+
+        foreach ($requiredUnits as $code => $name) {
+            Unit::firstOrCreate(
+                ['code' => $code],
+                ['name' => $name]
+            );
+        }
+
         // Crear materiales con los IDs correctos
         $materials = [
             // Herramientas
@@ -107,21 +150,28 @@ class MaterialSeeder extends Seeder
         ];
 
         foreach ($materials as $materialData) {
-            $category = \App\Models\Category::where('code', $materialData['category_code'])->first();
-            $unit = \App\Models\Unit::where('code', $materialData['unit_code'])->first();
+            $category = Category::where('code', $materialData['category_code'])->first();
+            $unit = Unit::where('code', $materialData['unit_code'])->first();
 
             if ($category && $unit) {
-                Material::create([
-                    'name' => $materialData['name'],
-                    'category_id' => $category->id,
-                    'unit_id' => $unit->id,
-                    'current_stock' => $materialData['current_stock'],
-                    'uuid' => Str::uuid(),
-                    'sku' => 'SKU-' . strtoupper(Str::random(8)),
-                    'min_stock' => 5,
-                    'max_stock' => 100,
-                    'has_expiry' => false,
-                ]);
+                Material::firstOrCreate(
+                    [
+                        'name' => $materialData['name'],
+                        'category_id' => $category->id,
+                        'unit_id' => $unit->id,
+                    ],
+                    [
+                        'name' => $materialData['name'],
+                        'category_id' => $category->id,
+                        'unit_id' => $unit->id,
+                        'current_stock' => $materialData['current_stock'],
+                        'uuid' => Str::uuid(),
+                        'sku' => 'SKU-' . strtoupper(Str::random(8)),
+                        'min_stock' => 5,
+                        'max_stock' => 100,
+                        'has_expiry' => false,
+                    ]
+                );
             }
         }
     }
