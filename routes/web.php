@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Modules\Profile\Http\Controllers\ProfileController;
+use App\Filament\Pages\MainDashboard; // Import the Filament page
 use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ProfileThemeController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserManagementController;
+use App\Modules\Profile\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ Route::prefix('legal')->name('legal.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
+    Route::get('/dashboard', fn () => redirect(MainDashboard::getUrl()))
         ->middleware('verified')
         ->name('dashboard');
 
@@ -78,4 +78,4 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
     });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

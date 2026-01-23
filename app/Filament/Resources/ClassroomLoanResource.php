@@ -77,6 +77,11 @@ class ClassroomLoanResource extends Resource
                             ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
                             ->default(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
+                            ->afterStateHydrated(function (Forms\Components\Select $component, $state) {
+                                if (blank($state) && Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])) {
+                                    $component->state(Auth::id());
+                                }
+                            })
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
@@ -90,7 +95,8 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('purpose')
                             ->label('Propósito')
                             ->maxLength(180),
-                        Forms\Components\Select::make('Estado')
+                        Forms\Components\Select::make('status')
+                            ->label('Estado')
                             ->options(function () {
                                 $allOptions = [
                                     'pendiente' => 'Pendiente',
@@ -127,14 +133,15 @@ class ClassroomLoanResource extends Resource
 
                                 $start = Carbon::parse($state);
 
-                                $set('scheduled_end_time', $start->copy()->addHour()->format('H:i'));
+                                $set('scheduled_end_time', $start->copy()->addHours(3)->format('Y-m-d H:i:s'));
                             }),
                         Forms\Components\TimePicker::make('scheduled_end_time')
                             ->label('Fin programado')
                             ->native(false)
+                            ->displayFormat('H:i')
+                            ->format('Y-m-d H:i:s')
                             ->seconds(false)
                             ->required(),
-
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Control de PCs')
@@ -149,10 +156,13 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('pc_disponibles')
                             ->label('PCs disponibles')
                             ->numeric()
-                            ->default(fn () => Computer::query()->where('status', 'disponible')->count())
+                            ->default(fn () => static::getAvailableComputerCount())
+                            ->afterStateHydrated(function (Forms\Components\TextInput $component) {
+                                $component->state(static::getAvailableComputerCount());
+                            })
                             ->disabled()
-                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
-                            ->dehydrated(),
+                            ->dehydrated(false)
+                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null),
                         Forms\Components\TextInput::make('pc_unavailable')
                             ->label('PCs no disponibles')
                             ->numeric()
@@ -221,7 +231,9 @@ class ClassroomLoanResource extends Resource
                 InfoSection::make('Control de PCs')
                     ->schema([
                         TextEntry::make('pc_required')->label('PCs requeridos'),
-                        TextEntry::make('pc_disponibles')->label('PCs disponibles'),
+                        TextEntry::make('pc_disponibles')
+                            ->label('PCs disponibles')
+                            ->state(fn () => static::getAvailableComputerCount()),
                         TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
                         TextEntry::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
@@ -240,38 +252,6 @@ class ClassroomLoanResource extends Resource
                             ->html(),
                     ])
                     ->columns(3),
-                InfoSection::make('Estado de estaciones')
-                    ->schema([
-                        TextEntry::make('workstations_summary')
-                            ->label('Estaciones asignadas')
-                            ->bulleted()
-                            ->state(function (ClassroomLoan $record) {
-                                if ($record->workstations->isEmpty()) {
-                                    return null;
-                                }
-
-                                return $record->workstations->map(function ($workstation) {
-                                    $label = $workstation->label;
-                                    $code = $workstation->code ? " ({$workstation->code})" : '';
-
-                                    $status = match ($workstation->pivot->status) {
-                                        'reservado' => 'Reservado',
-                                        'en_uso' => 'En uso',
-                                        'liberado' => 'Liberado',
-                                        'inactivo' => 'Inactivo',
-                                        default => '—',
-                                    };
-
-                                    $assigned = $workstation->pivot->assigned_user
-                                        ? " · Usuario: {$workstation->pivot->assigned_user}"
-                                        : '';
-
-                                    return "{$label}{$code} — {$status}{$assigned}";
-                                })->toArray();
-                            })
-                            ->placeholder('Sin estaciones asignadas'),
-                    ])
-                    ->columns(1),
                 InfoSection::make('Notas')
                     ->schema([
                         TextEntry::make('access_instructions')
@@ -331,11 +311,6 @@ class ClassroomLoanResource extends Resource
                     ->numeric()
                     ->formatStateUsing(fn (ClassroomLoan $record) => "{$record->pc_in_use}/{$record->pc_required}")
                     ->tooltip('PCs en uso / requeridos'),
-                Tables\Columns\TextColumn::make('incidents_count')
-                    ->label('Incidencias')
-                    ->badge()
-                    ->color(fn ($state) => $state > 0 ? 'danger' : 'gray')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('classroom_code')
                     ->label('Aula')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -397,5 +372,10 @@ class ClassroomLoanResource extends Resource
             'view' => Pages\ViewClassroomLoan::route('/{record}'),
             'edit' => Pages\EditClassroomLoan::route('/{record}/edit'),
         ];
+    }
+
+    protected static function getAvailableComputerCount(): int
+    {
+        return Computer::query()->where('status', 'disponible')->count();
     }
 }
