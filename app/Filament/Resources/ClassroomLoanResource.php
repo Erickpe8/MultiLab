@@ -149,8 +149,7 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('pc_required')
                             ->label('PCs requeridos')
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0)
+                            ->minValue(1)
                             ->required()
                             ->dehydrated(),
                         Forms\Components\TextInput::make('pc_disponibles')
@@ -278,8 +277,7 @@ class ClassroomLoanResource extends Resource
                     ->wrap(),
                 Tables\Columns\TextColumn::make('requester.name')
                     ->label('Docente')
-                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
-                    ->sortable(),
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email']),
                 Tables\Columns\TextColumn::make('scheduled_start_at')
                     ->label('Inicio')
                     ->dateTime('d/m H:i')
@@ -308,9 +306,7 @@ class ClassroomLoanResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('pc_required')
                     ->label('PCs')
-                    ->numeric()
-                    ->formatStateUsing(fn (ClassroomLoan $record) => "{$record->pc_in_use}/{$record->pc_required}")
-                    ->tooltip('PCs en uso / requeridos'),
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('classroom_code')
                     ->label('Aula')
                     ->toggleable(isToggledHiddenByDefault: true),
