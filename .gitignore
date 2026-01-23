@@ -19,3 +19,17 @@ yarn-error.log
 /.vscode
 .npm /
 public/ClaragonwwwMultiLabstoragelogs/laravel.log
+/storage/*.key
+/storage/framework/cache/
+/storage/framework/views/
+/storage/framework/sessions/
+/storage/framework/testing/
+/storage/logs/
+/bootstrap/cache/
+/storage/framework/
+/storage/logs/
+/bootstrap/cache/
+public/C*/
+public/C:*/
+public/C\\*/
+
