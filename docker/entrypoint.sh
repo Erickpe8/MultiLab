@@ -5,6 +5,21 @@ set -e
 CURRENT_UID="$(id -u)"
 CURRENT_GID="$(id -g)"
 
+echo "🚀 Starting Laravel container..."
+
+# ----------------------------
+# Install Composer dependencies (only if missing)
+# ----------------------------
+if [ ! -f "vendor/autoload.php" ]; then
+    echo "📦 vendor/ not found, running composer install..."
+    composer install --no-interaction --prefer-dist
+else
+    echo "✅ Composer dependencies already installed"
+fi
+
+# ----------------------------
+# Ensure Laravel directories
+# ----------------------------
 ensure_storage_dirs() {
     mkdir -p bootstrap/cache
     mkdir -p storage/framework/sessions
@@ -17,6 +32,9 @@ ensure_storage_dirs
 
 chown -R "${CURRENT_UID}:${CURRENT_GID}" bootstrap/cache storage 2>/dev/null || true
 
+# ----------------------------
+# Ensure tmp directories
+# ----------------------------
 ensure_tmp_dirs() {
     for dir in \
         "${SESSION_FILES_PATH:-/tmp/laravel-sessions}" \
@@ -30,4 +48,18 @@ ensure_tmp_dirs() {
 
 ensure_tmp_dirs
 
+# ----------------------------
+# Laravel bootstrap helpers
+# ----------------------------
+if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+    echo "⚙️ .env not found, creating from .env.example"
+    cp .env.example .env
+fi
+
+php artisan key:generate --force || true
+php artisan migrate --force || true
+
+# ----------------------------
+# Start main process
+# ----------------------------
 exec "$@"

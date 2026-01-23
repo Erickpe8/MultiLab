@@ -22,3 +22,4 @@ yarn-error.log
 .npm /
 public/ClaragonwwwMultiLabstoragelogs/laravel.log
 /storage/*.key
+/storage/framework/*
