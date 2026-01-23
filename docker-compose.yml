@@ -35,6 +35,17 @@ services:
         depends_on:
             -   mysql
         command: php artisan serve --host=0.0.0.0 --port=8000
+        entrypoint: ["/var/www/docker/entrypoint.sh"]
+        environment:
+            SESSION_DRIVER: file
+            CACHE_DRIVER: file
+            QUEUE_CONNECTION: sync
+            LARAVEL_CACHE_WARMUP: "false"
+            LARAVEL_CACHE_CLEAR: "false"
+            DB_HOST: mysql
+            DB_DATABASE: multilab
+            DB_USERNAME: root
+            DB_PASSWORD: root
         networks:
             -   app-network
 
@@ -47,6 +58,17 @@ services:
         depends_on:
             -   mysql
         command: sh -c "while true; do php artisan schedule:run >> /dev/null 2>&1; sleep 60; done"
+        entrypoint: ["/var/www/docker/entrypoint.sh"]
+        environment:
+            SESSION_DRIVER: file
+            CACHE_DRIVER: file
+            QUEUE_CONNECTION: sync
+            LARAVEL_CACHE_WARMUP: "false"
+            LARAVEL_CACHE_CLEAR: "false"
+            DB_HOST: mysql
+            DB_DATABASE: multilab
+            DB_USERNAME: root
+            DB_PASSWORD: root
         networks:
             -   app-network
 

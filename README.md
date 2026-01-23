@@ -4,15 +4,16 @@
 MultiLab es la plataforma institucional de la Fundación de Estudios Superiores Comfanorte (FESC) que centraliza la administración del Laboratorio de Software B201. Permite reservar el aula, controlar el inventario físico de la bodega, auditar los préstamos y mantener un historial de uso con roles afinados para docentes, estudiantes y auxiliares administrativos.
 
 ## Tabla de contenidos
-- [Sobre el proyecto](#sobre-el-proyecto)
-- [Arquitectura](#arquitectura)
-- [Stack tecnológico](#stack-tecnológico)
-- [Equipo y responsabilidades](#equipo-y-responsabilidades)
-- [Instalación y configuración](#instalación-y-configuración)
-- [Uso del sistema](#uso-del-sistema)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Contribución](#contribución)
-- [Licencia](#licencia)
+- [README.md para MultiLab](#readmemd-para-multilab)
+  - [Tabla de contenidos](#tabla-de-contenidos)
+  - [Sobre el proyecto](#sobre-el-proyecto)
+  - [Arquitectura](#arquitectura)
+  - [Stack tecnológico](#stack-tecnológico)
+  - [Equipo y responsabilidades](#equipo-y-responsabilidades)
+  - [Instalación y configuración](#instalación-y-configuración)
+  - [Uso del sistema](#uso-del-sistema)
+  - [Estructura del proyecto](#estructura-del-proyecto)
+  - [Contribución](#contribución)
 
 ## Sobre el proyecto
 - **Problema**: El laboratorio B201 carece de un punto único de control para reservar el aula, supervisar los PCs, gestionar préstamos de materiales y certificar los roles, lo que provoca registros fragmentados y falta de control de stock.  
@@ -98,6 +99,3 @@ MultiLab es la plataforma institucional de la Fundación de Estudios Superiores 
 - **Flujo Git**: ramas `feature/*` desde `develop`, merge a `develop` tras pruebas locales, release en `main`.  
 - **Estándares**: seguir PSR-12, ejecutar `php artisan pint`, `npm run lint` y pruebas (`php artisan test`) antes de enviar un PR.  
 - **Pull Requests**: describir cambios/contexto, mencionar comandos ejecutados, adjuntar capturas o logs relevantes y solicitar revisión activa.
-
-## Licencia
-El proyecto se publica bajo licencia MIT (ver `composer.json`). No hay archivo `LICENSE`, por lo que se debe crear uno si se requiere distribución oficial.
