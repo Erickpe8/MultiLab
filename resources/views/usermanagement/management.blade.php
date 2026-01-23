@@ -23,9 +23,6 @@
     @include('usermanagement.partials.modals.reject-user')
     @include('usermanagement.partials.modals.edit-role')
     @include('usermanagement.partials.modals.delete-user')
-
-    @push('scripts')
-        @include('usermanagement.partials.scripts')
-    @endpush
+    @include('usermanagement.partials.icon-templates')
 
 </x-app-layout>
