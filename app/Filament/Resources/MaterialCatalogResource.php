@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MaterialCatalogResource\Pages;
 use App\Helpers\RoleHelper;
 use App\Models\Material;
-use App\Models\MaterialRequest;
+use App\Models\Loan;
 use App\Models\User;
-use App\Notifications\NewMaterialRequestNotification;
+use App\Notifications\NewLoanRequestNotification;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -20,6 +22,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Illuminate\Support\Str;
+use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
 
 class MaterialCatalogResource extends AppResource
@@ -98,20 +102,35 @@ class MaterialCatalogResource extends AppResource
                     ->sortable(),
             ])
             ->filters([])
-            ->actions([
-                Action::make('requestMaterial')
-                    ->label('Solicitar')
-                    ->icon('heroicon-o-paper-airplane')
+            ->headerActions([
+                Action::make('createOrder')
+                    ->label('Crear pedido de materiales')
+                    ->icon('heroicon-o-plus-circle')
                     ->color('primary')
-                    ->modalWidth('lg')
-                    ->visible(fn (Material $record) => $record->current_stock > 0)
+                    ->button()
+                    ->modalWidth('2xl')
                     ->form([
-                        TextInput::make('quantity')
-                            ->label('Cantidad requerida')
-                            ->numeric()
-                            ->minValue(1)
-                            ->required()
-                            ->helperText('Debe ser menor o igual al stock disponible.')
+                        Repeater::make('items')
+                            ->label('Materiales a solicitar')
+                            ->minItems(1)
+                            ->maxItems(10)
+                            ->addActionLabel('Agregar material')
+                            ->columns(2)
+                            ->schema([
+                                Select::make('material_id')
+                                    ->label('Material')
+                                    ->options(fn () => Material::orderBy('name')->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->columnSpan(1),
+                                TextInput::make('quantity')
+                                    ->label('Cantidad')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
                             ->columnSpanFull(),
                         DateTimePicker::make('needed_at')
                             ->label('Fecha de retiro deseada')
@@ -126,31 +145,33 @@ class MaterialCatalogResource extends AppResource
                             ->native(false),
                         Textarea::make('notes')
                             ->label('Notas opcionales')
-                            ->placeholder('Cuéntanos brevemente para qué necesitas este material.')
+                            ->placeholder('Cuéntanos brevemente para qué necesitas estos materiales.')
                             ->rows(3)
                             ->columnSpanFull(),
                     ])
                     ->modalSubmitActionLabel('Enviar solicitud')
-                    ->action(function (Material $record, array $data) {
+                    ->action(function (array $data) {
                         $user = Auth::user();
 
-                        if (!$user) {
+                        if (! $user) {
                             throw ValidationException::withMessages([
-                                'quantity' => 'Debes iniciar sesión para solicitar materiales.',
+                                'items' => 'Debes iniciar sesión para solicitar materiales.',
                             ]);
                         }
 
-                        $available = max($record->current_stock - $record->quantity_on_loan, 0);
+                        Notification::make()
+                            ->title('Enviando notificaciones...')
+                            ->body('Estamos avisando al laboratorio para que revise tu solicitud.')
+                            ->icon('heroicon-o-bell-alert')
+                            ->info()
+                            ->send();
 
-                        if ($available <= 0) {
-                            throw ValidationException::withMessages([
-                                'quantity' => 'Actualmente no hay stock disponible de este material.',
-                            ]);
-                        }
+                        $items = collect($data['items'] ?? [])
+                            ->filter(fn ($item) => ! empty($item['material_id']) && ! empty($item['quantity']));
 
-                        if ($data['quantity'] > $available) {
+                        if ($items->isEmpty()) {
                             throw ValidationException::withMessages([
-                                'quantity' => "Solo hay {$available} unidad(es) disponible(s) para préstamo.",
+                                'items' => 'Agrega al menos un material con su cantidad.',
                             ]);
                         }
 
@@ -160,27 +181,65 @@ class MaterialCatalogResource extends AppResource
                             ]);
                         }
 
-                        $requestRecord = MaterialRequest::create([
-                            'material_id' => $record->id,
+                        $loan = Loan::create([
                             'user_id' => $user->id,
-                            'quantity' => $data['quantity'],
-                            'needed_at' => $data['needed_at'],
-                            'planned_return_at' => $data['planned_return_at'],
+                            'issued_by' => null,
+                            'loan_code' => 'L-' . strtoupper(Str::random(8)),
+                            'loan_at' => $data['needed_at'],
+                            'due_at' => $data['planned_return_at'],
                             'status' => 'pendiente',
                             'notes' => $data['notes'] ?? null,
                         ]);
+
+                        $pivotData = [];
+                        foreach ($items as $index => $item) {
+                            $material = Material::find($item['material_id']);
+
+                            if (! $material) {
+                                throw ValidationException::withMessages([
+                                    "items.{$index}.material_id" => 'El material seleccionado ya no está disponible.',
+                                ]);
+                            }
+
+                            $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                            if ($available <= 0) {
+                                throw ValidationException::withMessages([
+                                    "items.{$index}.quantity" => "Actualmente no hay stock disponible de {$material->name}.",
+                                ]);
+                            }
+
+                            $quantity = (int) $item['quantity'];
+
+                            if ($quantity > $available) {
+                                throw ValidationException::withMessages([
+                                    "items.{$index}.quantity" => "Solo hay {$available} unidad(es) disponibles para {$material->name}.",
+                                ]);
+                            }
+
+                            $pivotData[$material->id] = [
+                                'loan_qty' => $quantity,
+                                'returned_qty' => 0,
+                            ];
+                        }
+
+                        $loan->materials()->sync($pivotData);
 
                         $recipients = User::role(['superadmin', 'aux_admin'])->get();
 
                         if ($recipients->isNotEmpty()) {
                             NotificationFacade::send(
                                 $recipients,
-                                new NewMaterialRequestNotification($requestRecord->fresh('material', 'requester'))
+                                new NewLoanRequestNotification($loan->load('materials', 'borrower'))
                             );
                         }
                     })
-                    ->successNotificationTitle('Solicitud enviada'),
+                    ->successNotification(fn () => Notification::make()
+                        ->title('¡Pedido enviado!')
+                        ->body('Te avisaremos cuando el laboratorio revise tu solicitud.')
+                        ->success()),
             ])
+            ->actions([])
             ->bulkActions([])
             ->recordAction(null)
             ->emptyStateHeading('No hay materiales registrados')

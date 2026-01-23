@@ -28,8 +28,6 @@ class ViewMaterialRequest extends AppViewRecord
                 ->action(function () {
                     $requestRecord = $this->record;
 
-                    $this->ensureLoanSupportsRejectedStatus();
-
                     DB::transaction(function () use ($requestRecord) {
                         $requestRecord->update([
                             'status' => 'rechazada',
@@ -73,21 +71,6 @@ class ViewMaterialRequest extends AppViewRecord
                 ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && $this->record->status !== 'rechazada')
                 ->url(fn () => LoanResource::getUrl('create', ['material_request' => $this->record->getKey()])),
         ];
-    }
-
-    private function ensureLoanSupportsRejectedStatus(): void
-    {
-        $column = DB::selectOne("SHOW COLUMNS FROM `loans` LIKE 'status'");
-
-        if (!$column || !isset($column->Type)) {
-            return;
-        }
-
-        if (str_contains($column->Type, "'rechazado'")) {
-            return;
-        }
-
-        DB::statement("ALTER TABLE `loans` MODIFY COLUMN `status` ENUM('abierto','devuelto','vencido','con_multa','perdido','rechazado') DEFAULT 'abierto'");
     }
 
     private function getCurrentRecordUrl(): string

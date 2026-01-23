@@ -19,6 +19,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
+use App\Helpers\RoleHelper;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class LoanResource extends AppResource
@@ -345,14 +347,19 @@ class LoanResource extends AppResource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                if (RoleHelper::isEstudiante()) {
+                    $query->where('user_id', Auth::id());
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('borrower.name')
                     ->label('Solicitante')
-                    ->searchable()
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('issuer.name')
                     ->label('Entregado por')
-                    ->searchable()
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('loan_code')
                     ->label('Código de Préstamo')
@@ -460,6 +467,7 @@ class LoanResource extends AppResource
         return [
             'index' => Pages\ManageLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),
+            'view' => Pages\ViewLoan::route('/{record}'),
         ];
     }
 }
