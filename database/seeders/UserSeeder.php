@@ -54,6 +54,20 @@ class UserSeeder extends Seeder
                 ],
             ],
             [
+                'role' => 'estudiante',
+                'attributes' => [
+                    'first_name'     => 'Maria',
+                    'middle_name'    => 'Fernanda',
+                    'first_surname'  => 'Garcia',
+                    'second_surname' => 'Lopez',
+                    'email'          => 'estudiante2@fesc.edu.co',
+                    'gender'         => 'F',
+                    'document_type'  => 'TI',
+                    'document_number'=> '2000000002',
+                    'phone'          => '6010000006',
+                ],
+            ],
+            [
                 'role' => 'aux_admin',
                 'attributes' => [
                     'first_name'     => 'Auxiliar',
@@ -74,11 +88,25 @@ class UserSeeder extends Seeder
                     'middle_name'    => null,
                     'first_surname'  => 'Munoz',
                     'second_surname' => 'Rojas',
-                    'email'          => 'docente@fesc.edu.co',
+                    'email'          => 'docente1@fesc.edu.co',
                     'gender'         => 'M',
                     'document_type'  => 'CC',
                     'document_number'=> '1000000004',
                     'phone'          => '6010000005',
+                ],
+            ],
+            [
+                'role' => 'docente',
+                'attributes' => [
+                    'first_name'     => 'Pedro',
+                    'middle_name'    => 'Alberto',
+                    'first_surname'  => 'Martinez',
+                    'second_surname' => 'Silva',
+                    'email'          => 'docente2@fesc.edu.co',
+                    'gender'         => 'M',
+                    'document_type'  => 'CC',
+                    'document_number'=> '1000000005',
+                    'phone'          => '6010000007',
                 ],
             ],
         ];
