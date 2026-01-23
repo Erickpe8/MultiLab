@@ -49,17 +49,6 @@ ensure_tmp_dirs() {
 ensure_tmp_dirs
 
 # ----------------------------
-# Laravel bootstrap helpers
-# ----------------------------
-if [ ! -f ".env" ] && [ -f ".env.example" ]; then
-    echo "⚙️ .env not found, creating from .env.example"
-    cp .env.example .env
-fi
-
-php artisan key:generate --force || true
-php artisan migrate --force || true
-
-# ----------------------------
 # Start main process
 # ----------------------------
 exec "$@"
