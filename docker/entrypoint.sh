@@ -14,6 +14,19 @@ ensure_dirs
 
 chown -R "${TARGET_USER}:${TARGET_GROUP}" storage bootstrap/cache 2>/dev/null || true
 
+ensure_tmp_dirs() {
+    for dir in \
+        "${SESSION_FILES_PATH:-/tmp/laravel-sessions}" \
+        "${VIEW_COMPILED_PATH:-/tmp/laravel-views}" \
+        "${CACHE_FILE_PATH:-/tmp/laravel-cache}"
+    do
+        mkdir -p "$dir"
+        chown "${TARGET_USER}:${TARGET_GROUP}" "$dir" 2>/dev/null || true
+    done
+}
+
+ensure_tmp_dirs
+
 is_true() {
     case "${1:-}" in
         true|TRUE|True|t|T|1) return 0 ;;

@@ -46,6 +46,10 @@ services:
             DB_DATABASE: multilab
             DB_USERNAME: root
             DB_PASSWORD: root
+            LOG_CHANNEL: stderr
+            VIEW_COMPILED_PATH: /tmp/laravel-views
+            SESSION_FILES_PATH: /tmp/laravel-sessions
+            CACHE_FILE_PATH: /tmp/laravel-cache
         networks:
             -   app-network
 
@@ -69,6 +73,10 @@ services:
             DB_DATABASE: multilab
             DB_USERNAME: root
             DB_PASSWORD: root
+            LOG_CHANNEL: stderr
+            VIEW_COMPILED_PATH: /tmp/laravel-views
+            SESSION_FILES_PATH: /tmp/laravel-sessions
+            CACHE_FILE_PATH: /tmp/laravel-cache
         networks:
             -   app-network
 
