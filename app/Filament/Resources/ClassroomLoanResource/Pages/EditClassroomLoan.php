@@ -17,6 +17,9 @@ class EditClassroomLoan extends AppEditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('save')
+                ->label('Guardar cambios')
+                ->action('save'),
             Actions\DeleteAction::make(),
         ];
     }
