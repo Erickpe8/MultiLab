@@ -413,11 +413,8 @@ class LoanResource extends AppResource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->label('Ver')
-                    ->icon('heroicon-o-eye')
-                    ->color('gray')
-                    ->modalWidth('4xl')
                     ->after(function (Loan $record) {
                         // Do nothing if the loan is already marked as returned
                         if ($record->status === 'devuelto') {
@@ -425,7 +422,7 @@ class LoanResource extends AppResource
                         }
 
                         $allReturned = true;
-                        
+
                         // A loan with no items cannot be considered "returned"
                         if ($record->materials()->count() === 0) {
                             $allReturned = false;
@@ -438,11 +435,11 @@ class LoanResource extends AppResource
                                 }
                             }
                         }
-                
+
                         if ($allReturned) {
                             // If all items are fully returned, update the record
                             $record->update(['status' => 'devuelto', 'return_at' => $record->return_at ?? now()]);
-                            
+
                             Notification::make()
                                 ->title('Préstamo Completado')
                                 ->body('Todos los materiales han sido devueltos y el préstamo se ha marcado como "devuelto".')
