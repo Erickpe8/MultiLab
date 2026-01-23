@@ -1,4 +1,11 @@
 <x-layouts.guest-auth title="Pre-registro MultiLab" subtitle="Complete sus datos institucionales para solicitar acceso">
+
+    <style>
+        :root[data-theme='dark'] input {
+            background-color: var(--card);
+        }
+    </style>
+
     @php
 $inputClass = 'h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--card)]/70 px-4 text-sm text-[var(--text)] placeholder:text-[color:var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[#D84040]/40 focus:border-[#D84040] transition';
 $buttonClass = 'w-full h-11 rounded-xl font-semibold text-white bg-[#8E1616] hover:bg-[#D84040] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#D84040]/50 focus-visible:ring-offset-[var(--bg)]';
