@@ -152,7 +152,7 @@ class MaterialResource extends AppResource
                                         ]),
                                 ]),
                         ]),
-                    
+
                 ]),
         ]);
     }
@@ -200,11 +200,8 @@ class MaterialResource extends AppResource
                     ->relationship('unit', 'name'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                ->label('Ver')
-                ->modalWidth('4xl')
-                ->icon('heroicon-o-eye')
-                ->color('gray'),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
