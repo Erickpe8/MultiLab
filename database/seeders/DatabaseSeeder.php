@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ClassroomWorkstationSeeder::class,
             ClassroomLoanSeeder::class,
+            LoanSeeder::class,
             ComputerSeeder::class,
         ]);
     }
