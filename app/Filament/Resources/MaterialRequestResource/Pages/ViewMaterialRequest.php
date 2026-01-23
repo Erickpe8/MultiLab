@@ -20,26 +20,6 @@ class ViewMaterialRequest extends AppViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('approve')
-                ->label('Aprobar solicitud')
-                ->color('success')
-                ->icon('heroicon-o-check-circle')
-                ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && $this->record->status === 'pendiente')
-                ->action(function () {
-                    $this->record->update([
-                        'status' => 'aprobada',
-                    ]);
-
-                    if ($this->record->requester) {
-                        Notification::make()
-                            ->title('Solicitud aprobada')
-                            ->body('Tu solicitud para "' . ($this->record->material?->name ?? 'material') . '" fue aprobada.')
-                            ->success()
-                            ->sendToDatabase($this->record->requester);
-                    }
-                })
-                ->after(fn () => $this->redirect($this->getCurrentRecordUrl()))
-                ->modalWidth('md'),
             Actions\Action::make('reject')
                 ->label('Rechazar solicitud')
                 ->color('danger')

@@ -12,6 +12,7 @@ use Filament\Infolists\Infolist;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -65,27 +66,51 @@ class MaterialRequestResource extends AppResource
             })
             ->columns([
                 TextColumn::make('material.name')
-                    ->label('Material')
-                    ->description(fn (MaterialRequest $record) => $record->material?->sku)
+                    ->label('Material solicitado')
+                    ->icon('heroicon-o-cube')
+                    ->weight('semibold')
+                    ->description(fn (MaterialRequest $record) => $record->material?->sku ? 'Código: ' . $record->material->sku : 'Sin código')
+                    ->wrap()
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('requester.name')
+                TextColumn::make('requester_preview')
                     ->label('Solicitante')
-                    ->sortable()
                     ->visible(fn () => ! RoleHelper::isEstudiante())
-                    ->description(fn (MaterialRequest $record) => $record->requester?->email),
+                    ->state(fn (MaterialRequest $record) => $record->requester?->name ?? '—')
+                    ->description(fn (MaterialRequest $record) => $record->requester?->email)
+                    ->icon('heroicon-o-user-circle')
+                    ->wrap()
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('quantity')
                     ->label('Cantidad')
-                    ->numeric()
+                    ->badge()
+                    ->color('primary')
+                    ->alignCenter()
                     ->sortable(),
-                TextColumn::make('needed_at')
-                    ->label('Retiro')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
-                TextColumn::make('planned_return_at')
-                    ->label('Devolución')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                TextColumn::make('agenda')
+                    ->label('Agenda estimada')
+                    ->icon('heroicon-o-calendar-days')
+                    ->state(function (MaterialRequest $record) {
+                        $pickup = $record->needed_at
+                            ? sprintf('<span class="font-semibold">Retiro:</span> %s <span class="text-xs text-gray-500">(%s)</span>',
+                                $record->needed_at->format('d/m/Y H:i'),
+                                $record->needed_at->diffForHumans()
+                            )
+                            : '<span class="font-semibold">Retiro:</span> Sin definir';
+
+                        $return = $record->planned_return_at
+                            ? sprintf('<span class="font-semibold">Devolución:</span> %s <span class="text-xs text-gray-500">(%s)</span>',
+                                $record->planned_return_at->format('d/m/Y H:i'),
+                                $record->planned_return_at->diffForHumans()
+                            )
+                            : '<span class="font-semibold">Devolución:</span> Sin definir';
+
+                        return '<div class="space-y-1">' . $pickup . '<br>' . $return . '</div>';
+                    })
+                    ->html()
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 BadgeColumn::make('status')
                     ->label('Estado')
                     ->colors([
@@ -93,16 +118,51 @@ class MaterialRequestResource extends AppResource
                         'success' => 'aprobada',
                         'danger' => 'rechazada',
                     ])
+                    ->icon(fn (string $state) => match ($state) {
+                        'aprobada' => 'heroicon-o-check-circle',
+                        'rechazada' => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-clock',
+                    })
                     ->formatStateUsing(fn (string $state) => ucfirst($state))
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Creada')
+                    ->label('Recibida')
                     ->since()
+                    ->description(fn (MaterialRequest $record) => $record->created_at?->format('d/m/Y H:i'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
-            ->actions([])
+            ->recordUrl(fn (MaterialRequest $record) => static::getUrl('view', ['record' => $record]))
+            ->recordClasses(fn (MaterialRequest $record) => match ($record->status) {
+                'aprobada' => 'border-l-4 border-emerald-400/90 dark:border-emerald-500/70',
+                'rechazada' => 'border-l-4 border-rose-400/90 dark:border-rose-500/70',
+                default => 'border-l-4 border-amber-300/80 dark:border-amber-500/70',
+            })
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pendiente' => 'Pendiente',
+                        'aprobada' => 'Aprobada',
+                        'rechazada' => 'Rechazada',
+                    ])
+                    ->indicator('Estado'),
+                SelectFilter::make('material_id')
+                    ->label('Material')
+                    ->relationship('material', 'name')
+                    ->searchable()
+                    ->indicator('Material')
+                    ->visible(fn () => ! RoleHelper::isEstudiante()),
+            ])
+            ->emptyStateHeading('Sin solicitudes registradas')
+            ->emptyStateDescription('Cuando un estudiante solicite un material, la solicitud aparecerá aquí con toda la información necesaria.')
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->label('Detalles')
+                    ->icon('heroicon-o-magnifying-glass')
+                    ->color('primary'),
+            ])
             ->bulkActions([]);
     }
 
@@ -110,39 +170,84 @@ class MaterialRequestResource extends AppResource
     {
         return $infolist
             ->schema([
-                Section::make('Detalles de la solicitud')
-                    ->columns(2)
+                Section::make('Resumen de la solicitud')
+                    ->columns(3)
+                    ->schema([
+                        TextEntry::make('status')
+                            ->label('Estado actual')
+                            ->badge()
+                            ->color(fn (string $state) => match ($state) {
+                                'aprobada' => 'success',
+                                'rechazada' => 'danger',
+                                default => 'warning',
+                            })
+                            ->formatStateUsing(fn (string $state) => ucfirst($state))
+                            ->icon(fn (string $state) => match ($state) {
+                                'aprobada' => 'heroicon-o-check-circle',
+                                'rechazada' => 'heroicon-o-x-circle',
+                                default => 'heroicon-o-clock',
+                            }),
+                        TextEntry::make('created_at')
+                            ->label('Solicitud recibida')
+                            ->dateTime('d/m/Y H:i')
+                            ->helperText(fn (MaterialRequest $record) => $record->created_at?->diffForHumans()),
+                        TextEntry::make('requester.name')
+                            ->label('Solicitante')
+                            ->icon('heroicon-o-user'),
+                    ]),
+                Section::make('Material y cantidades')
+                    ->columns(3)
                     ->schema([
                         TextEntry::make('material.name')
-                            ->label('Material'),
-                        TextEntry::make('material.sku')
-                            ->label('Código'),
+                            ->label('Material solicitado')
+                            ->icon('heroicon-o-cube'),
                         TextEntry::make('quantity')
-                            ->label('Cantidad solicitada'),
-                        TextEntry::make('needed_at')
-                            ->label('Fecha de retiro deseada')
-                            ->dateTime('d/m/Y H:i'),
-                        TextEntry::make('planned_return_at')
-                            ->label('Fecha estimada de devolución')
-                            ->dateTime('d/m/Y H:i'),
-                        TextEntry::make('status')
-                            ->label('Estado')
-                            ->formatStateUsing(fn (string $state) => ucfirst($state)),
-                        TextEntry::make('notes')
-                            ->label('Notas del solicitante')
-                            ->columnSpanFull(),
+                            ->label('Cantidad requerida')
+                            ->badge()
+                            ->color('primary')
+                            ->alignCenter(),
+                        TextEntry::make('material.current_stock')
+                            ->label('Stock disponible')
+                            ->placeholder('N/D')
+                            ->helperText('En el momento de la consulta.'),
                     ]),
-                Section::make('Solicitante')
+                Section::make('Agenda estimada')
                     ->columns(2)
                     ->schema([
-                        TextEntry::make('requester.name')
-                            ->label('Nombre'),
+                        TextEntry::make('needed_at')
+                            ->label('Retiro solicitado')
+                            ->icon('heroicon-o-arrow-down-tray')
+                            ->dateTime('d/m/Y H:i')
+                            ->helperText(fn (MaterialRequest $record) => $record->needed_at?->diffForHumans()),
+                        TextEntry::make('planned_return_at')
+                            ->label('Devolución estimada')
+                            ->icon('heroicon-o-arrow-up-tray')
+                            ->dateTime('d/m/Y H:i')
+                            ->helperText(fn (MaterialRequest $record) => $record->planned_return_at?->diffForHumans()),
+                        TextEntry::make('notes')
+                            ->label('Notas del solicitante')
+                            ->columnSpanFull()
+                            ->formatStateUsing(fn (?string $state) => $state ?: 'El solicitante no agregó comentarios adicionales.')
+                            ->hintIcon('heroicon-o-chat-bubble-bottom-center-text'),
+                    ])
+                    ->collapsible(),
+                Section::make('Datos del solicitante')
+                    ->columns(3)
+                    ->schema([
                         TextEntry::make('requester.email')
-                            ->label('Correo'),
-                        TextEntry::make('created_at')
-                            ->label('Creada')
-                            ->dateTime('d/m/Y H:i'),
-                    ]),
+                            ->label('Correo de contacto')
+                            ->copyable()
+                            ->copyableState(fn ($state) => $state)
+                            ->icon('heroicon-o-envelope'),
+                        TextEntry::make('requester.phone')
+                            ->label('Teléfono')
+                            ->placeholder('Sin teléfono registrado'),
+                        TextEntry::make('requester.created_at')
+                            ->label('Registrado en plataforma')
+                            ->dateTime('d/m/Y')
+                            ->placeholder('N/D'),
+                    ])
+                    ->visible(fn (MaterialRequest $record) => ! RoleHelper::isEstudiante()),
             ]);
     }
 
