@@ -34,8 +34,9 @@ return new class extends Migration {
             DB::statement('CREATE INDEX idx_locations_path_code ON locations (path_code(191))');
         }
 
-        // ---- TRIGGERS ----
-        DB::unprepared(<<<'SQL'
+        if (Schema::getConnection()->getDriverName() === 'mysql') {
+            // ---- TRIGGERS ----
+            DB::unprepared(<<<'SQL'
 CREATE TRIGGER trg_locations_bi
 BEFORE INSERT ON locations
 FOR EACH ROW
@@ -64,7 +65,7 @@ BEGIN
 END
 SQL);
 
-        DB::unprepared(<<<'SQL'
+            DB::unprepared(<<<'SQL'
 CREATE TRIGGER trg_locations_bu
 BEFORE UPDATE ON locations
 FOR EACH ROW
@@ -93,7 +94,7 @@ BEGIN
 END
 SQL);
 
-        DB::unprepared(<<<'SQL'
+            DB::unprepared(<<<'SQL'
 CREATE TRIGGER trg_locations_au
 AFTER UPDATE ON locations
 FOR EACH ROW
@@ -106,6 +107,7 @@ BEGIN
     END IF;
 END
 SQL);
+        }
     }
 
     public function down(): void {

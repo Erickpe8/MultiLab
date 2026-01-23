@@ -8,7 +8,7 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class CustomDatabaseNotifications extends BaseDatabaseNotifications
 {
-    protected static ?string $pollingInterval = '30s';
+    public static ?string $pollingInterval = '30s';
 
     public function getNotification(DatabaseNotification $notification): Notification
     {
