@@ -37,7 +37,7 @@ class MaterialCatalogResource extends AppResource
 
     public static function canViewAny(): bool
     {
-        return RoleHelper::isEstudiante();
+        return RoleHelper::hasAnyRole(['estudiante', 'docente']);
     }
 
     public static function canCreate(): bool

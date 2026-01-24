@@ -33,12 +33,12 @@ class MaterialRequestResource extends AppResource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return RoleHelper::isEstudiante();
+        return RoleHelper::hasAnyRole(['estudiante', 'docente']);
     }
 
     public static function canViewAny(): bool
     {
-        return RoleHelper::hasAnyRole(['superadmin', 'aux_admin', 'estudiante']);
+        return RoleHelper::hasAnyRole(['superadmin', 'aux_admin', 'estudiante', 'docente']);
     }
 
     public static function canCreate(): bool
