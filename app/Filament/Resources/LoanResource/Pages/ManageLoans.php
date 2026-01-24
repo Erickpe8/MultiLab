@@ -4,6 +4,7 @@ namespace App\Filament\Resources\LoanResource\Pages;
 
 use App\Filament\Resources\LoanResource;
 use App\Filament\Resources\Pages\AppManageRecords;
+use App\Helpers\RoleHelper;
 use Filament\Actions;
 
 class ManageLoans extends AppManageRecords
@@ -17,7 +18,8 @@ class ManageLoans extends AppManageRecords
                 ->label('Registrar préstamo')
                 ->icon('heroicon-o-plus-circle')
                 ->color('primary')
-                ->url(fn () => LoanResource::getUrl('create')),
+                ->url(fn () => LoanResource::getUrl('create'))
+                ->visible(! RoleHelper::isEstudiante()),
         ];
     }
 }
