@@ -19,7 +19,7 @@ class ManageLoans extends AppManageRecords
                 ->icon('heroicon-o-plus-circle')
                 ->color('primary')
                 ->url(fn () => LoanResource::getUrl('create'))
-                ->visible(! RoleHelper::isEstudiante()),
+                ->visible(! RoleHelper::hasAnyRole(['estudiante', 'docente'])),
         ];
     }
 }
