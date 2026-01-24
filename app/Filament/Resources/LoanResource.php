@@ -348,7 +348,7 @@ class LoanResource extends AppResource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                if (RoleHelper::isEstudiante()) {
+                if (RoleHelper::isEstudiante() || RoleHelper::isDocente()) {
                     $query->where('user_id', Auth::id());
                 }
             })
@@ -438,7 +438,7 @@ class LoanResource extends AppResource
                         }
                     }),
             ])
-            ->bulkActions(RoleHelper::isEstudiante() ? [] : [
+            ->bulkActions((RoleHelper::isEstudiante() || RoleHelper::isDocente()) ? [] : [
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -488,7 +488,7 @@ class LoanResource extends AppResource
 
     public static function canCreate(): bool
     {
-        if (RoleHelper::isEstudiante()) {
+        if (RoleHelper::isEstudiante() || RoleHelper::isDocente()) {
             return false;
         }
 
@@ -497,7 +497,7 @@ class LoanResource extends AppResource
 
     public static function canDelete($record): bool
     {
-        if (RoleHelper::isEstudiante()) {
+        if (RoleHelper::isEstudiante() || RoleHelper::isDocente()) {
             return false;
         }
 
@@ -506,7 +506,7 @@ class LoanResource extends AppResource
 
     public static function canDeleteAny(): bool
     {
-        if (RoleHelper::isEstudiante()) {
+        if (RoleHelper::isEstudiante() || RoleHelper::isDocente()) {
             return false;
         }
 
