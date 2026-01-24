@@ -488,11 +488,7 @@ class LoanResource extends AppResource
 
     public static function canCreate(): bool
     {
-        if (RoleHelper::isEstudiante() || RoleHelper::isDocente()) {
-            return false;
-        }
-
-        return parent::canCreate();
+        return RoleHelper::hasAnyRole(['superadmin', 'aux_admin']);
     }
 
     public static function canDelete($record): bool
