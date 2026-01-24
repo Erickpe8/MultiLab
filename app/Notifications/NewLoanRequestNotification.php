@@ -40,7 +40,7 @@ class NewLoanRequestNotification extends Notification
             ->actions([
                 Action::make('reviewLoan')
                     ->label('Revisar préstamo')
-                    ->url(LoanResource::getUrl('view', ['record' => $loan->getKey()]))
+                    ->url(LoanResource::getUrl('index') . '?tableSearch=' . urlencode($loan->loan_code))
                     ->button(),
             ]);
 
