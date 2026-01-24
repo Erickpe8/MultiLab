@@ -143,7 +143,7 @@
                 Módulos
             </p>
 
-            @if (auth()->user()?->hasRole('estudiante'))
+            @if (auth()->user()?->hasAnyRole(['estudiante', 'docente']))
                 <button
                     onclick="window.location.href=`{{ route('filament.dashboard.resources.material-catalogs.index') }}`"
                     class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
