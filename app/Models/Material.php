@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 
 class Material extends Model
@@ -21,6 +22,12 @@ class Material extends Model
 
     public function category(): BelongsTo { return $this->belongsTo(Category::class); }
     public function unit(): BelongsTo { return $this->belongsTo(Unit::class); }
+
+    public function loans(): BelongsToMany
+    {
+        return $this->belongsToMany(Loan::class, 'loan_materials')
+            ->withPivot(['loan_qty', 'returned_qty']);
+    }
 
     public function getQuantityOnLoanAttribute(): int
     {

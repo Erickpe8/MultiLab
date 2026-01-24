@@ -13,13 +13,13 @@ class ManageMaterials extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('showLoanCharts')
-                ->label('Ver métricas de préstamos')
-                ->icon('heroicon-o-chart-pie')
+            Actions\Action::make('showMaterialMetrics')
+                ->label('Ver métricas de materiales')
+                ->icon('heroicon-o-chart-bar')
                 ->color('gray')
-                ->modalHeading('Actividad de préstamos')
-                ->modalWidth('4xl')
-                ->modalContent(view('filament.widgets.loan-metrics')),
+                ->modalHeading('Estado del inventario')
+                ->modalWidth('5xl')
+                ->modalContent(view('filament.widgets.material-metrics')),
             Actions\CreateAction::make(),
         ];
     }
