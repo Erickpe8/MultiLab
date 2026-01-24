@@ -14,6 +14,14 @@ class ManageLoans extends AppManageRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('showLoanCharts')
+                ->label('Ver métricas de préstamos')
+                ->icon('heroicon-o-chart-pie')
+                ->color('gray')
+                ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']))
+                ->modalHeading('Actividad de préstamos')
+                ->modalWidth('4xl')
+                ->modalContent(view('filament.widgets.loan-metrics')),
             Actions\Action::make('goToCreate')
                 ->label('Registrar préstamo')
                 ->icon('heroicon-o-plus-circle')
