@@ -25,6 +25,8 @@ class ViewLoan extends AppViewRecord
     {
         $isPending = $this->record->status === 'pendiente';
 
+        $isReturned = $this->isFullyReturned();
+
         return [
             Actions\Action::make('approve')
                 ->label('Aprobar préstamo')
@@ -49,7 +51,7 @@ class ViewLoan extends AppViewRecord
                 ->icon('heroicon-o-x-mark')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']))
+                ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && ! $isReturned)
                 ->form([
                     Textarea::make('reason')
                         ->label($isPending ? 'Motivo del rechazo' : 'Motivo de cancelación')
@@ -205,5 +207,17 @@ class ViewLoan extends AppViewRecord
                         ->extraAttributes(['class' => 'bg-white shadow-sm rounded-2xl ring-1 ring-gray-100']),
                 ]),
         ];
+    }
+
+    protected function isFullyReturned(): bool
+    {
+        if ($this->record->status === 'devuelto') {
+            return true;
+        }
+
+        $materials = $this->record->materials ?? collect();
+
+        return $materials->isNotEmpty()
+            && $materials->every(fn ($material) => (int) $material->pivot->returned_qty >= (int) $material->pivot->loan_qty);
     }
 }
