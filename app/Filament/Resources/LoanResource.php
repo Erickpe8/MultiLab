@@ -366,58 +366,41 @@ class LoanResource extends AppResource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('loan_at')
-                    ->label('Fecha de Préstamo')
+                    ->label('Inicio del prestamo')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('due_at')
-                    ->label('Fecha de Devolución')
+                    ->label('Fin del prestamo')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_at')
-                    ->label('Fecha de Devolución Real')
+                    ->label('Entrega del prestamo')
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
-                    ->getStateUsing(function (Loan $record): string {
-                        if ($record->status === 'rechazado') {
-                            return 'rechazado';
-                        }
-
-                        if ($record->return_at) {
-                            return 'devuelto';
-                        }
-
-                        if (in_array($record->status, ['con_multa', 'perdido'])) {
-                            return $record->status;
-                        }
-
-                        if ($record->due_at && $record->due_at->isPast()) {
-                            return 'vencido';
-                        }
-
-                        return 'abierto';
-                    })
+                    ->getStateUsing(fn (Loan $record): string => self::resolveStatus($record))
                     ->colors([
-                        'primary' => 'abierto',
-                        'success' => 'devuelto',
-                        'danger' => ['vencido', 'rechazado'],
-                        'warning' => ['con_multa', 'perdido'],
+                        'primary' => ['pendiente', 'aprobado'],
+                        'success' => ['devuelto'],
+                        'warning' => ['con_multa', 'vencido'],
+                        'danger' => ['rechazado', 'cancelado', 'perdido'],
                     ])
                     ->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha de Creación')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Fecha de Actualización')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options(self::getStatusFilterOptions())
+                    ->searchable()
+                    ->placeholder('Todos los estados')
+                    ->preload(),
+                Tables\Filters\Filter::make('pending_unattended')
+                    ->label('Pendientes sin atender')
+                    ->query(fn (Builder $query) => $query->where('status', 'pendiente')->whereNull('issued_by')),
+                Tables\Filters\Filter::make('overdue_loans')
+                    ->label('Préstamos vencidos')
+                    ->query(fn (Builder $query) => $query->whereNull('return_at')->whereDate('due_at', '<', now())),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -455,7 +438,7 @@ class LoanResource extends AppResource
                         }
                     }),
             ])
-            ->bulkActions([
+            ->bulkActions(RoleHelper::isEstudiante() ? [] : [
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -469,5 +452,64 @@ class LoanResource extends AppResource
             'create' => Pages\CreateLoan::route('/create'),
             'view' => Pages\ViewLoan::route('/{record}'),
         ];
+    }
+
+    protected static function resolveStatus(Loan $record): string
+    {
+        $status = $record->status ?? 'pendiente';
+
+        if ($record->return_at) {
+            return 'devuelto';
+        }
+
+        if (in_array($status, ['pendiente', 'aprobado', 'rechazado', 'cancelado', 'con_multa', 'perdido', 'devuelto', 'vencido'], true)) {
+            return $status;
+        }
+
+        if ($record->due_at && $record->due_at->isPast()) {
+            return 'vencido';
+        }
+
+        return $status;
+    }
+
+    protected static function getStatusFilterOptions(): array
+    {
+        return [
+            'pendiente' => 'Pendiente',
+            'aprobado' => 'Aprobado',
+            'rechazado' => 'Rechazado',
+            'cancelado' => 'Cancelado',
+            'devuelto' => 'Devuelto',
+            'con_multa' => 'Con multa',
+            'perdido' => 'Perdido',
+        ];
+    }
+
+    public static function canCreate(): bool
+    {
+        if (RoleHelper::isEstudiante()) {
+            return false;
+        }
+
+        return parent::canCreate();
+    }
+
+    public static function canDelete($record): bool
+    {
+        if (RoleHelper::isEstudiante()) {
+            return false;
+        }
+
+        return parent::canDelete($record);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        if (RoleHelper::isEstudiante()) {
+            return false;
+        }
+
+        return parent::canDeleteAny();
     }
 }
