@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/multilab.svg') }}">
+    <link rel="alternate icon" href="{{ asset('images/multilab.svg') }}">
+
     <script>
         (function () {
             const saved = localStorage.getItem('theme');

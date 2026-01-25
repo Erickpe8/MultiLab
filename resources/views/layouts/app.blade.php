@@ -9,9 +9,9 @@
     @stack('head_start')
     {{ \Filament\Facades\Filament::renderHook('panels::head.start') }}
 
-    <!-- Título y Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon-engineering.png') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/multilab.svg') }}">
+    <link rel="alternate icon" href="{{ asset('images/multilab.svg') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
     <meta name="theme-color" content="#8E1616">
     <title>
