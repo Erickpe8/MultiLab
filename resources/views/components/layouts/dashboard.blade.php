@@ -7,8 +7,7 @@
 ])
 
 <div
-    class="min-h-screen flex bg-multilab-light dark:bg-multilab-dark
-           text-multilab-dark dark:text-multilab-gray"
+    class="min-h-screen flex bg-[var(--bg)] text-[var(--text)]"
 >
     {{-- ▸ SIDEBAR --}}
     <div
@@ -35,7 +34,7 @@
         <x-dashboard.header :title="$title" />
 
         {{-- Contenido dinámico --}}
-        <main class="flex-1 p-4 overflow-y-auto">
+        <main class="flex-1 p-4 overflow-y-auto brand-content">
             {{ $slot }}
         </main>
 

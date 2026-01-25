@@ -76,7 +76,7 @@
 
             {{-- Módulos dinámicos (opcionales) --}}
             @if (!empty($modules))
-                <li class="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-multilab-dark dark:text-multilab-gray">
+                <li class="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-[var(--text)]/60">
                     Módulos
                 </li>
                 @foreach ($modules as $module)

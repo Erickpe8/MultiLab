@@ -15,9 +15,11 @@
     --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
     --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
     --primary: #1D4ED8;
-    --primary-600: #1E40AF;
+    --primary-600: #2563EB;
     --primary-700: #1E40AF;
-    --primary-hover: #1E40AF;
+    --primary-soft: rgba(29, 78, 216, 0.12);
+    --institutional: #8E1616;
+    --institutional-soft: rgba(142, 22, 22, 0.22);
     --secondary: #1D1616;
     --accent: #D84040;
     --background: #F7F5F5;
@@ -82,9 +84,11 @@
     --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
     --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
     --primary: #1D4ED8;
-    --primary-600: #1E40AF;
+    --primary-600: #2563EB;
     --primary-700: #1E40AF;
-    --primary-hover: #1E40AF;
+    --primary-soft: rgba(29, 78, 216, 0.18);
+    --institutional: #8E1616;
+    --institutional-soft: rgba(142, 22, 22, 0.28);
     --secondary: #EEEEEE;
     --accent: #D84040;
     --background: #1c1515;
@@ -100,15 +104,9 @@
     --card: #2a2121;
     --focus: var(--accent);
 
-    --brand-red-1: #e30513;
-    --brand-red-2: #9c0f06;
-    --brand-red-3: #630b00;
-    --anthracite: #3c3c3b;
-
     --gray-0:  #FFFFFF;
     --gray-10: #E6E6E6;
 
-    --focus: #D84040;
     --muted: color-mix(in oklab, var(--text) 60%, transparent);
 
     /* Danger Zone Colors - DARK MODE */
@@ -193,6 +191,21 @@
 
     td {
         color: var(--text-secondary);
+    }
+
+    .brand-content a {
+        color: var(--primary);
+        transition: color 0.2s ease;
+    }
+
+    .brand-content a:hover,
+    .brand-content a:focus-visible {
+        color: var(--primary-600);
+    }
+
+    .brand-content h1,
+    .brand-content h2 {
+        color: var(--primary);
     }
 
     .font-primary {

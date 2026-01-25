@@ -128,7 +128,7 @@
         </header>
 
         {{-- MAIN --}}
-        <main class="flex-1 overflow-hidden">
+        <main class="flex-1 overflow-hidden brand-content">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full py-4 sm:py-5 lg:py-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8 h-full min-h-0 items-stretch">
 

@@ -1,7 +1,9 @@
 :root {
     --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
     --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
-    --primary: #8E1616;
+    --primary: #1D4ED8;
+    --primary-600: #2563EB;
+    --primary-soft: rgba(29, 78, 216, 0.12);
     --secondary: #1D1616;
     --accent: #D84040;
     --background: #F7F5F5;
@@ -10,6 +12,8 @@
     --success: #16a34a;
     --warning: #f97316;
     --danger: #dc2626;
+    --institutional: #8E1616;
+    --institutional-soft: rgba(142, 22, 22, 0.22);
 }
 
 :root[data-theme='dark'] {
@@ -22,12 +26,23 @@ body,
 .filament-app {
     font-family: var(--font-primary) !important;
     background-color: var(--background) !important;
-    color: var(--secondary) !important;
+    color: var(--text, var(--secondary)) !important;
 }
 
 .filament-app .filament-sidebar,
 .filament-app .filament-main {
     background-color: var(--surface) !important;
+}
+
+.filament-app h1,
+.filament-app h2,
+.filament-app a {
+    color: var(--primary);
+}
+
+.filament-app a:hover,
+.filament-app a:focus-visible {
+    color: var(--primary-600);
 }
 
 .font-support {

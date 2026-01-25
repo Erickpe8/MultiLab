@@ -31,7 +31,7 @@
 <body class="min-h-screen bg-[var(--bg)] text-[var(--text)] font-primary antialiased">
     @include('layouts.partials.public-header')
 
-    <main class="pt-24">
+    <main class="pt-24 brand-content">
         <div class="mx-auto max-w-6xl px-4 py-10">
             @yield('content')
         </div>

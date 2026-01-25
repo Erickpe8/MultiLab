@@ -8,7 +8,7 @@
         'warning' => 'bg-[var(--warning)]/20 text-[var(--warning)] border border-[var(--warning)]/30',
         'danger' => 'bg-[var(--danger)]/20 text-[var(--danger)] border border-[var(--danger)]/30',
         'muted' => 'bg-[var(--border)]/15 text-[var(--text-secondary)] border border-[var(--border)]/40',
-        'info' => 'bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30',
+        'info' => 'bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary)]/30',
     ];
 
     $variantClasses = $variants[$variant] ?? $variants['info'];
