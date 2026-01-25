@@ -1,3 +1,21 @@
+@php
+    use Illuminate\Support\Str;
+
+    $user = auth()->user();
+    $initials = '';
+    if (!empty($user?->name)) {
+        $parts = preg_split('/\s+/', trim($user->name));
+        $initials = collect($parts)
+            ->filter()
+            ->map(fn ($part) => Str::upper(Str::substr($part, 0, 1)))
+            ->take(2)
+            ->implode('');
+    }
+    if ($initials === '') {
+        $initials = 'US';
+    }
+@endphp
+
     <div class="space-y-8">
         <section class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm backdrop-blur-sm">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -11,10 +29,28 @@
                     </p>
                 </div>
 
-                <div
-                    class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--border)]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
-                    <x-ui.icon name="heroicon-o-shield-check" size="sm" class="text-[var(--primary)]" />
-                    Cuenta activa
+                <div class="flex items-center gap-3">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--border)]/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+                        <x-ui.icon name="heroicon-o-shield-check" size="sm" class="text-[var(--primary)]" />
+                        Cuenta activa
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('profile.edit') }}"
+                           class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+                           aria-label="Ver perfil">
+                            <x-ui.icon name="perfil" size="sm" />
+                        </a>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition hover:border-[var(--primary)] hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+                                aria-label="Cerrar sesión">
+                                <x-ui.icon name="logout" size="sm" />
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
