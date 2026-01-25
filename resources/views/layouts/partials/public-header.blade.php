@@ -6,18 +6,15 @@
             <a href="{{ route('welcome') }}" class="flex items-center gap-3">
                 <img src="{{ asset('images/FESC-30.png') }}" alt="FESC logo" class="h-10 w-auto" />
                 <span class="text-lg sm:text-xl font-bold tracking-wide text-[var(--accent)]">
-                    MultiLab
+                    {{ config('app.name') }}
                 </span>
             </a>
 
             <div class="flex items-center gap-3">
                 @if (Route::has('login'))
-                    <a href="{{ route('login') }}"
-                        class="px-4 py-2 rounded-full text-sm font-semibold border border-[var(--border)]
-                               bg-[var(--card)] text-[var(--text)] hover:shadow hover:border-[var(--accent)]
-                               transition duration-150">
+                    <x-ui.button variant="primary" href="{{ route('login') }}" class="rounded-full text-sm px-4 py-2">
                         Iniciar sesión
-                    </a>
+                    </x-ui.button>
                 @endif
             </div>
         </div>

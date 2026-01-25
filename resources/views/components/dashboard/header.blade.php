@@ -7,32 +7,30 @@ a page title and a theme toggle button. Uses simple SVG icons
 to avoid heavy JavaScript frameworks.
 --}}
 <header
-    class="flex items-center justify-between px-4 py-3 border-b bg-white border-multilab-gray dark:bg-multilab-dark dark:border-multilab-darkblue">
+    class="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
     <div class="flex items-center space-x-2">
         {{-- Mobile: open sidebar --}}
-        <button type="button" data-sidebar-open
-            class="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-multilab-dark dark:text-multilab-gray hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
+        <x-ui.button variant="ghost" type="button" data-sidebar-open
+            class="lg:hidden p-2 text-current rounded-md"
             aria-label="Open sidebar">
             <!-- Hamburger icon -->
             <x-ui.icon name="menu" size="lg" />
-        </button>
+        </x-ui.button>
         {{-- Desktop: toggle sidebar pin/unpin --}}
-        <button type="button" data-sidebar-toggle-desktop
-            class="hidden lg:inline-flex items-center justify-center p-2 rounded-md text-multilab-dark dark:text-multilab-gray hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
+        <x-ui.button variant="ghost" type="button" data-sidebar-toggle-desktop
+            class="hidden lg:inline-flex p-2 text-current rounded-md"
             aria-label="Toggle sidebar">
             <!-- Pin icon -->
             <x-ui.icon name="pin" size="lg" />
-        </button>
         {{-- Page title --}}
-        <h1 class="text-lg font-semibold text-multilab-blue dark:text-multilab-gray">
+        <h1 class="text-lg font-semibold text-brand">
             {{ $title ?? '' }}
         </h1>
     </div>
     {{-- Theme toggle button --}}
-        <button type="button" onclick="document.documentElement.classList.toggle('dark')"
-            class="inline-flex items-center justify-center p-2 rounded-md text-multilab-dark dark:text-multilab-gray hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
+        <x-ui.button variant="ghost" type="button" onclick="document.documentElement.classList.toggle('dark')"
+            class="p-2 text-current rounded-md"
             aria-label="Toggle theme">
-            <!-- Sun/Moon icon -->
-            <x-ui.icon name="sol" size="lg" />
-        </button>
+        <!-- Sun/Moon icon -->
+        <x-ui.icon name="sol" size="lg" />
 </header>

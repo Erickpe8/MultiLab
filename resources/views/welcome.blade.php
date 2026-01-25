@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MultiLab - FESC</title>
+    <title>{{ config('app.name') }}</title>
 
     <script>
         /**
@@ -58,11 +58,11 @@
     </style>
 </head>
 
-<body class="antialiased font-sans text-[var(--text)] overflow-hidden">
+<body class="antialiased font-primary text-[var(--text)] overflow-hidden">
     <div class="bg-overlay"></div>
 
     @php
-        // MultiLab: foco en operación diaria del laboratorio (B201) y bodega de materiales.
+        // Ingeniería de Software (FESC): foco en operación diaria del laboratorio (B201) y bodega de materiales.
         $modules = [
             [
                 "code" => "M1",
@@ -100,38 +100,28 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
                 <a href="{{ route('welcome') }}" class="flex items-center gap-3">
                     <x-brand.logo variant="horizontal" class="h-10 sm:h-11 w-auto" />
-                    <span class="text-xl sm:text-2xl font-extrabold tracking-wide text-[var(--accent)]">
-                        MultiLab
+                    <span class="text-xl sm:text-2xl font-extrabold tracking-wide text-brand">
+                        {{ config('app.name') }}
                     </span>
                 </a>
 
                 <nav class="flex items-center gap-2 sm:gap-3">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}"
-                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
-                                       text-sm font-semibold text-white shadow-sm transition">
+                            <x-ui.button variant="primary" href="{{ url('/dashboard') }}">
                                 Dashboard
-                            </a>
+                            </x-ui.button>
                         @else
-                            <a href="{{ route('login') }}"
-                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
-                                       text-sm font-semibold text-white shadow-sm transition">
+                            <x-ui.button variant="primary" href="{{ route('login') }}">
                                 Iniciar sesión
-                            </a>
+                            </x-ui.button>
 
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="px-4 py-2 rounded-xl border border-[var(--border)]
-                                           bg-[var(--card)]/80
-                                           text-sm font-semibold text-[var(--text)]
-                                           hover:border-[var(--accent)] hover:text-[var(--accent)]
-                                           transition">
+                                <x-ui.button variant="secondary" href="{{ route('register') }}">
                                     Registrarse
-                                </a>
+                                </x-ui.button>
                             @endif
                         @endauth
-
                     @endif
                 </nav>
             </div>
@@ -142,12 +132,11 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full py-4 sm:py-5 lg:py-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8 h-full min-h-0 items-stretch">
 
-                    <section class="h-full min-h-0 rounded-2xl border border-[var(--border)]
-                                    bg-[var(--card)] shadow-soft
-                                    overflow-hidden flex flex-col">
-                        <div class="px-5 sm:px-6 py-4 border-b border-[var(--border)]">
-                            <h2 class="text-base sm:text-lg font-extrabold text-[var(--text)]">
-                                ¿Qué hace MultiLab?
+                    <section class="h-full min-h-0">
+                        <x-ui.card class="h-full min-h-0 overflow-hidden flex flex-col">
+                            <div class="px-5 sm:px-6 py-4 border-b border-[var(--border)]">
+                            <h2 class="text-base sm:text-lg font-extrabold text-brand">
+                        ¿Qué hace {{ config('app.name') }}?
                             </h2>
                             <p class="text-sm text-[color:var(--text-muted)] mt-1">
                                 Funcionalidades clave para la operación del Laboratorio B201 y la bodega.
@@ -188,12 +177,12 @@
 
                             </div>
                         </div>
+                        </x-ui.card>
                     </section>
 
-                    <section class="h-full min-h-0 relative rounded-2xl border border-[var(--border)]
-                                    bg-[var(--card)] shadow-soft
-                                    overflow-hidden flex flex-col">
-                        <div class="absolute inset-0 pointer-events-none">
+                    <section class="h-full min-h-0">
+                        <x-ui.card class="h-full min-h-0 relative overflow-hidden flex flex-col">
+                            <div class="absolute inset-0 pointer-events-none">
                             <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-40"
                                 style="background: color-mix(in oklab, var(--accent) 30%, transparent);"></div>
                             <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full blur-3xl opacity-30"
@@ -202,29 +191,27 @@
 
                         <div class="relative flex-1 min-h-0 px-6 sm:px-8 py-6 sm:py-7 text-center
                                     flex flex-col items-center justify-center">
-                        <h3 class="text-3xl sm:text-4xl font-extrabold text-[var(--accent)]">
+                        <h3 class="text-3xl sm:text-4xl font-extrabold text-brand">
                             Manual de Usuario
                         </h3>
 
                         <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed text-[color:var(--text-muted)] max-w-xl mx-auto">
-                            Encuentra guías rápidas por rol para usar <strong>MultiLab</strong> con confianza en cada etapa
+                            Encuentra guías rápidas por rol para usar <strong>{{ config('app.name') }}</strong> con confianza en cada etapa
                             del ciclo operativo del laboratorio.
                         </p>
 
                         <div class="mt-7 flex justify-center">
-                            <a href="{{ route('manual.index') }}"
-                                class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
-                                       bg-[var(--accent)] text-white hover:bg-[var(--primary)]
-                                       shadow-sm transition">
+                            <x-ui.button variant="primary" href="{{ route('manual.index') }}" class="px-8 py-3">
                                 <x-ui.icon name="info" size="md" class="text-current" />
                                 Ver manual
-                            </a>
+                            </x-ui.button>
                         </div>
 
                             <div class="mt-6 text-xs text-[color:var(--text-muted)]">
                                 Última revisión: {{ now()->format('d/m/Y') }}
                             </div>
                         </div>
+                        </x-ui.card>
                     </section>
 
                 </div>

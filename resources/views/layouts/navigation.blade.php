@@ -23,25 +23,27 @@
     </div>
 
     <!-- Usuario -->
-    <div class="px-4 py-4 border-b border-[var(--border)]">
-        @php
-            $user = Auth::user();
-        @endphp
+        <div class="px-4 py-4 border-b border-[var(--border)]">
+            @php
+                $user = Auth::user();
+            @endphp
 
-        <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
-                    border border-[var(--border)] text-center
-                    hover:from-[var(--primary)]/15 hover:to-[var(--accent)]/10 transition-all duration-300">
-            {{-- Nombre: una sola línea con corte si toca --}}
-            <p class="font-semibold text-sm truncate text-[var(--text)]">
-                {{ $user->name }}
-            </p>
+            <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
+                        border border-[var(--border)] text-center
+                        hover:from-[var(--primary)]/15 hover:to-[var(--accent)]/10 transition-all duration-300">
+                {{-- Nombre: una sola línea con corte si toca --}}
+                <p class="font-semibold text-sm truncate text-[var(--text)]">
+                    {{ $user->name }}
+                </p>
 
-            {{-- Cargo: SIN truncate, que pueda bajar a segunda línea --}}
-            <p class="text-xs text-[var(--accent)] font-medium mt-1 leading-snug break-words">
-                {{ $user->display_role_label }}
-            </p>
+                {{-- Cargo: SIN truncate, que pueda bajar a segunda línea --}}
+                <div class="mt-1">
+                    <x-ui.badge variant="info" class="text-[11px] font-medium tracking-[0.3em]">
+                        {{ $user->display_role_label }}
+                    </x-ui.badge>
+                </div>
+            </div>
         </div>
-    </div>
 
     <!-- Navegación -->
     <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
@@ -50,20 +52,13 @@
                 Principal
             </p>
 
-            <button
-                onclick="window.location.href='{{ url('/dashboard') }}'"
-                class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
-                    transition-all duration-200 group
-                    {{ request()->is('dashboard')
-    ? 'bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-white shadow-lg'
-    : 'hover:bg-[var(--border)]/20 text-[var(--text)]' }}">
-                <div class="flex items-center gap-3">
-                    {{-- Home icon --}}
-                    <x-ui.icon name="inicio" size="lg"
-                               class="transition-transform duration-200 group-hover:scale-110 {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--text)]' }}" />
-                    <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Dashboard</span>
-                </div>
-            </button>
+            <x-ui.button
+                variant="{{ request()->is('dashboard') ? 'primary' : 'ghost' }}"
+                href="{{ url('/dashboard') }}"
+                class="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium">
+                <x-ui.icon name="inicio" size="lg" class="transition-transform duration-200" />
+                <span>Dashboard</span>
+            </x-ui.button>
         </div>
 
         {{-- ==========================================
@@ -123,12 +118,12 @@
                             $pendingCount = \App\Models\User::where('is_active', false)->count();
                         @endphp
                         @if($pendingCount > 0)
-                            <div class="px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                            <div class="px-3 py-2">
                                 <div class="flex items-center gap-2 text-xs">
-                                    <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                                    <span class="text-yellow-600 dark:text-yellow-400 font-medium">
+                                    <span class="w-2 h-2 rounded-full bg-[var(--warning)] animate-pulse"></span>
+                                    <x-ui.badge variant="warning" class="text-[11px] font-medium normal-case tracking-[0.2em]">
                                         {{ $pendingCount }} solicitud{{ $pendingCount > 1 ? 'es' : '' }} pendiente{{ $pendingCount > 1 ? 's' : '' }}
-                                    </span>
+                                    </x-ui.badge>
                                 </div>
                             </div>
                         @endif

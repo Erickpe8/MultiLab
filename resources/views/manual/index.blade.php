@@ -9,8 +9,8 @@
                 <p class="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                     Manual de Usuario
                 </p>
-                <h1 class="text-3xl font-extrabold text-[var(--text)]">
-                    Guías por roles para usar MultiLab
+                    <h1 class="text-3xl font-extrabold text-brand">
+                    Guías por roles para usar {{ config('app.name') }}
                 </h1>
                 <p class="text-sm text-[color:var(--text-muted)] max-w-3xl">
                     Encuentra el flujo de trabajo diario, acciones clave y estados recurrentes para cada perfil
@@ -49,8 +49,8 @@
                     class="rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-soft p-8 space-y-6">
                     <header class="space-y-2">
                         <p class="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Rol en
-                            MultiLab</p>
-                        <h3 class="text-2xl font-bold text-[var(--text)]">{{ $section['title'] }}</h3>
+                            {{ config('app.name') }}</p>
+                        <h3 class="text-2xl font-bold text-brand">{{ $section['title'] }}</h3>
                         <p class="text-sm text-[color:var(--text-muted)]">
                             {{ $section['description'] }}
                         </p>

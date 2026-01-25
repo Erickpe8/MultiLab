@@ -1,4 +1,4 @@
-<x-layouts.guest-auth title="Pre-registro MultiLab" subtitle="Complete sus datos institucionales para solicitar acceso">
+<x-layouts.guest-auth title="Pre-registro {{ config('app.name') }}" subtitle="Complete sus datos institucionales para solicitar acceso">
 
     <style>
         :root[data-theme='dark'] input {
@@ -80,9 +80,9 @@ $privacyUrl = Route::has('legal.privacy')
         y la
         <a href="{{ $privacyUrl }}" target="_blank" rel="noopener noreferrer"
             class="text-[#8E1616] hover:underline font-semibold">
-            Política de Privacidad y Tratamiento de Datos Personales
+        Política de Privacidad y Tratamiento de Datos Personales
         </a>
-        de MultiLab
+        de {{ config('app.name') }}
     </div>
 
 

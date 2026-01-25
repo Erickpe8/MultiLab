@@ -31,7 +31,7 @@
 
                         <div>
                             <h3 class="text-xl font-bold text-[var(--text)]">Equipo de Desarrollo</h3>
-                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Personas detrás de MultiLab FESC</p>
+                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Personas detrás de {{ config('app.name') }}</p>
                         </div>
                     </div>
 

@@ -34,17 +34,17 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->colors([
                 'primary' => [
-                    50 => '#fde8e8',
-                    100 => '#fad1d1',
-                    200 => '#f5b5b5',
-                    300 => '#f19898',
-                    400 => '#dd4a4a',
-                    500 => '#8E1616',
-                    600 => '#dd4a4a',
-                    700 => '#b93b3b',
-                    800 => '#8E1616',
-                    900 => '#6c1010',
-                    950 => '#4a0b0b',
+                    50 => '#eff6ff',
+                    100 => '#dbeafe',
+                    200 => '#bfdbfe',
+                    300 => '#93c5fd',
+                    400 => '#60a5fa',
+                    500 => '#3b82f6',
+                    600 => '#2563eb',
+                    700 => '#1d4ed8',
+                    800 => '#1e40af',
+                    900 => '#1e3a8a',
+                    950 => '#172554',
                 ],
             ])
             ->brandLogo(asset('images/brand-horizontal.png'))

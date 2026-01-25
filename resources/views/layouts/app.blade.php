@@ -10,13 +10,15 @@
     {{ \Filament\Facades\Filament::renderHook('panels::head.start') }}
 
     <!-- Título y Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/ICONFESC.png?v=2') }}">
-    <link rel="shortcut icon" href="{{ asset('images/ICONFESC.png?v=2') }}" type="image/png">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon-engineering.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <meta name="theme-color" content="#8E1616">
     <title>
         @hasSection('title')
-            @yield('title') | {{ config('app.name', 'MultiLab') }}
+            @yield('title') | {{ config('app.name', 'Ingeniería de Software (FESC)') }}
         @else
-            {{ config('app.name', 'MultiLab') }}
+            {{ config('app.name', 'Ingeniería de Software (FESC)') }}
         @endif
     </title>
 
@@ -221,7 +223,7 @@
     @stack('head_end')
 </head>
 
-<body class="font-sans antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
+<body class="font-primary antialiased bg-[var(--bg)]" x-data="{ sidebarOpen: false }">
     {{ \Filament\Facades\Filament::renderHook('panels::body.start') }}
     @stack('body_start')
     <div class="min-h-screen flex bg-[var(--bg)]">
@@ -244,7 +246,7 @@
                             <x-ui.icon name="menu" size="lg" />
                         </button>
                         <div class="text-sm text-[var(--text)] truncate">
-                            MultiLab
+                            {{ config('app.name') }}
                         </div>
                         <div class="w-10"></div>
                     </div>

@@ -8,13 +8,7 @@
 @php
     use Illuminate\Support\Facades\Route;
 
-    // Acento activo (azul Multilab por defecto o rojo opcional)
-    $activeBgClass  = $accent === 'red' ? 'bg-red-600' : 'bg-multilab-blue';
-    $activeTextClass = 'text-white';
-    $linkBaseClass   = 'flex items-center px-3 py-2 rounded-lg transition-colors';
-    $linkHoverClass  = 'hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30';
-    $linkTextClass   = 'text-multilab-dark dark:text-multilab-gray';
-
+    // Acento activo (rojo Ingeniería de Software por defecto o una variante alternativa)
     // Ítems base
     $navItems = [
         ['route' => 'dashboard',            'icon' => 'fas fa-home',        'label' => 'Panel principal',        'active_key' => 'dashboard'],
@@ -27,20 +21,19 @@
     ];
 @endphp
 
-<aside class="h-full flex flex-col bg-white dark:bg-multilab-dark shadow-soft">
+<aside class="h-full flex flex-col bg-[var(--surface)] text-[var(--text)] border-r border-[var(--border)] shadow-xl">
 
     {{-- Encabezado con logo y botón cerrar (móvil) --}}
-    <div class="flex items-center justify-between px-4 py-4 border-b border-multilab-gray dark:border-multilab-darkblue">
+    <div class="flex items-center justify-between px-4 py-4 border-b border-[var(--border)]">
         <a href="{{ url('/') }}" class="flex items-center space-x-2">
-            <img src="{{ asset('images/logo-fesc.png') }}" alt="Logo FESC" class="h-8 w-auto">
-            <span class="font-semibold text-multilab-blue dark:text-multilab-gray">Multilab</span>
+            <x-brand.logo variant="icon" class="h-8 w-auto" />
+            <span class="font-semibold text-[var(--text)]">Ingeniería de Software</span>
         </a>
             <button
                 type="button"
                 data-sidebar-close
                 class="lg:hidden inline-flex items-center justify-center p-2 rounded-md
-                       text-multilab-dark dark:text-multilab-gray
-                       hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30"
+                       text-[var(--text)] hover:bg-[var(--border)]/20"
                 aria-label="Cerrar sidebar"
             >
                 <x-ui.icon name="cerrar" size="lg" />
@@ -48,11 +41,14 @@
     </div>
 
     {{-- Usuario --}}
-    <div class="px-4 py-4 border-b border-multilab-gray dark:border-multilab-darkblue flex items-center space-x-3">
-        <img src="{{ asset('images/avatar-default.png') }}" alt="Avatar" class="h-10 w-10 rounded-full">
+    <div class="px-4 py-4 border-b border-[var(--border)] flex items-center space-x-3">
+        <img src="{{ asset('images/avatar-default.png') }}" alt="Avatar" class="h-10 w-10 rounded-full border border-[var(--border)]">
         <div>
-            <p class="text-sm font-medium text-multilab-dark dark:text-multilab-gray">Bienvenido,</p>
-            <p class="text-sm font-semibold text-multilab-blue dark:text-multilab-gray">{{ Auth::user()->name ?? 'Usuario' }}</p>
+            <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-secondary)]">Bienvenido,</p>
+            <p class="text-sm font-semibold text-[var(--text)]">{{ Auth::user()->name ?? 'Usuario' }}</p>
+            <x-ui.badge variant="muted" class="mt-1 normal-case text-[10px]">
+                {{ Auth::user()->display_role_label ?? 'Usuario' }}
+            </x-ui.badge>
         </div>
     </div>
 
@@ -62,19 +58,19 @@
             @foreach ($navItems as $item)
                 @php
                     $isActive = $active === $item['active_key'];
-                    // Si la ruta NO existe, cae a '#'
                     $href = Route::has($item['route']) ? route($item['route']) : '#';
                     $titleIfMissing = Route::has($item['route']) ? '' : ' (pendiente de crear ruta)';
                 @endphp
                 <li>
-                    <a
+                    <x-ui.button
+                        variant="{{ $isActive ? 'primary' : 'ghost' }}"
                         href="{{ $href }}"
+                        class="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium"
                         @if($titleIfMissing) title="Ruta {{ $item['route'] }}{{ $titleIfMissing }}" @endif
-                        class="{{ $linkBaseClass }} {{ $linkHoverClass }} {{ $isActive ? $activeBgClass.' '.$activeTextClass.' rounded-full' : $linkTextClass }}"
                     >
-                        <i class="{{ $item['icon'] }} mr-3"></i>
+                        <i class="{{ $item['icon'] }} text-lg"></i>
                         <span>{{ $item['label'] }}</span>
-                    </a>
+                    </x-ui.button>
                 </li>
             @endforeach
 
@@ -91,14 +87,15 @@
                                       : ($module['url'] ?? '#');
                     @endphp
                     <li>
-                        <a href="{{ $moduleHref }}" class="{{ $linkBaseClass }} {{ $linkHoverClass }} {{ $linkTextClass }}">
+                        <x-ui.button variant="ghost" href="{{ $moduleHref }}"
+                                     class="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium">
                             @if (!empty($module['icon']))
                                 {!! $module['icon'] !!}
                             @else
-                                <i class="fas fa-cube mr-3"></i>
+                                <i class="fas fa-cube text-lg"></i>
                             @endif
                             <span>{{ $module['title'] ?? $module['name'] ?? 'Módulo' }}</span>
-                        </a>
+                        </x-ui.button>
                     </li>
                 @endforeach
             @endif
@@ -106,30 +103,21 @@
     </nav>
 
     {{-- Barra inferior --}}
-    <div class="px-4 py-3 border-t border-multilab-gray dark:border-multilab-darkblue flex items-center justify-around">
-        <a
-            href="{{ Route::has('policies.index') ? route('policies.index') : '#' }}"
-            class="text-multilab-dark dark:text-multilab-gray hover:text-multilab-blue dark:hover:text-multilab-darkblue"
-            title="{{ Route::has('policies.index') ? 'Políticas' : 'Políticas (ruta pendiente)' }}"
-        >
+    <div class="px-4 py-3 border-t border-[var(--border)] flex items-center justify-around">
+        <x-ui.button variant="ghost" href="{{ Route::has('policies.index') ? route('policies.index') : '#' }}"
+                     class="p-2 text-[var(--text)]" title="{{ Route::has('policies.index') ? 'Políticas' : 'Políticas (ruta pendiente)' }}">
             <i class="fas fa-file-contract"></i>
-        </a>
-        <a
-            href="{{ Route::has('privacy.index') ? route('privacy.index') : '#' }}"
-            class="text-multilab-dark dark:text-multilab-gray hover:text-multilab-blue dark:hover:text-multilab-darkblue"
-            title="{{ Route::has('privacy.index') ? 'Privacidad' : 'Privacidad (ruta pendiente)' }}"
-        >
+        </x-ui.button>
+        <x-ui.button variant="ghost" href="{{ Route::has('privacy.index') ? route('privacy.index') : '#' }}"
+                     class="p-2 text-[var(--text)]" title="{{ Route::has('privacy.index') ? 'Privacidad' : 'Privacidad (ruta pendiente)' }}">
             <i class="fas fa-user-secret"></i>
-        </a>
+        </x-ui.button>
         <form method="POST" action="{{ Route::has('logout') ? route('logout') : '#' }}">
             @csrf
-            <button
-                type="submit"
-                class="text-multilab-dark dark:text-multilab-gray hover:text-multilab-blue dark:hover:text-multilab-darkblue"
-                title="{{ Route::has('logout') ? 'Cerrar sesión' : 'Logout (ruta pendiente)' }}"
-            >
+            <x-ui.button variant="ghost" type="submit"
+                         class="p-2 text-[var(--text)]" title="{{ Route::has('logout') ? 'Cerrar sesión' : 'Logout (ruta pendiente)' }}">
                 <i class="fas fa-sign-out-alt"></i>
-            </button>
+            </x-ui.button>
         </form>
     </div>
 </aside>
