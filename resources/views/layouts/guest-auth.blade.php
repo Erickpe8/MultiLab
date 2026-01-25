@@ -7,8 +7,8 @@
     $pageTitle = $title ? "{$title} | " . config('app.name', 'MultiLab') : config('app.name', 'MultiLab');
     $path = request()->getPathInfo();
     $backgroundImage = str_contains($path, 'register')
-        ? 'images/FESC2.jpg'
-        : 'images/FESC.jpg';
+        ? 'images/Bodega2.png'
+        : 'images/Bodega1.png';
 @endphp
 
 <!DOCTYPE html>

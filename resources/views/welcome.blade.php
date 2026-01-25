@@ -30,7 +30,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            background-image: url('{{ asset('images/FESC.jpg') }}');
+        background-image: url('{{ asset('images/Bodega1.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
