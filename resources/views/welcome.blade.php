@@ -61,13 +61,13 @@
         </header>
 
         {{-- MAIN --}}
-        <main class="flex-1 overflow-hidden min-h-[calc(100vh-140px)]">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 space-y-10">
+        <main class="flex-1 min-h-[calc(100vh-140px)] pt-6 pb-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
                 <!-- WELCOME_REDESIGN_V1 -->
                 <section class="relative rounded-[32px] border border-[var(--border)] bg-white/75 backdrop-blur-sm shadow-sm overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white/80"></div>
-                    <div class="relative z-10 grid gap-8 lg:grid-cols-2 px-6 sm:px-10 py-12">
+                    <div class="relative z-10 grid gap-8 lg:grid-cols-2 items-start px-6 sm:px-10 py-10">
                         <div class="space-y-6">
                             <p class="text-xs uppercase tracking-[0.5em] text-[var(--text-muted)]">Ingeniería de Software · FESC</p>
                             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-[var(--primary)]">
@@ -107,54 +107,50 @@
                     </div>
                 </section>
 
-                <section class="space-y-8">
+                <section class="space-y-6 pb-6">
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <article class="flex flex-col rounded-3xl border border-[var(--border)] bg-white/90 shadow-sm shadow-black/5 transition hover:-translate-y-1 hover:shadow-md">
-                            <div class="relative h-48 w-full overflow-hidden rounded-t-3xl">
-                                <img src="{{ asset('images/Bodega1.png') }}" alt="Laboratorio B201" class="h-full w-full object-cover object-center" />
+                            <div class="relative w-full aspect-[16/7] overflow-hidden rounded-t-3xl">
+                                <img src="{{ asset('images/Bodega1.png') }}" alt="Laboratorio B201" class="w-full h-full object-cover object-center" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
                             </div>
-                            <div class="flex flex-col flex-1 p-8 space-y-5">
+                            <div class="flex flex-col flex-1 p-8 space-y-4">
                                 <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-[0.65rem] uppercase tracking-[0.35em] text-[var(--text-muted)]">¿Qué hace {{ config('app.name') }}?</p>
-                                        <span class="text-xs font-semibold uppercase tracking-[0.4em] text-[var(--primary)]">Operación</span>
+                                    <div class="space-y-1">
+                                        <p class="text-[0.65rem] uppercase tracking-[0.25em] text-[var(--text-muted)]">¿Qué hace {{ config('app.name') }}?</p>
+                                        <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight uppercase tracking-[0.3em]">Operación</h2>
                                     </div>
                                     <x-ui.icon name="cog" size="lg" class="text-[var(--primary)]" />
                                 </div>
-                                <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight">Visibilidad total del laboratorio y la bodega</h2>
+                                <p class="text-2xl font-semibold text-[var(--primary)] leading-tight">Visibilidad total del laboratorio y la bodega</p>
                                 <p class="text-sm leading-relaxed text-slate-600">
                                     Centraliza el control de accesos, reservas, préstamos y devoluciones del Laboratorio B201 y la bodega, asignando responsables por turno y manteniendo trazabilidad operativa con registros y alertas para respaldo institucional.
                                 </p>
-                                <div class="mt-auto">
-                                    <span class="text-[0.65rem] text-slate-500">Última revisión: {{ now()->format('d/m/Y') }}</span>
-                                </div>
                             </div>
                         </article>
 
                         <article class="flex flex-col rounded-3xl border border-[var(--border)] bg-white/90 shadow-sm shadow-black/5 transition hover:-translate-y-1 hover:shadow-md">
-                            <div class="relative h-48 w-full overflow-hidden rounded-t-3xl">
+                            <div class="relative aspect-[16/7] w-full overflow-hidden rounded-t-3xl">
                                 <img src="{{ asset('images/Bodega3.png') }}" alt="Manual de usuario" class="h-full w-full object-cover object-center" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
                             </div>
-                            <div class="flex flex-col flex-1 p-8 space-y-5">
+                            <div class="flex flex-col flex-1 p-8 space-y-4">
                                 <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-[0.65rem] uppercase tracking-[0.35em] text-[var(--text-muted)]">Manual de Usuario</p>
-                                        <span class="text-xs font-semibold uppercase tracking-[0.4em] text-[var(--primary)]">Documentación</span>
+                                    <div class="space-y-1">
+                                        <p class="text-[0.65rem] uppercase tracking-[0.25em] text-[var(--text-muted)]">Manual de Usuario</p>
+                                        <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight uppercase tracking-[0.3em]">Documentación</h2>
                                     </div>
                                     <x-ui.icon name="book" size="lg" class="text-[var(--primary)]" />
                                 </div>
-                                <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight">Guías rápidas por rol</h2>
+                                <p class="text-2xl font-semibold text-[var(--primary)] leading-tight">Guías rápidas por rol</p>
                                 <p class="text-sm leading-relaxed text-slate-600">
                                     Ofrece guías operativas por rol para docentes, administrativos y equipos técnicos, con pasos claros, responsabilidades definidas y criterios de uso que facilitan la ejecución adecuada de cada proceso del laboratorio.
                                 </p>
-                                <div class="mt-auto flex items-center justify-between gap-4">
+                                <div class="mt-auto flex items-center justify-start gap-4">
                                     <x-ui.button variant="primary" href="{{ route('manual.index') }}" class="inline-flex items-center gap-2 rounded-full px-5 py-3 text-xs font-semibold uppercase tracking-[0.3em]">
                                         Ver manual
                                         <x-ui.icon name="siguiente" size="xs" class="text-white" />
                                     </x-ui.button>
-                                    <span class="text-[0.65rem] text-slate-500">Última revisión: {{ now()->format('d/m/Y') }}</span>
                                 </div>
                             </div>
                         </article>
