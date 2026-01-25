@@ -20,7 +20,6 @@ Este repositorio sigue la estructura MVC de Laravel, con una capa administrativa
 - **Helpers** (`app/Helpers/RoleHelper`): centralizan comprobaciones de roles (`isSuperAdmin`, `isLabStaff`, `isEstudiante`).  
 - **Middleware** (`app/Http/Middleware/CheckAreaAccess`): protege rutas adicionales con roles específicos.  
 - **Livewire/Notify**: `resources/js/app.js` y `resources/js/user-management.js` extraen la lógica JS de los modales, usan `@vite` y consumen un pequeño componente `x-notify`.  
-- **Docker**: `docker-compose.yml` y `Dockerfile` reproducen el entorno PHP/MySQL con Sail o Laragon.
 
 ## Estado de los UseCases
 Aunque existen directorios planeados (`app/Application/UseCases`, `app/Domain`, `app/Infrastructure`), actualmente sólo contienen `.gitkeep`. La lógica se concentra en recursos Filament y controladores; esos directorios quedan como placeholders para una futura separación más estricta.

@@ -1,5 +1,5 @@
 # README.md para MultiLab
-![Laravel](https://img.shields.io/badge/Laravel-10.50.0-red) ![PHP](https://img.shields.io/badge/PHP-%5E8.1-blue) ![Docker](https://img.shields.io/badge/Docker-supported-blue) ![MySQL](https://img.shields.io/badge/MySQL-supported-orange)
+![Laravel](https://img.shields.io/badge/Laravel-10.50.0-red) ![PHP](https://img.shields.io/badge/PHP-%5E8.1-blue) ![MySQL](https://img.shields.io/badge/MySQL-supported-orange)
 
 MultiLab es la plataforma institucional de la Fundación de Estudios Superiores Comfanorte (FESC) que centraliza la administración del Laboratorio de Software B201. Permite reservar el aula, controlar el inventario físico de la bodega, auditar los préstamos y mantener un historial de uso con roles afinados para docentes, estudiantes y auxiliares administrativos.
 
@@ -11,6 +11,7 @@ MultiLab es la plataforma institucional de la Fundación de Estudios Superiores 
   - [Stack tecnológico](#stack-tecnológico)
   - [Equipo y responsabilidades](#equipo-y-responsabilidades)
   - [Instalación y configuración](#instalación-y-configuración)
+  - [Guia local](docs/LOCAL_SETUP.md)
   - [Uso del sistema](#uso-del-sistema)
   - [Estructura del proyecto](#estructura-del-proyecto)
   - [Contribución](#contribución)
@@ -46,7 +47,7 @@ MultiLab es la plataforma institucional de la Fundación de Estudios Superiores 
 - **Backend**: PHP ^8.1 con Laravel 10.50.0, Laravel Breeze para autenticación y `spatie/laravel-permission` para autorización por roles.  
 - **Frontend**: Blade (layouts, componentes UI), Livewire/Filament para interactividad, TailwindCSS 3 y Flowbite como conjunto de estilos reutilizados; Vite compila `resources/js/app.js`, `resources/js/user-management.js` y `resources/css/app.css`.  
 - **Base de datos**: MySQL (definido en `.env`: `DB_CONNECTION=mysql`).  
-- **DevOps**: Docker Compose (`docker-compose.yml` + `Dockerfile`) apoya entornos replicables; también hay scripts para CLI (php artisan, npm).  
+- **DevOps**: Desarrollo local con PHP/Composer y Laragon (Apache/Nginx + MySQL); ver `docs/LOCAL_SETUP.md` para los pasos sin contenedores.  
 - **Herramientas**: Laragon (desarrollo local en Windows), DBeaver (consultas MySQL), Composer, npm, Git, PHPStorm/VSCode y Vite como bundler.
 
 ## Equipo y responsabilidades
@@ -57,17 +58,17 @@ MultiLab es la plataforma institucional de la Fundación de Estudios Superiores 
 | Carlos José Mantilla Cote | Backend / Aula B201 | Reserva del aula, gestión de PCs, historial de sesiones y validaciones de exclusividad para docentes. |
 
 ## Instalación y configuración
-1. **Requisitos previos**: PHP >=8.1, Composer, Node.js (>=16), MySQL, Docker (opcional) y Laragon (Windows).  
+1. **Requisitos locales**: PHP >=8.1, Composer, Node.js (>=16), MySQL, Git y Laragon (Windows), que expone Apache/Nginx + MySQL y permite cambiar la versión de PHP desde la bandeja del sistema.  
 2. **Clonar**: `git clone <repositorio> MultiLab && cd MultiLab`.  
-3. **Entorno**: `cp .env.example .env` y ajustar `APP_URL`, `DB_*`, `MAIL_*`, claves y `PROFILE_THEME`.  
+3. **Entorno**: `cp .env.example .env`; `.env.example` ya define `APP_URL=http://127.0.0.1:8000`, `DB_HOST=127.0.0.1`, `DB_DATABASE=multilab`, `DB_USERNAME=root` y `DB_PASSWORD=` (Laragon usa root sin contraseña). Actualiza `MAIL_*`, `PROFILE_THEME` y otras claves según tu entorno.  
 4. **Dependencias**:  
    - `composer install`  
    - `npm install`  
-5. **Migraciones**: `php artisan migrate`.  
-6. **Seeders**: `php artisan db:seed --class=RoleSeeder` (permite cargar roles) y `php artisan db:seed --class=UserSeeder`.  
-7. **Servidores**:  
-   - Laravel (local): `php artisan serve`.  
-   - Docker: `docker compose up -d` con servicios `app` y `db`.  
+5. **Base de datos local**: crea la base `multilab` desde Laragon > Database > phpMyAdmin o con `mysql -u root`. Asegúrate de que MySQL esté en ejecución y que el usuario configurado en `.env` (root sin contraseña) coincida con el servicio local.  
+6. **Migraciones y seeders**: `php artisan key:generate --ansi` (si aún no hay clave) y `php artisan migrate --seed`.  
+7. **Servidor local**: ejecuta `php artisan serve --host=127.0.0.1 --port=8000` o configura Laragon para apuntar el host a `public/`. Activa Apache/Nginx + MySQL, selecciona la versión de PHP adecuada y verifica que `storage/` y `bootstrap/cache/` existan (crea las carpetas si falta alguna; en Windows no es necesario `chmod`).  
+
+> Sigue la secuencia recomendada en `docs/LOCAL_SETUP.md` para dejar el entorno listo (composer install, php artisan key:generate, php artisan migrate --seed y php artisan serve o un host de Laragon).
 
 ## Uso del sistema
 - **Credenciales de prueba** (todos usan contraseña `Password123*` definida en `database/seeders/UserSeeder.php`):  
@@ -92,7 +93,6 @@ MultiLab es la plataforma institucional de la Fundación de Estudios Superiores 
 - `resources/`: Vistas Blade (`layouts`, `auth`, `usermanagement`, `profile`), componentes reutilizables, assets Tailwind y scripts JavaScript.  
 - `database/`: Migraciones históricas (aulas, materiales, préstamos, inventarios, audit_log, computers) y seeders concretos.  
 - `public/`: Entrada `index.php`, assets compilados (`build/`), imágenes e íconos.  
-- `docker-compose.yml` + `Dockerfile`: Definen contenedores PHP, MySQL, Redis/Queue y configuración de puertos.  
 - `tests/`: Suites `Feature` y `Unit` propias, integradas con PHPUnit 10.
 
 ## Contribución
