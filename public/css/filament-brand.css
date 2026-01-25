@@ -1,0 +1,35 @@
+:root {
+    --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
+    --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
+    --primary: #8E1616;
+    --secondary: #1D1616;
+    --accent: #D84040;
+    --background: #F7F5F5;
+    --surface: #FFFFFF;
+    --border: rgba(142, 22, 22, 0.30);
+    --success: #16a34a;
+    --warning: #f97316;
+    --danger: #dc2626;
+}
+
+:root[data-theme='dark'] {
+    --background: #1c1515;
+    --surface: #2a2121;
+    --text: #EEEEEE;
+}
+
+body,
+.filament-app {
+    font-family: var(--font-primary) !important;
+    background-color: var(--background) !important;
+    color: var(--secondary) !important;
+}
+
+.filament-app .filament-sidebar,
+.filament-app .filament-main {
+    background-color: var(--surface) !important;
+}
+
+.font-support {
+    font-family: var(--font-secondary) !important;
+}

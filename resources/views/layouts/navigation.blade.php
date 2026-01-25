@@ -9,8 +9,8 @@
         class="h-16 px-4 flex items-center justify-between border-b border-[var(--border)]
                 bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
         <a href="{{ url('/dashboard') }}" class="inline-flex items-center gap-2 group">
-            <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC"
-                 class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
+            <x-brand.logo variant="horizontal"
+                          class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
         {{-- Switch de tema --}}
         <x-theme-toggle id="theme-toggle-side" size="md" />

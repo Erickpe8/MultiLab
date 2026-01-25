@@ -4,7 +4,7 @@
 
             {{-- Logo --}}
             <div class="flex items-center gap-2">
-                <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-7 w-auto" />
+                <x-brand.logo variant="horizontal" class="h-7 w-auto" />
                 <span class="font-bold text-[var(--text)] text-sm">MultiLab</span>
             </div>
 

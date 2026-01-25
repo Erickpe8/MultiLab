@@ -12,14 +12,23 @@
 /* LIGHT */
 :root,
 :root[data-theme='light']{
-    --bg: #EEEEEE;
+    --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
+    --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
+    --primary: #8E1616;
+    --secondary: #1D1616;
+    --accent: #D84040;
+    --background: #F7F5F5;
+    --surface: #FFFFFF;
+    --success: #16a34a;
+    --warning: #f97316;
+    --danger: #dc2626;
+    --border: rgba(142,22,22,0.30);
+    --bg: var(--background);
     --text: #1D1616;
     --text-secondary: rgba(29, 22, 22, 0.75);
     --text-muted: rgba(29, 22, 22, 0.65);
-    --primary: #8E1616;
-    --accent: #D84040;
     --card: rgba(255,255,255,0.90);
-    --border: rgba(142,22,22,0.30);
+    --focus: var(--accent);
 
     --brand-red-1: #e30513;
     --brand-red-2: #9c0f06;
@@ -67,14 +76,23 @@
 
 /* DARK */
 :root[data-theme='dark']{
-    --bg: #1c1515;
+    --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;
+    --font-secondary: "Roboto", "Calibri", "Segoe UI", "Arial", sans-serif;
+    --primary: #8E1616;
+    --secondary: #EEEEEE;
+    --accent: #D84040;
+    --background: #1c1515;
+    --surface: #2a2121;
+    --success: #16a34a;
+    --warning: #f97316;
+    --danger: #dc2626;
+    --border: #542828;
+    --bg: var(--background);
     --text: #EEEEEE;
     --text-secondary: rgba(238, 238, 238, 0.9);
     --text-muted: rgba(238, 238, 238, 0.75);
-    --primary: #8E1616;
-    --accent: #D84040;
     --card: #2a2121;
-    --border: #542828;
+    --focus: var(--accent);
 
     --brand-red-1: #e30513;
     --brand-red-2: #9c0f06;
@@ -125,6 +143,7 @@
     body {
         background-color: var(--bg);
         color: var(--text);
+        font-family: var(--font-primary);
     }
 
     ::selection {
@@ -168,6 +187,10 @@
 
     td {
         color: var(--text-secondary);
+    }
+
+    .font-support {
+        font-family: var(--font-secondary);
     }
 }
 

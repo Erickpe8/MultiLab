@@ -99,7 +99,7 @@
                        bg-[var(--card)]/90 backdrop-blur-md">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
                 <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-10 sm:h-11 w-auto" />
+                    <x-brand.logo variant="horizontal" class="h-10 sm:h-11 w-auto" />
                     <span class="text-xl sm:text-2xl font-extrabold tracking-wide text-[var(--accent)]">
                         MultiLab
                     </span>
@@ -202,24 +202,24 @@
 
                         <div class="relative flex-1 min-h-0 px-6 sm:px-8 py-6 sm:py-7 text-center
                                     flex flex-col items-center justify-center">
-                            <h3 class="text-3xl sm:text-4xl font-extrabold text-[var(--accent)]">
-                                Actualizaciones
-                            </h3>
+                        <h3 class="text-3xl sm:text-4xl font-extrabold text-[var(--accent)]">
+                            Manual de Usuario
+                        </h3>
 
-                            <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed text-[color:var(--text-muted)] max-w-xl mx-auto">
-                                Revisa las mejoras más recientes de <strong>MultiLab</strong> enfocadas en control de recursos,
-                                estabilidad del sistema y trazabilidad de uso dentro del laboratorio.
-                            </p>
+                        <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed text-[color:var(--text-muted)] max-w-xl mx-auto">
+                            Encuentra guías rápidas por rol para usar <strong>MultiLab</strong> con confianza en cada etapa
+                            del ciclo operativo del laboratorio.
+                        </p>
 
-                            <div class="mt-7 flex justify-center">
-                                <a href="#"
-                                    class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
-                                           bg-[var(--accent)] text-white hover:bg-[var(--primary)]
-                                           shadow-sm transition">
-                                    <x-ui.icon name="info" size="md" class="text-current" />
-                                    Ver más
-                                </a>
-                            </div>
+                        <div class="mt-7 flex justify-center">
+                            <a href="{{ route('manual.index') }}"
+                                class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
+                                       bg-[var(--accent)] text-white hover:bg-[var(--primary)]
+                                       shadow-sm transition">
+                                <x-ui.icon name="info" size="md" class="text-current" />
+                                Ver manual
+                            </a>
+                        </div>
 
                             <div class="mt-6 text-xs text-[color:var(--text-muted)]">
                                 Última revisión: {{ now()->format('d/m/Y') }}

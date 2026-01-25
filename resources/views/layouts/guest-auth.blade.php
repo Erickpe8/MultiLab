@@ -67,7 +67,7 @@
                     class="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-soft p-6 md:p-8">
                 <header class="space-y-2 text-center mb-6 pt-4">
                     <a href="{{ route('welcome') }}" class="inline-flex flex-col items-center gap-2">
-                        <img src="{{ asset('images/FESC-30.png') }}" alt="FESC logo" class="h-12 w-auto" />
+                        <x-brand.logo variant="vertical" class="h-12 w-auto" />
                         <span class="text-sm font-semibold tracking-wide text-[#8E1616]">MultiLab</span>
                     </a>
                     <h1 class="text-2xl font-extrabold tracking-tight text-[var(--text)]">

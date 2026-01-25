@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -45,6 +46,13 @@ class AdminPanelProvider extends PanelProvider
                     900 => '#6c1010',
                     950 => '#4a0b0b',
                 ],
+            ])
+            ->brandLogo(asset('images/brand-horizontal.png'))
+            ->brandName('Ingeniería de Software')
+            ->assets([
+                Css::make('filament-brand')->html(
+                    '<link href="' . asset('css/filament-brand.css') . '" rel="stylesheet" data-navigate-track />'
+                ),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
