@@ -224,6 +224,9 @@
         </footer>
     </div>
 
+    <x-notify />
+    @include('components.toast-bridge')
+
     <script>
         /**
          * Inicializa el carrusel cuando la página está lista.

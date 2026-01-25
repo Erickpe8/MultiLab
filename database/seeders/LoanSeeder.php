@@ -14,7 +14,6 @@ class LoanSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->ensureRejectedStatusIsAllowed();
 
         $materials = Material::query()->get();
         if ($materials->isEmpty()) {

@@ -38,15 +38,7 @@
     </main>
 
     <x-notify />
-
-    @if (session('notify'))
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const data = @json(session('notify'));
-                window.showNotification?.(data.message ?? 'Operación realizada', data.type ?? 'info');
-            });
-        </script>
-    @endif
+    @include('components.toast-bridge')
 </body>
 
 </html>
