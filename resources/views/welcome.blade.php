@@ -4,14 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MultiLab - FESC</title>
+    <title>{{ config('app.name') }}</title>
 
     <script>
-        /**
-         * Configura el tema inicial en el documento según preferencias guardadas o sistema.
-         * Entradas: Ninguna.
-         * Salidas: void (sin retorno).
-         */
         (function () {
             const saved = localStorage.getItem('theme');
             const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -24,210 +19,143 @@
     </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-
-    <style>
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            background-image: url('{{ asset('images/FESC.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(1200px 600px at 20% 15%, rgba(216, 64, 64, 0.16), transparent 60%),
-                radial-gradient(900px 520px at 80% 70%, rgba(142, 22, 22, 0.14), transparent 55%),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.70), rgba(255, 255, 255, 0.58));
-        }
-
-        :root.dark .bg-overlay {
-            background:
-                radial-gradient(1200px 600px at 20% 15%, rgba(216, 64, 64, 0.18), transparent 60%),
-                radial-gradient(900px 520px at 80% 70%, rgba(142, 22, 22, 0.16), transparent 55%),
-                linear-gradient(to bottom, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.54));
-        }
-    </style>
 </head>
 
-<body class="antialiased font-sans text-[var(--text)] overflow-hidden">
-    <div class="bg-overlay"></div>
+<body class="antialiased font-primary text-[var(--text)] overflow-x-hidden">
+    <div class="relative min-h-[100svh] bg-[var(--bg)]">
+        <div class="bg-overlay"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15)_1px,transparent_0)] bg-[size:24px_24px] opacity-60 pointer-events-none"></div>
 
-    @php
-        // MultiLab: foco en operación diaria del laboratorio (B201) y bodega de materiales.
-        $modules = [
-            [
-                "code" => "M1",
-                "name" => "Control de acceso a PCs",
-                "objective" => "Registra quién utiliza cada estación del laboratorio, con trazabilidad y observaciones asociadas para respaldar el control operativo."
-            ],
-            [
-                "code" => "M2",
-                "name" => "Reservas del aula y recursos",
-                "objective" => "Centraliza las reservas para evitar choques de disponibilidad y mejorar la planificación de uso del laboratorio."
-            ],
-            [
-                "code" => "M3",
-                "name" => "Préstamos y devoluciones",
-                "objective" => "Administra el préstamo de herramientas y materiales con estados claros, responsables y registro de entrega/devolución."
-            ],
-            [
-                "code" => "M4",
-                "name" => "Inventario del laboratorio y bodega",
-                "objective" => "Mantiene un registro actualizado de equipos, herramientas y materiales, con historial de movimientos y control de condiciones."
-            ],
-            [
-                "code" => "M5",
-                "name" => "Históricos y observaciones",
-                "objective" => "Genera históricos que respaldan la gestión del laboratorio: uso, novedades, incidencias y seguimiento por periodos."
-            ],
-        ];
-    @endphp
-
-    <div class="relative z-10 h-[100svh] flex flex-col">
+        @php
+            $modules = [
+                ['code' => 'M1', 'name' => 'Control de acceso a PCs', 'objective' => 'Registra quién utiliza cada estación del laboratorio, con trazabilidad y observaciones asociadas para respaldar el control operativo.'],
+                ['code' => 'M2', 'name' => 'Reservas del aula y recursos', 'objective' => 'Centraliza las reservas para evitar choques de disponibilidad y mejorar la planificación de uso del laboratorio.'],
+                ['code' => 'M3', 'name' => 'Préstamos y devoluciones', 'objective' => 'Administra el préstamo de herramientas y materiales con estados claros, responsables y registro de entrega/devolución.'],
+                ['code' => 'M4', 'name' => 'Inventario del laboratorio y bodega', 'objective' => 'Mantiene un registro actualizado de equipos, herramientas y materiales, con historial de movimientos y control de condiciones.'],
+                ['code' => 'M5', 'name' => 'Históricos y observaciones', 'objective' => 'Genera históricos que respaldan la gestión del laboratorio: uso, novedades, incidencias y seguimiento por periodos.'],
+            ];
+        @endphp
 
         {{-- HEADER --}}
-        <header class="shrink-0 border-b border-[var(--border)]
-                       bg-[var(--card)]/90 backdrop-blur-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <header class="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
                 <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                    <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-10 sm:h-11 w-auto" />
-                    <span class="text-xl sm:text-2xl font-extrabold tracking-wide text-[var(--accent)]">
-                        MultiLab
+                    <x-brand.logo variant="horizontal" class="h-10 w-auto" />
+                    <span class="text-lg sm:text-xl font-semibold tracking-wide text-[var(--primary)]">
+                        {{ config('app.name') }}
                     </span>
                 </a>
-
-                <nav class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-3">
                     @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}"
-                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
-                                       text-sm font-semibold text-white shadow-sm transition">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="px-4 py-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--primary)]
-                                       text-sm font-semibold text-white shadow-sm transition">
-                                Iniciar sesión
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                    class="px-4 py-2 rounded-xl border border-[var(--border)]
-                                           bg-[var(--card)]/80
-                                           text-sm font-semibold text-[var(--text)]
-                                           hover:border-[var(--accent)] hover:text-[var(--accent)]
-                                           transition">
-                                    Registrarse
-                                </a>
-                            @endif
-                        @endauth
-
+                        <x-ui.button variant="ghost" href="{{ route('login') }}" class="px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] border border-blue-500/40 text-[var(--primary)]">
+                            Iniciar sesión
+                        </x-ui.button>
                     @endif
-                </nav>
+                    @if (Route::has('register'))
+                        <x-ui.button variant="ghost" href="{{ route('register') }}" class="px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] border border-[var(--border)] text-[var(--text)]">
+                            Registrarse
+                        </x-ui.button>
+                    @endif
+                </div>
             </div>
         </header>
 
         {{-- MAIN --}}
-        <main class="flex-1 overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 h-full py-4 sm:py-5 lg:py-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8 h-full min-h-0 items-stretch">
+        <main class="flex-1 min-h-[calc(100vh-140px)] pt-6 pb-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-                    <section class="h-full min-h-0 rounded-2xl border border-[var(--border)]
-                                    bg-[var(--card)] shadow-soft
-                                    overflow-hidden flex flex-col">
-                        <div class="px-5 sm:px-6 py-4 border-b border-[var(--border)]">
-                            <h2 class="text-base sm:text-lg font-extrabold text-[var(--text)]">
-                                ¿Qué hace MultiLab?
-                            </h2>
-                            <p class="text-sm text-[color:var(--text-muted)] mt-1">
-                                Funcionalidades clave para la operación del Laboratorio B201 y la bodega.
+                <!-- WELCOME_REDESIGN_V1 -->
+                <section class="relative rounded-[32px] border border-[var(--border)] bg-white/75 backdrop-blur-sm shadow-sm overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white/80"></div>
+                    <div class="relative z-10 grid gap-8 lg:grid-cols-2 items-start px-6 sm:px-10 py-10">
+                        <div class="space-y-6">
+                            <p class="text-xs uppercase tracking-[0.5em] text-[var(--text-muted)]">Ingeniería de Software · FESC</p>
+                            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-[var(--primary)]">
+                                MultiLab impulsa la operación ágil del Laboratorio B201 y la bodega
+                            </h1>
+                            <p class="text-base leading-relaxed text-slate-600 max-w-2xl">
+                                Controla accesos, gestiona reservas, supervisa préstamos y devoluciones, y garantiza trazabilidad y reportes claros para cada turno.
                             </p>
-                        </div>
-
-                        <div class="flex-1 min-h-0">
-                            <div id="pillar-carousel" class="relative w-full h-full overflow-hidden">
-
-                                <div class="absolute inset-0 pointer-events-none">
-                                    <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-35"
-                                        style="background: color-mix(in oklab, var(--accent) 26%, transparent);"></div>
-                                    <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-25"
-                                        style="background: color-mix(in oklab, var(--primary) 22%, transparent);"></div>
-                                </div>
-
-                                <div class="relative h-full">
-                                    @foreach ($modules as $i => $m)
-                                        <div class="pillar-item absolute inset-0 transition-opacity duration-500 ease-out
-                                                    {{ $i === 0 ? 'opacity-100' : 'opacity-0 hidden' }}">
-
-                                            <div class="h-full px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center text-center">
-                                                <div class="w-full max-w-2xl">
-                                                    <h3 class="text-[28px] sm:text-3xl lg:text-4xl font-extrabold text-[var(--text)] leading-tight break-words">
-                                                        {{ $m['name'] }}
-                                                    </h3>
-
-                                                    <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed
-                                                              text-[color:var(--text-muted)] max-w-[62ch] mx-auto break-words">
-                                                        {{ $m['objective'] }}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="h-full min-h-0 relative rounded-2xl border border-[var(--border)]
-                                    bg-[var(--card)] shadow-soft
-                                    overflow-hidden flex flex-col">
-                        <div class="absolute inset-0 pointer-events-none">
-                            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-40"
-                                style="background: color-mix(in oklab, var(--accent) 30%, transparent);"></div>
-                            <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full blur-3xl opacity-30"
-                                style="background: color-mix(in oklab, var(--primary) 25%, transparent);"></div>
-                        </div>
-
-                        <div class="relative flex-1 min-h-0 px-6 sm:px-8 py-6 sm:py-7 text-center
-                                    flex flex-col items-center justify-center">
-                            <h3 class="text-3xl sm:text-4xl font-extrabold text-[var(--accent)]">
-                                Actualizaciones
-                            </h3>
-
-                            <p class="mt-4 text-sm sm:text-base lg:text-[17px] leading-relaxed text-[color:var(--text-muted)] max-w-xl mx-auto">
-                                Revisa las mejoras más recientes de <strong>MultiLab</strong> enfocadas en control de recursos,
-                                estabilidad del sistema y trazabilidad de uso dentro del laboratorio.
-                            </p>
-
-                            <div class="mt-7 flex justify-center">
-                                <a href="#"
-                                    class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold rounded-xl
-                                           bg-[var(--accent)] text-white hover:bg-[var(--primary)]
-                                           shadow-sm transition">
-                                    <x-ui.icon name="info" size="md" class="text-current" />
-                                    Ver más
+                            <div class="flex flex-wrap items-center gap-3">
+                                <a href="{{ route('manual.index') }}" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[var(--primary-600)]">
+                                    Explorar manual
                                 </a>
-                            </div>
-
-                            <div class="mt-6 text-xs text-[color:var(--text-muted)]">
-                                Última revisión: {{ now()->format('d/m/Y') }}
+                                @if (Route::has('login'))
+                                    <x-ui.button variant="ghost" href="{{ route('login') }}" class="px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] border border-blue-500/40 text-[var(--primary)]">
+                                        Iniciar sesión
+                                    </x-ui.button>
+                                @endif
+                                @if (Route::has('register'))
+                                    <x-ui.button variant="ghost" href="{{ route('register') }}" class="px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] border border-[var(--border)] text-[var(--text)]">
+                                        Registrarse
+                                    </x-ui.button>
+                                @endif
                             </div>
                         </div>
-                    </section>
+                        <div class="flex flex-col rounded-2xl border border-dashed border-[var(--border)] bg-white/80 px-6 py-8 text-sm text-[var(--text-muted)]">
+                            <div class="text-xs uppercase tracking-[0.4em] text-[var(--accent)]">Operación</div>
+                            <p class="text-base text-slate-700 leading-relaxed">
+                                Centraliza reservas, monitorea inventario y entrega reportes claros para cada responsable del laboratorio.
+                                <br>
+                                Trazabilidad por turno y responsable para asegurar cumplimiento institucional.
+                            </p>
+                            <div class="relative rounded-2xl overflow-hidden mt-6 lg:mt-0">
+                                <img src="{{ asset('images/Bodega2.png') }}" alt="Operación" class="h-32 w-full object-cover object-center opacity-90" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                </div>
+                <section class="space-y-6 pb-6">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <article class="flex flex-col rounded-3xl border border-[var(--border)] bg-white/90 shadow-sm shadow-black/5 transition hover:-translate-y-1 hover:shadow-md">
+                            <div class="relative w-full aspect-[16/7] overflow-hidden rounded-t-3xl">
+                                <img src="{{ asset('images/Bodega1.png') }}" alt="Laboratorio B201" class="w-full h-full object-cover object-center" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                            </div>
+                            <div class="flex flex-col flex-1 p-8 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="space-y-1">
+                                        <p class="text-[0.65rem] uppercase tracking-[0.25em] text-[var(--text-muted)]">¿Qué hace {{ config('app.name') }}?</p>
+                                        <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight uppercase tracking-[0.3em]">Operación</h2>
+                                    </div>
+                                    <x-ui.icon name="cog" size="lg" class="text-[var(--primary)]" />
+                                </div>
+                                <p class="text-2xl font-semibold text-[var(--primary)] leading-tight">Visibilidad total del laboratorio y la bodega</p>
+                                <p class="text-sm leading-relaxed text-slate-600">
+                                    Centraliza el control de accesos, reservas, préstamos y devoluciones del Laboratorio B201 y la bodega, asignando responsables por turno y manteniendo trazabilidad operativa con registros y alertas para respaldo institucional.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="flex flex-col rounded-3xl border border-[var(--border)] bg-white/90 shadow-sm shadow-black/5 transition hover:-translate-y-1 hover:shadow-md">
+                            <div class="relative aspect-[16/7] w-full overflow-hidden rounded-t-3xl">
+                                <img src="{{ asset('images/Bodega3.png') }}" alt="Manual de usuario" class="h-full w-full object-cover object-center" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                            </div>
+                            <div class="flex flex-col flex-1 p-8 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="space-y-1">
+                                        <p class="text-[0.65rem] uppercase tracking-[0.25em] text-[var(--text-muted)]">Manual de Usuario</p>
+                                        <h2 class="text-2xl font-semibold text-[var(--primary)] leading-tight uppercase tracking-[0.3em]">Documentación</h2>
+                                    </div>
+                                    <x-ui.icon name="book" size="lg" class="text-[var(--primary)]" />
+                                </div>
+                                <p class="text-2xl font-semibold text-[var(--primary)] leading-tight">Guías rápidas por rol</p>
+                                <p class="text-sm leading-relaxed text-slate-600">
+                                    Ofrece guías operativas por rol para docentes, administrativos y equipos técnicos, con pasos claros, responsabilidades definidas y criterios de uso que facilitan la ejecución adecuada de cada proceso del laboratorio.
+                                </p>
+                                <div class="mt-auto flex items-center justify-start gap-4">
+                                    <x-ui.button variant="primary" href="{{ route('manual.index') }}" class="inline-flex items-center gap-2 rounded-full px-5 py-3 text-xs font-semibold uppercase tracking-[0.3em]">
+                                        Ver manual
+                                        <x-ui.icon name="siguiente" size="xs" class="text-white" />
+                                    </x-ui.button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
             </div>
         </main>
 
@@ -237,63 +165,8 @@
         </footer>
     </div>
 
-    <script>
-        /**
-         * Inicializa el carrusel cuando la página está lista.
-         * Entradas: Ninguna.
-         * Salidas: void (sin retorno).
-         */
-        document.addEventListener('DOMContentLoaded', () => {
-            const items = Array.from(document.querySelectorAll('#pillar-carousel .pillar-item'));
-            if (!items.length) return;
-
-            let index = 0;
-            const total = items.length;
-
-            items.forEach((el, i) => {
-                if (i === 0) {
-                    el.classList.remove('hidden');
-                    el.classList.add('opacity-100');
-                    el.classList.remove('opacity-0');
-                } else {
-                    el.classList.add('hidden');
-                    el.classList.add('opacity-0');
-                    el.classList.remove('opacity-100');
-                }
-            });
-
-            /**
-             * Cambia al slide indicado aplicando las clases de transición.
-             * Entradas: nextIndex (number) índice de la diapositiva siguiente.
-             * Salidas: void (sin retorno).
-             */
-            function showSlide(nextIndex) {
-                const current = items[index];
-                const next = items[nextIndex];
-
-                current.classList.remove('opacity-100');
-                current.classList.add('opacity-0');
-
-                next.classList.remove('hidden');
-                next.classList.add('opacity-0');
-
-                requestAnimationFrame(() => {
-                    next.classList.remove('opacity-0');
-                    next.classList.add('opacity-100');
-                });
-
-                window.setTimeout(() => {
-                    current.classList.add('hidden');
-                }, 520);
-
-                index = nextIndex;
-            }
-
-            setInterval(() => {
-                showSlide((index + 1) % total);
-            }, 3000);
-        });
-    </script>
+    <x-notify />
+    @include('components.toast-bridge')
 </body>
 
 </html>

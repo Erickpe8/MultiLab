@@ -4,8 +4,8 @@
 
             {{-- Logo --}}
             <div class="flex items-center gap-2">
-                <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC" class="h-7 w-auto" />
-                <span class="font-bold text-[var(--text)] text-sm">MultiLab</span>
+                <x-brand.logo variant="horizontal" class="h-7 w-auto" />
+                <span class="font-bold text-[var(--text)] text-sm">{{ config('app.name') }}</span>
             </div>
 
             {{-- Links --}}
@@ -46,14 +46,13 @@
                     </span>
 
                     {{-- Dispara evento global (funciona en guest y auth) --}}
-                    <button type="button"
-                            onclick="window.dispatchEvent(new CustomEvent('open-team-modal'))"
-                            class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]
-                                   hover:text-[var(--accent)] transition-colors group">
+                    <x-ui.button variant="ghost" type="button"
+                                 onclick="window.dispatchEvent(new CustomEvent('open-team-modal'))"
+                                 class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
                         <x-ui.icon name="equipo-desarrollo" size="sm"
-                            class="text-[var(--accent)]/50 group-hover:text-[var(--accent)] transition-colors" />
+                            class="text-[var(--accent)]/50" />
                         Equipo de Desarrollo
-                    </button>
+                    </x-ui.button>
                 </div>
 
             </nav>

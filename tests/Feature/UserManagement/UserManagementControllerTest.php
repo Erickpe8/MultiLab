@@ -3,12 +3,12 @@
 namespace Tests\Feature\UserManagement;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
 use Tests\TestCase;
 
 class UserManagementControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabaseSkipDropForeign;
 
     public function test_superadmin_sees_the_user_management_dashboard(): void
     {

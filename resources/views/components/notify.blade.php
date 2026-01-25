@@ -1,11 +1,20 @@
-<div id="notify" class="fixed top-4 right-4 z-50 hidden opacity-0 -translate-y-2
-            transition-all duration-300 ease-in-out" style="
+<div id="toast-stack"
+    role="status"
+    aria-live="polite"
+    aria-atomic="false"
+    class="pointer-events-none fixed top-4 right-4 z-[9999] flex flex-col gap-3 w-full max-w-sm px-2 sm:px-0">
+</div>
+
+<div id="notify" class="fixed top-4 right-4 z-50 hidden opacity-0 transition-all duration-300 ease-out
+        pointer-events-none"
+    aria-hidden="true"
+    inert
+    style="
         --card: #ffffff;
         --border: #2563eb;
         --accent: #2563eb;
         --text: #1f2937;
      ">
-
     <div id="notify-card" class="max-w-md w-[92vw] sm:w-[460px] rounded-xl shadow-2xl border-l-8
                 bg-[color:var(--card)] border-[color:var(--border)]">
 
@@ -24,7 +33,7 @@
 
             <!-- BOTÓN CERRAR -->
             <button type="button" id="notify-close" class="ml-1 sm:ml-2 inline-flex items-center justify-center
-                           text-[color:var(--text)]/60 hover:text-[var(--text)]
+                           text-[color:var(--text)]/60 hover:text-[color:var(--text)]
                            transition-colors shrink-0" aria-label="Cerrar">
 
                 <x-ui.icon name="cerrar" size="sm"

@@ -1,12 +1,12 @@
 <div id="teamDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden">
     <div
-        class="bg-white dark:bg-multilab-dark border-2 border-multilab-gray dark:border-multilab-darkblue rounded-lg p-6 w-11/12 max-w-md shadow-soft">
+        class="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-6 w-11/12 max-w-md shadow-xl">
 
-        <h2 class="text-xl font-semibold mb-4 text-multilab-blue dark:text-multilab-gray">
-            Equipo Desarrollador
+        <h2 class="text-xl font-semibold mb-4 text-[var(--text)]">
+            Equipo desarrollador de {{ config('app.name') }}
         </h2>
 
-        <ul class="space-y-2 text-multilab-dark dark:text-multilab-gray">
+        <ul class="space-y-2 text-[var(--text)]">
             <li>Erick Sebastián Pérez Carvajal</li>
             <li>David Arturo Aceros Ortiz</li>
             <li>Carlos José Mantilla Cote</li>
@@ -14,7 +14,7 @@
 
         <div class="mt-6 text-right">
             <button id="closeTeamDialog" type="button"
-                class="px-4 py-2 bg-multilab-blue text-white rounded hover:bg-multilab-darkblue transition">
+                class="px-4 py-2 bg-[var(--accent)] text-white rounded hover:bg-[var(--primary)] transition">
                 Cerrar
             </button>
         </div>

@@ -197,61 +197,46 @@
 @endpush
 
 <x-filament-panels::layout.base :livewire="$livewire">
-    <div class="min-h-screen flex flex-col bg-[var(--bg)] font-sans antialiased" x-data="{ sidebarOpen: false }">
-        <div class="flex flex-1">
-            @include('layouts.navigation')
+    <div class="min-h-screen flex flex-col bg-[var(--bg)] font-sans antialiased">
+        <div class="flex-1 flex flex-col">
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
 
-            <div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" x-transition.opacity
-                @click="sidebarOpen=false" style="display: none;"></div>
-
-            <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
-                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
-
-                <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
-                    <div class="h-14 px-4 flex items-center justify-between">
-                        <button @click="sidebarOpen = true"
-                            class="p-2 rounded-md text-[var(--text)] hover:text-[var(--accent)] hover:bg-[var(--border)]/20 transition-colors"
-                            aria-label="Abrir menú">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                        <div class="text-sm text-[var(--text)] truncate">
-                            MultiLab
-                        </div>
-                        <div class="w-10"></div>
+            <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
+                <div class="h-14 px-4 flex items-center justify-between">
+                    <div class="text-sm text-[var(--text)] truncate">
+                        MultiLab
                     </div>
+                    <div class="w-10"></div>
                 </div>
-
-                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
-
-                @if (isset($header))
-                    <header class="bg-[var(--card)] border-b border-[var(--border)]">
-                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                            {{ $header }}
-                        </div>
-                    </header>
-                @endif
-
-                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
-
-                <main class="flex-1">
-                    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_START, scopes: $livewire?->getRenderHookScopes()) }}
-
-                        {{ $slot }}
-
-                        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_END, scopes: $livewire?->getRenderHookScopes()) }}
-                    </div>
-                </main>
-
-                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
-
-                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire?->getRenderHookScopes()) }}
-
-                @include('layouts.footer')
             </div>
+
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+
+            @if (isset($header))
+                <header class="bg-[var(--card)] border-b border-[var(--border)]">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif
+
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
+
+            <main class="flex-1">
+                <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_START, scopes: $livewire?->getRenderHookScopes()) }}
+
+                    {{ $slot }}
+
+                    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_END, scopes: $livewire?->getRenderHookScopes()) }}
+                </div>
+            </main>
+
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::CONTENT_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire?->getRenderHookScopes()) }}
+
+            @include('layouts.footer')
         </div>
     </div>
 
