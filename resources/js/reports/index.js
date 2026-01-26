@@ -43,20 +43,45 @@ const formatNumber = (value) => {
   return new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(safeValue)
 }
 
-const formatUpdated = (value) => {
-  if (!value) {
-    return 'Sin actualizaciones recientes'
+const UPDATED_FORMATTER = new Intl.DateTimeFormat('es-CO', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  hourCycle: 'h23',
+  timeZone: 'America/Bogota',
+})
+
+const formatUpdatedAt = (isoString) => {
+  if (!isoString) {
+    return null
   }
 
-  const parsed = new Date(value)
+  const parsed = new Date(isoString)
   if (Number.isNaN(parsed.getTime())) {
-    return 'Sin actualizaciones recientes'
+    return null
   }
 
-  return `Actualizado el ${new Intl.DateTimeFormat('es-ES', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(parsed)}`
+  return UPDATED_FORMATTER.format(parsed)
+}
+
+const buildTimestampText = (isoString, options = {}) => {
+  if (options.error) {
+    return 'No disponible'
+  }
+
+  const formatted = formatUpdatedAt(isoString)
+  if (!formatted) {
+    return 'Actualizando�'
+  }
+
+  return `Actualizado el ${formatted}`
+}
+
+const setUpdatedLabel = (element, isoString, options = {}) => {
+  if (!element) {
+    return
+  }
+
+  element.textContent = buildTimestampText(isoString, options)
 }
 
 const getThemeColors = () => {
@@ -127,29 +152,49 @@ const createCardMarkup = (card) => {
     `
 }
 
-const renderSummary = (payload, summaryContainer, updatedEl, errorEl) => {
+const renderSummary = (payload, summaryContainer, updatedEl, errorEl, options = {}) => {
   const payloadCards = payload?.cards?.length ? payload.cards : BASE_SUMMARY_CARDS
   summaryContainer.innerHTML = payloadCards.map(createCardMarkup).join('')
-  if (updatedEl) {
-    updatedEl.textContent = formatUpdated(payload?.updated_at)
-  }
+  setUpdatedLabel(updatedEl, payload?.updated_at, options)
   errorEl?.classList.add('hidden')
 }
 
-const renderActivity = (payload, chartEl, updatedEl, loaderEl, emptyEl, errorEl, chartState) => {
+const renderActivity = (
+  payload,
+  chartEl,
+  chartWrapper,
+  updatedEl,
+  loaderEl,
+  emptyEl,
+  errorEl,
+  chartState,
+  options = {},
+) => {
   if (!chartEl) {
     loaderEl?.classList.add('hidden')
     return
   }
 
   const days = mergeActivityDays(payload?.days)
-  const totalActivity = days.some((day) => day.loans > 0 || day.reservations > 0)
-  emptyEl?.classList.toggle('hidden', totalActivity)
+  const hasActivity = days.some((day) => day.loans > 0 || day.reservations > 0)
   errorEl?.classList.add('hidden')
+
+  if (!hasActivity) {
+    chartWrapper?.classList.add('hidden')
+    emptyEl?.classList.remove('hidden')
+    loaderEl?.classList.add('hidden')
+    chartState.instance?.destroy()
+    chartState.instance = null
+    setUpdatedLabel(updatedEl, payload?.updated_at, options)
+    return
+  }
+
+  chartWrapper?.classList.remove('hidden')
+  emptyEl?.classList.add('hidden')
 
   const colors = getThemeColors()
   const isDark = document.documentElement.classList.contains('dark')
-  const options = {
+  const config = {
     chart: {
       type: 'bar',
       height: '100%',
@@ -169,6 +214,7 @@ const renderActivity = (payload, chartEl, updatedEl, loaderEl, emptyEl, errorEl,
     legend: {
       show: true,
       position: 'top',
+      horizontalAlign: 'center',
       labels: { colors: 'var(--text)' },
     },
     stroke: {
@@ -178,6 +224,9 @@ const renderActivity = (payload, chartEl, updatedEl, loaderEl, emptyEl, errorEl,
     },
     tooltip: {
       theme: isDark ? 'dark' : 'light',
+      y: {
+        formatter: (value) => `${value ?? 0}`,
+      },
     },
     xaxis: {
       categories: days.map((day) => day.label),
@@ -196,7 +245,7 @@ const renderActivity = (payload, chartEl, updatedEl, loaderEl, emptyEl, errorEl,
       borderColor: 'var(--border)',
     },
     series: [
-      { name: 'Préstamos', data: days.map((day) => day.loans) },
+      { name: 'Pr�stamos', data: days.map((day) => day.loans) },
       { name: 'Reservas', data: days.map((day) => day.reservations) },
     ],
   }
@@ -210,18 +259,15 @@ const renderActivity = (payload, chartEl, updatedEl, loaderEl, emptyEl, errorEl,
     }
 
     if (!chartState.instance) {
-      chartState.instance = new window.ApexCharts(chartEl, options)
+      chartState.instance = new window.ApexCharts(chartEl, config)
       chartState.instance.render().finally(() => loaderEl?.classList.add('hidden'))
     } else {
-      chartState.instance.updateOptions(options).finally(() => loaderEl?.classList.add('hidden'))
+      chartState.instance.updateOptions(config).finally(() => loaderEl?.classList.add('hidden'))
     }
   }
 
   renderChart()
-
-  if (updatedEl) {
-    updatedEl.textContent = formatUpdated(payload?.updated_at)
-  }
+  setUpdatedLabel(updatedEl, payload?.updated_at, options)
 }
 
 const inventoryRenderers = {
@@ -293,7 +339,15 @@ const inventoryRenderers = {
   },
 }
 
-const renderInventory = (payload, listMap, countMap, emptyMap, updatedEl, errorEl) => {
+const renderInventory = (
+  payload,
+  listMap,
+  countMap,
+  emptyMap,
+  updatedEl,
+  errorEl,
+  options = {},
+) => {
   const data = payload ?? { low_stock: [], overdue: [], top_materials: [], updated_at: null }
   errorEl?.classList.add('hidden')
 
@@ -330,9 +384,7 @@ const renderInventory = (payload, listMap, countMap, emptyMap, updatedEl, errorE
     }
   })
 
-  if (updatedEl) {
-    updatedEl.textContent = formatUpdated(data.updated_at)
-  }
+  setUpdatedLabel(updatedEl, data.updated_at, options)
 }
 
 const showError = (element, message) => {
@@ -362,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryError = root.querySelector('[data-summary-error]')
 
   const activityChartBar = root.querySelector('[data-reports-chart]')
+  const activityChartWrapper = root.querySelector('[data-activity-chart-wrapper]')
   const activityUpdated = root.querySelector('[data-activity-updated]')
   const activityLoader = root.querySelector('[data-activity-loading]')
   const activityEmpty = root.querySelector('[data-activity-empty]')
@@ -403,13 +456,14 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSummary(summaryResult.value, summaryContainer, summaryUpdated, summaryError)
     } else {
       showError(summaryError, 'No se pudieron cargar los indicadores.')
-      renderSummary(null, summaryContainer, summaryUpdated, summaryError)
+      renderSummary(null, summaryContainer, summaryUpdated, summaryError, { error: true })
     }
 
     if (activityResult.status === 'fulfilled') {
       renderActivity(
         activityResult.value,
         activityChartBar,
+        activityChartWrapper,
         activityUpdated,
         activityLoader,
         activityEmpty,
@@ -418,8 +472,17 @@ document.addEventListener('DOMContentLoaded', () => {
       )
     } else {
       showError(activityError, 'No se pudo cargar la gráfica de actividad.')
-      activityLoader?.classList.add('hidden')
-      renderActivity(null, activityChartBar, activityUpdated, activityLoader, activityEmpty, activityError, chartState)
+      renderActivity(
+        null,
+        activityChartBar,
+        activityChartWrapper,
+        activityUpdated,
+        activityLoader,
+        activityEmpty,
+        activityError,
+        chartState,
+        { error: true },
+      )
     }
 
     if (inventoryResult.status === 'fulfilled') {
@@ -433,7 +496,15 @@ document.addEventListener('DOMContentLoaded', () => {
       )
     } else {
       showError(inventoryError, 'No se pudo cargar el inventario.')
-      renderInventory(null, inventoryLists, inventoryCounts, inventoryEmptyNodes, inventoryUpdated, inventoryError)
+      renderInventory(
+        null,
+        inventoryLists,
+        inventoryCounts,
+        inventoryEmptyNodes,
+        inventoryUpdated,
+        inventoryError,
+        { error: true },
+      )
     }
   }
 

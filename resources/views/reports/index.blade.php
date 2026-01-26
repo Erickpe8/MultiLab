@@ -11,12 +11,12 @@
         </header>
 
         <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex items-center justify-between gap-4">
+                <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Resumen</p>
                     <h2 class="text-xl font-semibold text-[var(--text)]">Estado actual</h2>
                 </div>
-                <span class="text-xs text-[var(--text-muted)]" data-summary-updated>Actualizando…</span>
+                <span class="text-xs text-[var(--text-muted)] whitespace-nowrap" data-summary-updated>Actualizando…</span>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reports-summary>
@@ -33,15 +33,15 @@
         </section>
 
         <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex items-center justify-between gap-4">
+                <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Actividad</p>
                     <h2 class="text-xl font-semibold text-[var(--text)]">Últimos 14 días</h2>
                 </div>
-                <span class="text-xs text-[var(--text-muted)]" data-activity-updated>Actualizando…</span>
+                <span class="text-xs text-[var(--text-muted)] whitespace-nowrap" data-activity-updated>Actualizando…</span>
             </div>
 
-            <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
+            <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4" data-activity-chart-wrapper>
                 <div class="relative h-72" data-reports-chart>
                     <div class="absolute inset-0 flex items-center justify-center text-xs text-[var(--text-muted)]"
                          data-activity-loading>
@@ -56,12 +56,12 @@
         </section>
 
         <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex items-center justify-between gap-4">
+                <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Inventario y alertas</p>
                     <h2 class="text-xl font-semibold text-[var(--text)]">Materiales + préstamos</h2>
                 </div>
-                <span class="text-xs text-[var(--text-muted)]" data-inventory-updated>Actualizando…</span>
+                <span class="text-xs text-[var(--text-muted)] whitespace-nowrap" data-inventory-updated>Actualizando…</span>
             </div>
 
             <div class="grid gap-4 lg:grid-cols-3">

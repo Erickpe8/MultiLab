@@ -21,7 +21,7 @@ class ReportsController extends Controller
 
     public function summary(): JsonResponse
     {
-        $now = Carbon::now();
+        $now = Carbon::now(config('app.timezone'));
 
         $cards = [
             'pending_users' => [
@@ -97,15 +97,15 @@ class ReportsController extends Controller
         }
 
         return response()->json([
-            'updated_at' => $now->toDateTimeString(),
+            'updated_at' => $now->toIso8601String(),
             'cards' => array_values($cards),
         ]);
     }
 
     public function activity(): JsonResponse
     {
-        $now = Carbon::now();
-        $today = Carbon::today();
+        $now = Carbon::now(config('app.timezone'));
+        $today = Carbon::today(config('app.timezone'));
         $startDate = $today->copy()->subDays(13);
         $rangeStart = $startDate->copy()->startOfDay();
         $rangeEnd = $today->copy()->endOfDay();
@@ -148,14 +148,14 @@ class ReportsController extends Controller
         }
 
         return response()->json([
-            'updated_at' => $now->toDateTimeString(),
+            'updated_at' => $now->toIso8601String(),
             'days' => $days,
         ]);
     }
 
     public function inventory(): JsonResponse
     {
-        $now = Carbon::now();
+        $now = Carbon::now(config('app.timezone'));
         $thresholdDate = $now->copy()->subDays(29)->startOfDay();
 
         $lowStock = collect();
@@ -209,7 +209,7 @@ class ReportsController extends Controller
         }
 
         return response()->json([
-            'updated_at' => $now->toDateTimeString(),
+            'updated_at' => $now->toIso8601String(),
             'low_stock' => $lowStock->map(fn (Material $material) => [
                 'id' => $material->id,
                 'name' => $material->name,
