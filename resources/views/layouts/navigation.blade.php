@@ -1,12 +1,12 @@
 <nav x-cloak
-     x-data="{
-         userManagementOpen: {{ json_encode(request()->routeIs('user-management.*')) }},
-         inventoryMaterialsOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.materials.*') || request()->routeIs('filament.dashboard.resources.material-catalogs.*')) }},
-         inventoryComputersOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.computers.*')) }},
-         loansOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.loans.*')) }},
-         classroomOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.classroom-loans.*')) }},
-         accountOpen: false,
-     }"
+    x-data="{
+        userManagementOpen: {{ json_encode(request()->routeIs('user-management.*')) }},
+        inventoryMaterialsOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.materials.*') || request()->routeIs('filament.dashboard.resources.material-catalogs.*')) }},
+        inventoryComputersOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.computers.*')) }},
+        loansOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.loans.*')) }},
+        classroomOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.classroom-loans.*')) }},
+        accountOpen: false,
+    }"
      class="fixed inset-y-0 left-0 z-40 w-64
         bg-[var(--card)] text-[var(--text)] border-r border-[var(--border)]
         transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 lg:overflow-y-auto
