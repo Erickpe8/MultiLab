@@ -97,7 +97,7 @@
         if (statusLabel) {
             statusLabel.innerHTML = isActive
                 ? '<span class="text-green-600 dark:text-green-400 font-semibold">Activo</span>'
-                : '<span class="text-red-600 dark:text-red-400 font-semibold">Inactivo</span>';
+                : '<span class="text-[var(--primary)] dark:text-[var(--primary-600)] font-semibold">Inactivo</span>';
         }
 
         if (statusBadge) {
@@ -112,8 +112,8 @@
                 `
                 : `
                     <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
-                                bg-red-500/20 text-red-700 dark:text-red-300
-                                border border-red-500/30">
+                                bg-[var(--primary-soft)] text-[var(--primary)] dark:text-[var(--primary-600)]
+                                border border-[color-mix(in oklab, var(--primary) 40%, var(--border))]">
                         ${badgeInactiveIcon}
                         Inactivo
                     </span>
@@ -445,7 +445,7 @@
                 icon: notificationIcons.success,
             },
             error: {
-                bg: 'bg-red-500',
+                bg: 'bg-[var(--primary)]',
                 icon: notificationIcons.error,
             },
             info: {

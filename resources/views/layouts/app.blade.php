@@ -13,7 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/multilab.svg') }}">
     <link rel="alternate icon" href="{{ asset('images/multilab.svg') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
-    <meta name="theme-color" content="#8E1616">
+    <meta name="theme-color" content="#1D4ED8">
     <title>
         @hasSection('title')
             @yield('title') | {{ config('app.name', 'Ingeniería de Software (FESC)') }}

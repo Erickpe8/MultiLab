@@ -28,7 +28,7 @@ class ManualController extends Controller
                 'states' => [
                     ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
                     ['label' => 'Aprobado', 'class' => 'bg-emerald-100 text-emerald-800'],
-                    ['label' => 'Rechazado', 'class' => 'bg-red-100 text-red-800'],
+                    ['label' => 'Rechazado', 'class' => 'bg-[var(--primary-soft)] text-[var(--primary)]'],
                 ],
                 'tips' => [
                     'Usar filtros por estado para priorizar aprobaciones urgentes.',
@@ -107,7 +107,7 @@ class ManualController extends Controller
                 'states' => [
                     ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
                     ['label' => 'Aprobado', 'class' => 'bg-emerald-100 text-emerald-800'],
-                    ['label' => 'Rechazado', 'class' => 'bg-red-100 text-red-800'],
+                    ['label' => 'Rechazado', 'class' => 'bg-[var(--primary-soft)] text-[var(--primary)]'],
                 ],
                 'tips' => [
                     'Lee las instrucciones específicas del material antes de usarlo.',

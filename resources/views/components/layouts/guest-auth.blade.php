@@ -55,7 +55,7 @@
                 <header class="space-y-2 text-center mb-6">
                     <a href="{{ route('welcome') }}" class="inline-flex flex-col items-center gap-2">
                         <x-brand.logo variant="vertical" class="h-12 w-auto" />
-                        <span class="text-sm font-semibold tracking-wide text-[#8E1616]">{{ config('app.name') }}</span>
+                        <span class="text-sm font-semibold tracking-wide text-[var(--primary)]">{{ config('app.name') }}</span>
                     </a>
                     <h1 class="text-2xl font-extrabold tracking-tight text-[var(--text)]">
                         {{ $title ?? config('app.name', 'Ingeniería de Software (FESC)') }}

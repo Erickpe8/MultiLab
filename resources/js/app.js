@@ -17,10 +17,10 @@ const TYPE_META = {
   },
   error: {
     title: 'Error',
-    borderClass: 'border-red-200',
-    iconBg: 'bg-red-50',
-    iconColor: 'text-red-600',
-    progressColor: '#dc2626',
+    borderClass: 'border-[color-mix(in oklab, var(--primary) 40%, var(--border))]',
+    iconBg: 'bg-[var(--primary-soft)]',
+    iconColor: 'text-[var(--primary)]',
+    progressColor: 'var(--primary)',
     iconPath: 'M6 18L18 6M6 6l12 12',
   },
   warning: {
