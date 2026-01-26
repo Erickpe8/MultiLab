@@ -84,38 +84,43 @@
     --primary: #1D4ED8;
     --primary-600: #2563EB;
     --primary-700: #1E40AF;
-    --primary-soft: rgba(29, 78, 216, 0.18);
+    --primary-soft: rgba(29, 78, 216, 0.25);
     --institutional: var(--primary);
     --institutional-soft: var(--primary-soft);
-    --secondary: #EEEEEE;
+    --secondary: #e2e8f0;
     --accent: var(--primary);
-    --background: #1c1515;
-    --surface: #2a2121;
+    --background: #0f172a;
+    --surface: #111b2f;
     --success: #16a34a;
     --warning: #f97316;
     --danger: var(--primary-700);
-    --border: rgba(29,78,216,0.35);
+    --border: rgba(255, 255, 255, 0.12);
     --bg: var(--background);
-    --text: #EEEEEE;
-    --text-secondary: rgba(238, 238, 238, 0.9);
-    --text-muted: rgba(238, 238, 238, 0.75);
-    --card: #2a2121;
+    --text: #f8fafc;
+    --text-secondary: rgba(248, 250, 252, 0.85);
+    --text-muted: rgba(248, 250, 252, 0.65);
+    --card: #18223b;
+    --input: color-mix(in oklab, var(--surface), var(--card), 70%);
     --focus: var(--accent);
 
     --gray-0:  #FFFFFF;
     --gray-10: #E6E6E6;
 
-    --muted: color-mix(in oklab, var(--text) 60%, transparent);
+    --muted: color-mix(in oklab, var(--text) 70%, transparent);
 
     /* Danger Zone Colors - DARK MODE */
     --danger-border: color-mix(in oklab, var(--primary), var(--border));
-    --danger-bg-from: color-mix(in oklab, var(--primary-soft), rgba(0, 0, 0, 0.9));
+    --danger-bg-from: color-mix(in oklab, var(--primary-soft), rgba(15, 23, 42, 0.95));
     --danger-bg-to: var(--card);
-    --danger-decoration-opacity: 0.18;
-    --danger-glow-1: color-mix(in oklab, var(--primary), transparent 75%);
-    --danger-glow-2: color-mix(in oklab, var(--primary-600), transparent 75%);
-    --danger-icon-bg: linear-gradient(to bottom right, color-mix(in oklab, var(--primary-soft), #111 60%), color-mix(in oklab, var(--primary), transparent 60%));
-    --danger-icon-ring: var(--border);
+    --danger-decoration-opacity: 0.22;
+    --danger-glow-1: color-mix(in oklab, var(--primary), transparent 70%);
+    --danger-glow-2: color-mix(in oklab, var(--primary-600), transparent 70%);
+    --danger-icon-bg: linear-gradient(
+        to bottom right,
+        color-mix(in oklab, var(--primary-soft), #0c1221 65%),
+        color-mix(in oklab, var(--primary), transparent 55%)
+    );
+    --danger-icon-ring: color-mix(in oklab, var(--border), transparent 40%);
     --danger-icon-color: var(--primary);
     --danger-title: var(--text);
     --danger-description: var(--text-muted);
@@ -128,14 +133,14 @@
     --danger-expanded-border: color-mix(in oklab, var(--primary), var(--border));
     --danger-warning-icon: var(--primary);
     --danger-warning-text: var(--text);
-    --danger-list-title: var(--text-muted);
-    --danger-item-bg: color-mix(in oklab, var(--primary), var(--card), 60%);
+    --danger-list-title: rgba(248, 250, 252, 0.75);
+    --danger-item-bg: color-mix(in oklab, var(--primary), var(--card), 70%);
     --danger-item-icon: var(--primary);
     --danger-item-text: var(--text);
     --danger-divider: color-mix(in oklab, var(--primary), var(--border));
-    --danger-button-disabled-bg: #2a2121;
-    --danger-button-disabled-text: rgba(238, 238, 238, 0.4);
-    --danger-button-disabled-border: #542828;
+    --danger-button-disabled-bg: #141c2b;
+    --danger-button-disabled-text: rgba(248, 250, 252, 0.45);
+    --danger-button-disabled-border: rgba(255, 255, 255, 0.16);
 
     color-scheme: dark;
 }
@@ -248,6 +253,41 @@
 :root[data-theme='dark'] .border-gray-200,
 :root[data-theme='dark'] .border-gray-300 {
     border-color: color-mix(in oklab, var(--border) 90%, transparent) !important;
+}
+
+:root[data-theme='dark'] .theme-card {
+    box-shadow: 0 20px 48px color-mix(in oklab, var(--border), transparent 70%);
+}
+
+:root[data-theme='dark'] .theme-bd,
+:root[data-theme='dark'] .card-border {
+    border-color: color-mix(in oklab, var(--border), transparent 30%) !important;
+}
+
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] textarea,
+:root[data-theme='dark'] select {
+    background-color: var(--input);
+    border-color: color-mix(in oklab, var(--border), transparent 40%);
+    box-shadow: 0 12px 30px color-mix(in oklab, var(--border), transparent 80%);
+}
+
+:root[data-theme='dark'] input::placeholder,
+:root[data-theme='dark'] textarea::placeholder {
+    color: rgba(248, 250, 252, 0.58);
+}
+
+:root[data-theme='dark'] table {
+    border-color: color-mix(in oklab, var(--border), transparent 60%);
+}
+
+:root[data-theme='dark'] table tbody tr {
+    border-bottom: 1px solid color-mix(in oklab, var(--border), transparent 65%);
+    transition: background 0.2s ease;
+}
+
+:root[data-theme='dark'] table tbody tr:hover {
+    background-color: color-mix(in oklab, var(--border), rgba(15, 23, 42, 0.9));
 }
 
 .theme-bg   { background-color: var(--bg); }
