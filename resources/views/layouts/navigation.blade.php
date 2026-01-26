@@ -139,6 +139,19 @@
             </div>
         @endif
 
+        {{-- MÉTRICAS --}}
+        @if($user->hasRole('superadmin'))
+            <div class="pt-2">
+                <x-sidebar.section-label label="Métricas" />
+
+                <x-sidebar.sub-item
+                    :href="route('reports.index')"
+                    icon="heroicon-o-chart-bar"
+                    label="Métricas e Informes"
+                    :active="request()->is('reports*')" />
+            </div>
+        @endif
+
         {{-- INVENTARIO --}}
         @if($user->hasAnyRole(['superadmin', 'aux_admin', 'docente', 'estudiante']))
             <div class="pt-2">
