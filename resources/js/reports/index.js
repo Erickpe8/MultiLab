@@ -550,6 +550,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  const printButton = root.querySelector('[data-print-report]')
+  if (printButton) {
+    printButton.addEventListener('click', () => {
+      console.log('[reports] print triggered')
+      window.print()
+    })
+  }
+
   const chartState = { instance: null }
   renderActivityLegend()
 

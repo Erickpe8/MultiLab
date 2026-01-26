@@ -1,16 +1,27 @@
 @section('title', 'Métricas e Informes')
 <x-app-layout>
 
-    <div class="max-w-7xl mx-auto space-y-10 py-6" data-reports-page>
+    <div class="max-w-7xl mx-auto space-y-6 py-4 reports-page-printable" data-reports-page>
         <header class="space-y-2">
-            <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Solo superadmin</p>
-            <h1 class="text-3xl font-semibold text-[var(--text)]">Métricas e Informes</h1>
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Solo superadmin</p>
+                    <h1 class="text-3xl font-semibold text-[var(--text)]">Métricas e Informes</h1>
+                </div>
+                <button
+                    type="button"
+                    data-print-report
+                    class="print:hidden inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                >
+                    Imprimir / PDF
+                </button>
+            </div>
             <p class="text-sm text-[var(--text-muted)]">
                 Indicadores operativos y trazabilidad del laboratorio.
             </p>
         </header>
 
-        <section class="space-y-4">
+        <section class="space-y-3">
             <div class="flex items-center justify-between gap-4">
                 <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Resumen</p>
@@ -32,7 +43,7 @@
             <p class="text-sm text-amber-500 hidden" data-summary-error></p>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-3">
             <div class="flex items-center justify-between gap-4">
                 <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Actividad</p>
@@ -64,7 +75,7 @@
             </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-3">
             <div class="flex items-center justify-between gap-4">
                 <div class="min-w-0 space-y-1">
                     <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Inventario y alertas</p>
@@ -148,6 +159,33 @@
             <p class="text-sm text-red-500 hidden" data-inventory-error></p>
         </section>
     </div>
+
+    <style>
+        @media print {
+            body {
+                background: #fff !important;
+                color: #111 !important;
+            }
+            nav,
+            aside,
+            .sidebar,
+            .navigation,
+            header nav,
+            [data-print-report] {
+                display: none !important;
+            }
+            [data-reports-page] {
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+            [data-reports-page] section {
+                page-break-inside: avoid;
+                break-inside: avoid-column;
+            }
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     @vite('resources/js/reports/index.js')
