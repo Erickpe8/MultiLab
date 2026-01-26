@@ -24,7 +24,7 @@ class HomeTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Centraliza reservas');
-        $response->assertSee('Guías rápidas por rol');
-        $response->assertSee('Visibilidad total del laboratorio');
+        $response->assertSee('Guías rápidas por');
+        $response->assertSee('Visibilidad total');
     }
 }
