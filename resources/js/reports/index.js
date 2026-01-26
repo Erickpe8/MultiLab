@@ -25,7 +25,7 @@ const BASE_SUMMARY_CARDS = [
   {
     key: 'active_reservations',
     label: 'Reservas activas',
-    hint: 'Aula B201',
+    hint: 'Aula B202',
     variant: 'success',
     value: 0,
   },

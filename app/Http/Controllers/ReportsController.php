@@ -49,7 +49,7 @@ class ReportsController extends Controller
                 'key' => 'active_reservations',
                 'label' => 'Reservas activas',
                 'value' => 0,
-                'hint' => 'Aula B201',
+                'hint' => 'Aula B202',
                 'variant' => 'success',
             ],
         ];

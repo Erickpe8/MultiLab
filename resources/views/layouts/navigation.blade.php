@@ -299,7 +299,7 @@
                         <div class="flex items-center gap-3">
                             <x-ui.icon name="aula" size="lg"
                                        class="transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : 'text-[var(--text)]' }}" />
-                            <span class="{{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : '' }}">Aula B201</span>
+                            <span class="{{ request()->routeIs('filament.dashboard.resources.classroom-loans.*') ? 'text-white' : '' }}">Aula B202</span>
                         </div>
                         <x-ui.icon name="expandir" size="sm"
                                    class="transition-transform duration-200"
