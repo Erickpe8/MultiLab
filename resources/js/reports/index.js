@@ -382,43 +382,36 @@ const inventoryRenderers = {
     return li
   },
   overdue: (item) => {
+    const { description: statusDescription } = buildDueStatus(item.due)
     const li = document.createElement('li')
-    li.className = 'inventory-item flex items-start justify-between gap-3'
+    li.className =
+      'inventory-item flex items-start justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--card)]/70 px-3 py-3 transition hover:bg-[var(--card)]'
 
     const info = document.createElement('div')
-    const titleRow = document.createElement('div')
-    titleRow.className = 'flex items-center gap-2'
+    info.className = 'flex-1 min-w-0 space-y-1'
 
     const title = document.createElement('p')
-    title.className = 'text-sm font-medium text-[var(--text)]'
-    title.textContent = item.code ? `Préstamo ${item.code}` : 'Préstamo pendiente'
+    title.className = 'text-sm font-semibold text-[var(--text)] break-words'
+    title.textContent = item.code ? `Préstamo ${item.code}` : 'Préstamo sin código'
 
-    const { label: statusLabel, description: statusDescription } = buildDueStatus(item.due)
-    const statusChip = document.createElement('span')
-    statusChip.className =
-      'text-[var(--text)] border border-[var(--border)] bg-[var(--card)] px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-[0.2em]'
-    statusChip.textContent = statusLabel
+    const subtitle = document.createElement('p')
+    subtitle.className = 'text-xs text-[var(--text-muted)] break-words'
+    subtitle.textContent = `${item.who ? `Solicitante ${item.who}` : 'Solicitante desconocido'} · vence ${item.due ?? '—'}`
 
-    const meta = document.createElement('p')
-    meta.className = 'text-xs text-[var(--text-muted)]'
-    meta.textContent = `${item.who ?? 'Sin usuario'} · vence ${item.due ?? '—'}`
-
-    const delay = document.createElement('p')
-    delay.className = 'text-xs text-[var(--text-muted)]'
-    delay.textContent = statusDescription
-
-    titleRow.append(title, statusChip)
-    info.append(titleRow, meta, delay)
+    info.append(title, subtitle)
 
     const metaStack = document.createElement('div')
-    metaStack.className = 'meta-stack text-right'
-    const badge = document.createElement('span')
-    badge.className = 'text-xs font-semibold text-amber-600'
-    badge.textContent = item.due ?? 'Sin fecha'
-    const dueLabel = document.createElement('span')
-    dueLabel.className = 'text-xs font-semibold text-[var(--text)]'
-    dueLabel.textContent = statusDescription
-    metaStack.append(badge, dueLabel)
+    metaStack.className = 'w-[110px] shrink-0 text-right space-y-0.5 leading-snug'
+
+    const dueDate = document.createElement('p')
+    dueDate.className = 'text-sm font-semibold text-orange-600 whitespace-normal break-words'
+    dueDate.textContent = item.due ?? 'Sin fecha'
+
+    const relative = document.createElement('p')
+    relative.className = 'text-xs text-[var(--text-muted)] whitespace-normal break-words'
+    relative.textContent = statusDescription
+
+    metaStack.append(dueDate, relative)
 
     li.append(info, metaStack)
     return li
