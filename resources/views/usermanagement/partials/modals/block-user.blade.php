@@ -18,7 +18,7 @@
 
         <div class="space-y-5 px-8">
             <div class="flex items-center gap-4">
-                <span class="h-12 w-12 rounded-full bg-red-500/10 text-red-600 flex items-center justify-center font-semibold text-lg"
+                <span class="h-12 w-12 rounded-full bg-[var(--primary-soft)] text-[var(--primary-600)] flex items-center justify-center font-semibold text-lg"
                       id="block-user-avatar">?</span>
                 <div>
                     <p class="text-xl font-semibold text-[var(--text)]" id="block-user-name">Nombre del usuario</p>
@@ -45,7 +45,7 @@
                 Cancelar
             </button>
             <button type="submit" id="block-user-confirm-btn"
-                    class="relative h-11 min-w-[170px] rounded-full bg-red-600 px-6 text-sm font-semibold uppercase tracking-[0.2em] text-white disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    class="relative h-11 min-w-[170px] rounded-full bg-[var(--primary)] px-6 text-sm font-semibold uppercase tracking-[0.2em] text-white disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 <span class="spinner hidden">
                     <span class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                 </span>

@@ -83,7 +83,7 @@
                 <input type="hidden" name="current_password" x-model="currentPassword">
 
                 @if ($errors->updatePassword->any())
-                    <p class="text-sm text-red-600">
+                    <p class="text-sm text-[var(--primary-600)]">
                         Hubo errores en los campos. Corrígelos e inténtalo nuevamente.
                     </p>
                 @endif
@@ -100,7 +100,7 @@
                                    focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
                         >
                         @error('password', 'updatePassword')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            <p class="text-sm text-[var(--primary-600)] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -115,7 +115,7 @@
                                    focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]"
                         >
                         @error('password_confirmation', 'updatePassword')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            <p class="text-sm text-[var(--primary-600)] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>

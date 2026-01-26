@@ -84,7 +84,7 @@
             <!-- Nuevo Rol -->
             <div>
                 <label for="edit-role" class="block text-sm font-semibold text-[var(--text)] mb-2">
-                    Nuevo Rol <span class="text-red-500">*</span>
+                    Nuevo Rol <span class="text-[var(--primary-600)]">*</span>
                 </label>
                 <div class="relative">
                     <select name="role" id="edit-role" required
@@ -163,7 +163,7 @@
                         '<span class="text-green-600 dark:text-green-400 font-semibold">Activo</span>';
                 } else {
                     statusLabel.innerHTML =
-                        '<span class="text-red-600 dark:text-red-400 font-semibold">Inactivo</span>';
+                        '<span class="text-[var(--primary-600)] dark:text-[var(--primary-600)] font-semibold">Inactivo</span>';
                 }
             });
         }
