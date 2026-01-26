@@ -145,29 +145,6 @@
         }));
     }
 
-    function openDeleteModal(userId, userName, userEmail) {
-        console.debug('Opening delete modal', { userId, userName, userEmail });
-
-        const userIdInput = document.getElementById('delete-user-id');
-        const userNameEl = document.getElementById('delete-user-name');
-        const userEmailEl = document.getElementById('delete-user-email');
-        const avatarEl = document.getElementById('delete-user-avatar');
-
-        if (userIdInput) userIdInput.value = userId;
-        if (userNameEl) userNameEl.textContent = userName;
-        if (userEmailEl) userEmailEl.textContent = userEmail;
-        if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
-
-        window.dispatchEvent(new CustomEvent('open-modal', {
-            detail: 'delete-user-modal',
-            bubbles: true,
-        }));
-    }
-
-    function deleteUser(userId, userName, userEmail = '') {
-        openDeleteModal(userId, userName, userEmail);
-    }
-
     function closeModal(modalName) {
         console.debug('Closing modal', modalName);
         window.dispatchEvent(new CustomEvent('close-modal', {
@@ -332,6 +309,7 @@
             if (response.ok && data.success) {
                 window.notify?.show(data.message || successMessage, 'success');
                 setTimeout(() => location.reload(), 1500);
+                return true;
             } else {
                 throw new Error(data.error || data.message || 'Error de conexión');
             }
@@ -340,21 +318,60 @@
             window.notify?.show(error.message || 'Error de conexión', 'error');
             targetBtn.disabled = false;
             targetBtn.innerHTML = originalHTML;
+            return false;
         }
     }
 
-    const confirmBlockUser = async (userId, userName, button) => {
+    let blockTargetName = '';
+
+    const confirmBlockUser = (userId, userName, userEmail = '') => {
         if (!userId) {
             window.notify?.show('ID de usuario inválido', 'error');
             return;
         }
 
-        if (!window.confirm(`¿Bloquear a ${userName}? Esta acción suspenderá su acceso.`)) {
+        blockTargetName = userName || 'este usuario';
+
+        const userIdInput = document.getElementById('block-user-id');
+        const userNameEl = document.getElementById('block-user-name');
+        const userLabel = document.getElementById('block-confirm-user');
+        const avatarEl = document.getElementById('block-user-avatar');
+        const userEmailEl = document.getElementById('block-user-email');
+
+        if (userIdInput) userIdInput.value = userId;
+        if (userNameEl) userNameEl.textContent = userName;
+        if (userLabel) userLabel.textContent = userName;
+        if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+        if (userEmailEl) userEmailEl.textContent = userEmail || 'No disponible';
+
+        window.dispatchEvent(new CustomEvent('open-modal', {
+            detail: 'block-user-modal',
+            bubbles: true,
+            composed: true,
+        }));
+    };
+
+    async function handleBlockSubmit(event) {
+        event.preventDefault();
+        const userId = document.getElementById('block-user-id')?.value;
+        const confirmBtn = document.getElementById('block-user-confirm-btn');
+        const userName = blockTargetName || document.getElementById('block-user-name')?.textContent || 'este usuario';
+
+        if (!userId) {
+            window.notify?.show('ID de usuario inválido', 'error');
             return;
         }
 
-        await handleBlockToggle(`/user-management/${userId}/block`, button, `Usuario ${userName} bloqueado correctamente.`);
-    };
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+        }
+
+        const success = await handleBlockToggle(`/user-management/${userId}/block`, confirmBtn, `Usuario ${userName} bloqueado correctamente.`);
+
+        if (success) {
+            closeModal('block-user-modal');
+        }
+    }
 
     const confirmUnblockUser = async (userId, userName, button) => {
         if (!userId) {
@@ -415,58 +432,6 @@
             } catch (error) {
                 console.error('Error rejecting user', error);
                 window.notify?.show(error.message || 'Error al rechazar usuario', 'error');
-                confirmBtn.disabled = false;
-                confirmBtn.innerHTML = originalHTML;
-            }
-        }
-    }
-
-    async function confirmDeleteUser() {
-        const userId = document.getElementById('delete-user-id').value;
-        const userName = document.getElementById('delete-user-name').textContent;
-        const confirmBtn = document.getElementById('delete-confirm-btn');
-
-        if (!userId) {
-            window.notify?.show('ID de usuario no encontrado', 'error');
-            return;
-        }
-
-        console.debug('Deleting user', { userId, userName });
-
-        if (confirmBtn) {
-            confirmBtn.disabled = true;
-            const originalHTML = confirmBtn.innerHTML;
-            confirmBtn.innerHTML = `
-                ${spinnerIcon}
-                <span>Eliminando...</span>
-            `;
-
-            try {
-                const csrfToken = getCsrfToken();
-                if (!csrfToken) {
-                    throw new Error('CSRF token no encontrado');
-                }
-
-                const response = await fetch(`/user-management/${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                    },
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    closeModal('delete-user-modal');
-                    window.notify?.show(data.message || 'Usuario eliminado correctamente', 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    throw new Error(data.error || data.message || 'Error al eliminar usuario');
-                }
-            } catch (error) {
-                console.error('Error deleting user', error);
-                window.notify?.show(error.message || 'Error al eliminar usuario', 'error');
                 confirmBtn.disabled = false;
                 confirmBtn.innerHTML = originalHTML;
             }
@@ -543,18 +508,19 @@
         if (editRoleForm) {
             editRoleForm.addEventListener('submit', submitEditRoleForm);
         }
+        const blockForm = document.getElementById('block-user-form');
+        if (blockForm) {
+            blockForm.addEventListener('submit', handleBlockSubmit);
+        }
     }
 
     function exposeGlobals() {
         window.openApprovalModal = openApprovalModal;
         window.openEditRoleModal = openEditRoleModal;
         window.openRejectModal = openRejectModal;
-        window.openDeleteModal = openDeleteModal;
-        window.deleteUser = deleteUser;
         window.confirmBlockUser = confirmBlockUser;
         window.confirmUnblockUser = confirmUnblockUser;
         window.confirmRejectUser = confirmRejectUser;
-        window.confirmDeleteUser = confirmDeleteUser;
         window.closeModal = closeModal;
         window.showUserMgmtNotification = showNotification;
     }

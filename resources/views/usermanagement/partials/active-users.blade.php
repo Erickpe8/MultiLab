@@ -189,24 +189,13 @@
                                     </button>
 
                                     <button type="button"
-                                        onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', this)"
-                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                               bg-amber-500/10 text-amber-600 dark:text-amber-400
-                                               hover:bg-amber-500/20 transition-all
-                                               border border-amber-500/20 hover:border-amber-500/40"
-                                        title="Bloquear usuario">
-                                        <x-ui.icon name="lock-closed" size="sm"
-                                            class="text-amber-600 dark:text-amber-400" />
-                                    </button>
-
-                                    <button type="button"
-                                        onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
+                                        onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
                                         class="inline-flex items-center justify-center p-1.5 rounded-lg
                                                bg-red-500/10 text-red-600 dark:text-red-400
                                                hover:bg-red-500/20 transition-all
                                                border border-red-500/20 hover:border-red-500/40"
-                                        title="Eliminar usuario">
-                                        <x-ui.icon name="eliminar" size="sm"
+                                        title="Bloquear usuario">
+                                        <x-ui.icon name="lock-closed" size="sm"
                                             class="text-red-600 dark:text-red-400" />
                                     </button>
                                     </div>
