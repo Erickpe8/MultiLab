@@ -1,3 +1,5 @@
+console.log('[reports] reports/index.js cargado');
+
 const BASE_SUMMARY_CARDS = [
   {
     key: 'pending_users',
@@ -37,6 +39,11 @@ const VARIANT_COLOR = {
 }
 
 const INVENTORY_KEYS = ['low-stock', 'overdue', 'top-materials']
+
+const SERIES = [
+  { key: 'loans', label: 'Préstamos', color: '#2563eb' },
+  { key: 'reservations', label: 'Reservas', color: '#16a34a' },
+]
 
 const formatNumber = (value) => {
   const safeValue = Number.isFinite(Number(value)) ? Number(value) : 0
@@ -82,14 +89,6 @@ const setUpdatedLabel = (element, isoString, options = {}) => {
   }
 
   element.textContent = buildTimestampText(isoString, options)
-}
-
-const getThemeColors = () => {
-  const computed = getComputedStyle(document.documentElement)
-  return {
-    loans: computed.getPropertyValue('--accent').trim() || '#1D4ED8',
-    reservations: computed.getPropertyValue('--success').trim() || '#16A34A',
-  }
 }
 
 const buildWeekDays = () => {
@@ -159,6 +158,26 @@ const renderSummary = (payload, summaryContainer, updatedEl, errorEl, options = 
   errorEl?.classList.add('hidden')
 }
 
+const renderActivityLegend = () => {
+  const el = document.querySelector('[data-activity-legend]')
+  if (!el) {
+    console.warn('[reports] no existe data-activity-legend')
+    return
+  }
+
+  console.log('[reports] renderActivityLegend() ejecutado')
+  el.innerHTML = `
+        <span class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1 text-[var(--text)]">
+            <span class="h-2.5 w-2.5 rounded-full" style="background:#2563eb"></span>
+            Préstamos
+        </span>
+        <span class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1 text-[var(--text)]">
+            <span class="h-2.5 w-2.5 rounded-full" style="background:#16a34a"></span>
+            Reservas
+        </span>
+    `
+}
+
 const renderActivity = (
   payload,
   chartEl,
@@ -192,8 +211,10 @@ const renderActivity = (
   chartWrapper?.classList.remove('hidden')
   emptyEl?.classList.add('hidden')
 
-  const colors = getThemeColors()
   const isDark = document.documentElement.classList.contains('dark')
+  const tooltipBg = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#fff'
+  const tooltipTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#111827'
+  const tooltipBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || 'rgba(15,23,42,0.2)'
   const config = {
     chart: {
       type: 'bar',
@@ -202,7 +223,7 @@ const renderActivity = (
       animations: { easing: 'easeinout', speed: 400 },
     },
     theme: { mode: isDark ? 'dark' : 'light' },
-    colors: [colors.loans, colors.reservations],
+    colors: SERIES.map((series) => series.color),
     plotOptions: {
       bar: {
         columnWidth: '48%',
@@ -211,21 +232,38 @@ const renderActivity = (
       },
     },
     dataLabels: { enabled: false },
-    legend: {
-      show: true,
-      position: 'top',
-      horizontalAlign: 'center',
-      labels: { colors: 'var(--text)' },
-    },
+    legend: { show: false },
     stroke: {
       show: true,
       width: 2,
       colors: ['transparent'],
     },
     tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      followCursor: true,
       theme: isDark ? 'dark' : 'light',
+      x: { show: false },
       y: {
         formatter: (value) => `${value ?? 0}`,
+      },
+      custom: ({ series = [], seriesIndex, dataPointIndex, w }) => {
+        const label =
+          w?.config?.xaxis?.categories?.[dataPointIndex]
+          ?? w?.globals?.categoryLabels?.[dataPointIndex]
+          ?? ''
+        const value = Number.isFinite(series?.[seriesIndex]?.[dataPointIndex])
+          ? series[seriesIndex][dataPointIndex]
+          : 0
+        const name = w?.config?.series?.[seriesIndex]?.name ?? `Serie`
+
+        return `
+          <div style="background:${tooltipBg}; color:${tooltipTextColor}; border:1px solid ${tooltipBorderColor}; border-radius:0.65rem; padding:0.5rem 0.75rem; font-size:0.85rem; box-shadow:0 10px 30px rgba(15,23,42,0.25);">
+            <div style="font-weight:600; margin-bottom:0.15rem;">${name}</div>
+            <div>${label}: ${value ?? 0}</div>
+          </div>
+        `
       },
     },
     xaxis: {
@@ -244,10 +282,10 @@ const renderActivity = (
       strokeDashArray: 4,
       borderColor: 'var(--border)',
     },
-    series: [
-      { name: 'Pr�stamos', data: days.map((day) => day.loans) },
-      { name: 'Reservas', data: days.map((day) => day.reservations) },
-    ],
+    series: SERIES.map((series) => ({
+      name: series.label,
+      data: days.map((day) => day[series.key] ?? 0),
+    })),
   }
 
   const renderChart = () => {
@@ -267,6 +305,7 @@ const renderActivity = (
   }
 
   renderChart()
+  renderActivityLegend()
   setUpdatedLabel(updatedEl, payload?.updated_at, options)
 }
 
@@ -440,6 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   const chartState = { instance: null }
+  renderActivityLegend()
 
   const loadReports = async () => {
     const summaryPromise = fetchJson('/reports/summary')
@@ -515,12 +555,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return
     }
 
-    const colors = getThemeColors()
     const isDark = document.documentElement.classList.contains('dark')
 
     chartState.instance.updateOptions({
       theme: { mode: isDark ? 'dark' : 'light' },
-      colors: [colors.loans, colors.reservations],
+      colors: SERIES.map((series) => series.color),
       tooltip: { theme: isDark ? 'dark' : 'light' },
     })
   })

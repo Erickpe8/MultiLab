@@ -41,6 +41,10 @@
                 <span class="text-xs text-[var(--text-muted)] whitespace-nowrap" data-activity-updated>Actualizando…</span>
             </div>
 
+            <div class="mt-2 w-full max-w-3xl mx-auto flex flex-wrap items-center justify-center gap-3 text-xs font-medium rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1" data-activity-legend>
+                {{-- JS injects legend chips --}}
+            </div>
+
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4" data-activity-chart-wrapper>
                 <div class="relative h-72" data-reports-chart>
                     <div class="absolute inset-0 flex items-center justify-center text-xs text-[var(--text-muted)]"
