@@ -22,8 +22,8 @@ class ClassroomWorkstationFactory extends Factory
         $seatNumber = $this->faker->unique()->numberBetween(1, 40);
 
         return [
-            'classroom_code' => 'B201',
-            'code' => sprintf('B201-PC%02d', $seatNumber),
+            'classroom_code' => 'B202',
+            'code' => sprintf('B202-PC%02d', $seatNumber),
             'label' => "Estación {$seatNumber}",
             'status' => $this->faker->randomElement(['disponible', 'mantenimiento', 'fuera_servicio']),
             'seat_number' => $seatNumber,

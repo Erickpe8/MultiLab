@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('classroom_workstations', function (Blueprint $table) {
             $table->id();
-            $table->string('classroom_code', 20)->default('B201');
+            $table->string('classroom_code', 20)->default('B202');
             $table->string('code', 20)->unique();
             $table->string('label', 40);
             $table->enum('status', ['disponible', 'mantenimiento', 'fuera_servicio'])->default('disponible');

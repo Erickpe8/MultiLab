@@ -1,7 +1,6 @@
 <!-- Modal Equipo de Desarrollo -->
 <div x-data="{ show: false }" @open-team-modal.window="show = true" @close.window="show = false"
-    @keydown.escape.window="show = false" x-show="show" class="fixed inset-0 z-50 overflow-y-auto"
-    style="display: none;">
+    @keydown.escape.window="show = false" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
 
     <!-- Overlay -->
     <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -16,26 +15,32 @@
             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative bg-[var(--card)] rounded-xl shadow-2xl border border-[var(--border)]
-                    w-full max-w-2xl overflow-hidden" @click.away="show = false">
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            class="relative bg-[var(--card)] rounded-xl shadow-2xl border border-[var(--border)]
+                    w-full max-w-2xl overflow-hidden"
+            @click.away="show = false">
 
             <!-- Header -->
-            <div class="px-6 py-5 border-b border-[var(--border)]
+            <div
+                class="px-6 py-5 border-b border-[var(--border)]
                         bg-gradient-to-r from-[var(--primary)]/10 to-[var(--accent)]/5">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                     flex items-center justify-center shadow-lg">
                             <x-ui.icon name="equipo-desarrollo" size="lg" class="text-white" />
                         </div>
 
                         <div>
                             <h3 class="text-xl font-bold text-[var(--text)]">Equipo de Desarrollo</h3>
-                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Personas detrás de {{ config('app.name') }}</p>
+                            <p class="text-xs text-[var(--text-muted)] mt-0.5">Personas detrás de
+                                {{ config('app.name') }}</p>
                         </div>
                     </div>
 
-                    <button @click="show = false" class="text-[var(--text)]/50 hover:text-[var(--accent)]
+                    <button @click="show = false"
+                        class="text-[var(--text)]/50 hover:text-[var(--accent)]
                                    p-2 rounded-lg hover:bg-[var(--border)]/20 transition-colors">
                         <x-ui.icon name="cerrar" size="sm" />
                     </button>
@@ -47,11 +52,13 @@
                 <div class="space-y-4">
 
                     <!-- Erick Sebastián Pérez Carvajal -->
-                    <div class="group p-4 rounded-lg border border-[var(--border)]
+                    <div
+                        class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                         flex items-center justify-center text-white font-bold text-lg shadow-md
                                         group-hover:scale-110 transition-transform">
                                 EP
@@ -97,11 +104,13 @@
                     </div>
 
                     <!-- David Arturo Aceros Ortiz -->
-                    <div class="group p-4 rounded-lg border border-[var(--border)]
+                    <div
+                        class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                         flex items-center justify-center text-white font-bold text-lg shadow-md
                                         group-hover:scale-110 transition-transform">
                                 DA
@@ -145,11 +154,13 @@
                     </div>
 
                     <!-- Carlos José Mantilla Cote -->
-                    <div class="group p-4 rounded-lg border border-[var(--border)]
+                    <div
+                        class="group p-4 rounded-lg border border-[var(--border)]
                                 hover:border-[var(--accent)]/50 hover:shadow-lg transition-all
                                 bg-gradient-to-br from-[var(--border)]/5 to-transparent">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                         flex items-center justify-center text-white font-bold text-lg shadow-md
                                         group-hover:scale-110 transition-transform">
                                 CM
@@ -163,7 +174,8 @@
                                     </h4>
 
                                     <a href="https://github.com/CarlosMantillaC" target="_blank"
-                                        rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-semibold
+                                        rel="noopener noreferrer"
+                                        class="inline-flex items-center gap-2 text-xs font-semibold
                                               text-[var(--text-secondary)] hover:text-[var(--accent)]
                                               underline underline-offset-4">
                                         GitHub: @CarlosMantillaC
@@ -177,12 +189,12 @@
                                 </p>
 
                                 <p class="mt-2 text-xs text-[var(--text-muted)] leading-relaxed">
-                                    Foco principal: aula B201, gestión de PCs, disponibilidad y control de sesiones.
+                                    Foco principal: aula B202, gestión de PCs, disponibilidad y control de sesiones.
                                 </p>
 
                                 <ul
                                     class="mt-3 space-y-1 text-xs text-[var(--text-muted)] leading-relaxed list-disc list-inside">
-                                    <li>Componente de préstamo del aula de cómputo B201</li>
+                                    <li>Componente de préstamo del aula de cómputo B202</li>
                                     <li>Sistema de gestión del aula y PCs</li>
                                     <li>Control de disponibilidad del aula</li>
                                     <li>Control de uso exclusivo para docentes</li>
@@ -213,7 +225,8 @@
 
             <!-- Footer -->
             <div class="px-6 py-4 border-t border-[var(--border)] bg-[var(--border)]/5">
-                <button @click="show = false" class="w-full px-4 py-2.5 rounded-lg font-semibold
+                <button @click="show = false"
+                    class="w-full px-4 py-2.5 rounded-lg font-semibold
                                bg-[var(--accent)] text-white
                                hover:bg-[var(--primary)] transition-all
                                focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">

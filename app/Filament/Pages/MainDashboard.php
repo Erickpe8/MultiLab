@@ -67,12 +67,12 @@ class MainDashboard extends Page
                         'allowed_roles' => ['superadmin', 'aux_admin', 'docente', 'estudiante'],
                     ],
                     [
-                        'title' => 'Aula B201',
+                        'title' => 'Aula B202',
                         'description' => 'Consulta ocupación, reservas y disponibilidad del laboratorio.',
                         'icon' => 'heroicon-o-building-office',
                         'route' => 'filament.dashboard.resources.classroom-loans.index',
                         'badge' => 'Espacios',
-                        'cta' => 'Ver aula B201',
+                        'cta' => 'Ver aula B202',
                         'allowed_roles' => ['superadmin', 'aux_admin', 'docente'],
                     ],
                 ],
@@ -92,6 +92,6 @@ class MainDashboard extends Page
             });
 
             return $section;
-        })->filter(fn ($section) => $section['visibleCards']->isNotEmpty())->toArray();
+        })->filter(fn($section) => $section['visibleCards']->isNotEmpty())->toArray();
     }
 }

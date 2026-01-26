@@ -1,17 +1,19 @@
 # MultiLab
 
 ## Table of Contents
-- [Overview](#overview)
-- [System Surface](#system-surface)
-- [Access & Authorization](#access--authorization)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Documentation Set](#documentation-set)
-- [Operational References](#operational-references)
-- [Next Steps](#next-steps)
+- [MultiLab](#multilab)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [System Surface](#system-surface)
+  - [Access \& Authorization](#access--authorization)
+  - [Technology Stack](#technology-stack)
+  - [Getting Started](#getting-started)
+  - [Documentation Set](#documentation-set)
+  - [Operational References](#operational-references)
+  - [Next Steps](#next-steps)
 
 ## Overview
-MultiLab centraliza la operación del Laboratorio de Software B201 de la Fundación de Estudios Superiores Comfanorte, cogestionando reservas de aula, asignación automática de estaciones, inventario físico, préstamos, ciclo de vida de usuarios y auditoría para devolver trazabilidad institucional a un espacio que antes se gestionaba con registros fragmentados.
+MultiLab centraliza la operación del Laboratorio de Software B202 de la Fundación de Estudios Superiores Comfanorte, cogestionando reservas de aula, asignación automática de estaciones, inventario físico, préstamos, ciclo de vida de usuarios y auditoría para devolver trazabilidad institucional a un espacio que antes se gestionaba con registros fragmentados.
 
 ## System Surface
 Los tres dominios principales —classroom management, material loans y user lifecycle— se articulan mediante Filament Resources que alimentan formularios y tablas autorizadas por Spatie Permissions; los modelos centrales (User, Loan, Material, ClassroomLoan, Computer, AuditLog) representan los objetos del laboratorio y conectan con Filament para mostrar estados, filtros, acciones de aprobación y sincronización con estaciones de trabajo.

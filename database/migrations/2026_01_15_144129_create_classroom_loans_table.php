@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('classroom_loans', function (Blueprint $table) {
             $table->id();
-            $table->string('classroom_code', 20)->default('B201');
+            $table->string('classroom_code', 20)->default('B202');
             $table->foreignId('requested_by')->constrained('users')->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('approved_by')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
             $table->string('subject', 120);

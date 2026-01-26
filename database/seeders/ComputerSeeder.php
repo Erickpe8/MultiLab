@@ -19,7 +19,7 @@ class ComputerSeeder extends Seeder
         // 28 disponibles
         for ($i = 1; $i <= 28; $i++) {
             Computer::factory()->create([
-                'name' => 'B201-PC' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'name' => 'B202-PC' . str_pad($i, 2, '0', STR_PAD_LEFT),
                 'status' => 'disponible',
             ]);
         }
@@ -27,7 +27,7 @@ class ComputerSeeder extends Seeder
         // 2 no disponibles
         for ($i = 29; $i <= 30; $i++) {
             Computer::factory()->create([
-                'name' => 'B201-PC' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'name' => 'B202-PC' . str_pad($i, 2, '0', STR_PAD_LEFT),
                 'status' => 'no_disponible',
             ]);
         }

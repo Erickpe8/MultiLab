@@ -7,7 +7,9 @@
         ? (\Illuminate\Support\Facades\Route::has('filament.dashboard.pages.dashboard')
             ? route('filament.dashboard.pages.dashboard')
             : url('/dashboard'))
-        : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
+        : (\Illuminate\Support\Facades\Route::has('login')
+            ? route('login')
+            : url('/'));
 @endphp
 
 @section('legal-header')
@@ -36,10 +38,11 @@
                 <div
                     class="px-6 sm:px-8 py-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
                     <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                        <div
+                            class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                             flex items-center justify-center shadow-lg">
                             <x-ui.icon name="documentos" size="lg" class="text-white" />
-                            </div>
+                        </div>
                         <div>
                             <h1 class="text-2xl font-bold text-[var(--text)]">
                                 Términos y Condiciones de Uso – MultiLab
@@ -122,7 +125,8 @@
                         <!-- 1. Aceptación -->
                         <section id="aceptacion">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     1
                                 </span>
@@ -134,7 +138,7 @@
                             </h3>
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
                                 MultiLab es una herramienta tecnológica institucional de uso restringido, destinada a
-                                administrar la operación diaria del Laboratorio de Software B201 de la Fundación de
+                                administrar la operación diaria del Laboratorio de Software B202 de la Fundación de
                                 Estudios Superiores Comfanorte (FESC). El sistema permite controlar el acceso a las
                                 estaciones de trabajo (PCs), gestionar reservas y préstamos de recursos, registrar
                                 observaciones asociadas al uso y generar históricos que respalden la gestión operativa
@@ -167,7 +171,8 @@
                         <!-- 2. Uso autorizado -->
                         <section id="uso-autorizado">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     2
                                 </span>
@@ -249,7 +254,8 @@
                         <!-- 3. Responsabilidades del usuario -->
                         <section id="responsabilidades">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     3
                                 </span>
@@ -288,7 +294,8 @@
                         <!-- 4. Propiedad intelectual -->
                         <section id="propiedad">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     4
                                 </span>
@@ -331,7 +338,8 @@
                         <!-- 5. Protección de datos -->
                         <section id="datos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     5
                                 </span>
@@ -362,7 +370,8 @@
                         <!-- 6. Responsabilidad institucional -->
                         <section id="gobierno">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     6
                                 </span>
@@ -375,7 +384,7 @@
                             <p class="text-[var(--text-secondary)] leading-relaxed mb-6">
                                 La Unidad de Desarrollo de Software de la FESC es la encargada de la administración,
                                 evolución, mantenimiento y soporte técnico de MultiLab, en coordinación con las
-                                instancias responsables del Laboratorio de Software B201.
+                                instancias responsables del Laboratorio de Software B202.
                             </p>
 
                             <h3 class="font-semibold text-[var(--text)] mt-8 mb-3">
@@ -391,7 +400,8 @@
                         <!-- 7. Derechos del titular / Habeas Data -->
                         <section id="habeas-data">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     7
                                 </span>
@@ -419,7 +429,8 @@
                         <!-- 8. Trazabilidad y auditoría -->
                         <section id="trazabilidad-auditoria">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     8
                                 </span>
@@ -443,7 +454,8 @@
                         <!-- 9. Evidencias y archivos -->
                         <section id="evidencias-archivos">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     9
                                 </span>
@@ -472,7 +484,8 @@
                         <!-- 10. Disponibilidad, mantenimiento y soporte -->
                         <section id="disponibilidad-soporte">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     10
                                 </span>
@@ -494,7 +507,8 @@
                         <!-- 11. Sanciones, suspensión y terminación -->
                         <section id="sanciones">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     11
                                 </span>
@@ -511,7 +525,8 @@
                         <!-- 12. Modificaciones y vigencia -->
                         <section id="modificaciones">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     12
                                 </span>
@@ -527,7 +542,8 @@
                         <!-- 13. Ley aplicable -->
                         <section id="ley-aplicable">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     13
                                 </span>
@@ -543,7 +559,8 @@
                         <!-- 14. Definiciones -->
                         <section id="definiciones">
                             <h2 class="text-xl font-bold text-[var(--text)] mb-4 flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center
                                     text-[var(--accent)] text-sm font-bold">
                                     14
                                 </span>
@@ -551,7 +568,7 @@
                             </h2>
                             <div class="space-y-3 text-[var(--text-secondary)]">
                                 <p><span class="font-semibold">MultiLab:</span> Plataforma institucional para
-                                    administrar la operación del Laboratorio de Software B201 (reservas, préstamos,
+                                    administrar la operación del Laboratorio de Software B202 (reservas, préstamos,
                                     control de acceso, observaciones e históricos).</p>
                                 <p><span class="font-semibold">Usuario:</span> Persona con credenciales habilitadas por
                                     la FESC para operar dentro de MultiLab.</p>

@@ -58,7 +58,7 @@ class ClassroomWorkstation extends Model
             static::updateOrCreate(
                 ['code' => $code],
                 [
-                    'classroom_code' => 'B201',
+                    'classroom_code' => 'B202',
                     'label' => $label,
                     'status' => $computer->status === 'disponible' ? 'disponible' : 'fuera_servicio',
                     'notes' => $computer->notes,
@@ -76,7 +76,7 @@ class ClassroomWorkstation extends Model
     {
         return Computer::query()
             ->get()
-            ->map(fn (Computer $computer) => static::makeComputerCode($computer))
+            ->map(fn(Computer $computer) => static::makeComputerCode($computer))
             ->all();
     }
 
