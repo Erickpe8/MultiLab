@@ -46,7 +46,7 @@ class MonthlyLoanRequestsChart extends ChartWidget
                 [
                     'label' => 'Préstamos registrados',
                     'data' => $data,
-                    'backgroundColor' => '#8E1616',
+                    'backgroundColor' => '#1D4ED8',
                     'borderRadius' => 6,
                     'barThickness' => 24,
                 ],

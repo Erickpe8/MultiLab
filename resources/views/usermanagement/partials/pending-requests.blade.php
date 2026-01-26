@@ -146,11 +146,14 @@
                                         <button type="button"
                                             onclick="openRejectModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
                                             class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                                   bg-red-500/10 text-red-600 dark:text-red-400
-                                                   hover:bg-red-500/20 transition-all
-                                                   border border-red-500/20 hover:border-red-500/40"
+                                                   bg-[var(--primary-soft)] text-[var(--primary-600)]
+                                                   dark:text-[var(--primary-600)]
+                                                   hover:bg-[color-mix(in oklab, var(--primary), transparent 70%)]
+                                                   transition-all
+                                                   border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]
+                                                   hover:border-[color-mix(in oklab, var(--primary) 70%, var(--border))]"
                                             title="Rechazar solicitud">
-                                            <x-ui.icon name="eliminar" size="sm" class="text-red-600 dark:text-red-400" />
+                                            <x-ui.icon name="eliminar" size="sm" class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
                                         </button>
                                     </div>
                                 </td>

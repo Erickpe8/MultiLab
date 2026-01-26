@@ -6,9 +6,9 @@
     <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
         <div class="flex items-center gap-3">
             <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-600/10
+                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
                         flex items-center justify-center">
-                <x-ui.icon name="lock-closed" size="lg" class="text-red-500 dark:text-red-300" />
+                <x-ui.icon name="lock-closed" size="lg" class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
             </div>
             <div>
                 <h3 class="text-lg font-bold text-[var(--text)]">
@@ -37,7 +37,7 @@
                     placeholder="Buscar por nombre o correo"
                     class="w-full pl-10 pr-4 py-2 rounded-lg border border-[var(--border)]
                           bg-[var(--card)] text-[var(--text)] text-sm
-                          focus:ring-2 focus:ring-red-500 focus:border-transparent
+                          focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
                           placeholder:text-[var(--text-muted)] transition-all">
                 <x-ui.icon name="buscar" size="sm"
                     class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
@@ -48,7 +48,7 @@
                 <select name="blocked_role" id="blocked-role-select"
                     class="w-full px-4 py-2 rounded-lg border border-[var(--border)]
                            bg-[var(--card)] text-[var(--text)] text-sm
-                           focus:ring-2 focus:ring-red-500 focus:border-transparent
+                           focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
                            appearance-none transition-all">
                     <option value="">Todos los roles</option>
                     @foreach ($roles as $role)
@@ -120,9 +120,9 @@
                             <tr class="hover:bg-[var(--border)]/5 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-rose-500
-                                                    flex items-center justify-center text-white font-bold text-sm shrink-0">
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
+                            flex items-center justify-center text-white font-bold text-sm shrink-0">
                                             {{ substr($user->name, 0, 1) }}
                                         </div>
                                         <div>
@@ -150,9 +150,9 @@
 
                                 <td class="px-6 py-4 text-center">
                                     <span
-                                        class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold
-                                                bg-red-500/10 text-red-700 dark:text-red-300
-                                                border border-red-500/30">
+                        class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold
+                                                bg-[var(--primary-soft)] text-[var(--primary-600)] dark:text-[var(--primary-600)]
+                                                border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]">
                                         Bloqueado
                                     </span>
                                 </td>
@@ -183,8 +183,8 @@
             @endif
         @else
             <div class="text-center py-12">
-                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
-                    <x-ui.icon name="lock-closed" size="xl" class="w-10 h-10 text-red-600 dark:text-red-400" />
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-[var(--primary-soft)] flex items-center justify-center">
+                    <x-ui.icon name="lock-closed" size="xl" class="w-10 h-10 text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
                 </div>
                 <h4 class="text-lg font-semibold text-[var(--text)] mb-1">
                     @if (request('blocked_search') || request('blocked_role'))

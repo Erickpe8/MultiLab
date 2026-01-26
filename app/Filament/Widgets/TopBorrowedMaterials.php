@@ -42,7 +42,7 @@ class TopBorrowedMaterials extends ChartWidget
             'datasets' => [[
                 'label' => 'Unidades prestadas',
                 'data' => $topMaterials->pluck('total_loaned')->map(fn ($value) => (int) $value),
-                'backgroundColor' => '#8E1616',
+                'backgroundColor' => '#1D4ED8',
                 'borderRadius' => 6,
             ]],
             'labels' => $topMaterials->pluck('name'),

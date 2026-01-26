@@ -264,7 +264,7 @@
                 error: {
                     border: 'border-red-500',
                     iconBg: 'bg-red-100 dark:bg-red-900/30',
-                    iconColor: 'text-red-600 dark:text-red-400',
+                    iconColor: 'text-[var(--primary-600)] dark:text-[var(--primary-600)]',
                     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`
                 },
                 warning: {
