@@ -158,6 +158,34 @@ const renderSummary = (payload, summaryContainer, updatedEl, errorEl, options = 
   errorEl?.classList.add('hidden')
 }
 
+const MS_PER_DAY = 86400000
+const computeDueDiff = (due) => {
+  if (!due) {
+    return 0
+  }
+  const dueDate = new Date(due)
+  const now = new Date()
+  return Math.round((now - dueDate) / MS_PER_DAY)
+}
+
+const buildDueStatus = (due) => {
+  const diff = computeDueDiff(due)
+  const absDiff = Math.abs(diff)
+
+  if (diff > 0) {
+    return { label: 'Vencido', description: `Hace ${absDiff} ${absDiff === 1 ? 'día' : 'días'}` }
+  }
+
+  if (diff === 0) {
+    return { label: 'Vence hoy', description: 'Hoy' }
+  }
+
+  return {
+    label: 'Vence pronto',
+    description: `Faltan ${absDiff} ${absDiff === 1 ? 'día' : 'días'}`,
+  }
+}
+
 const renderActivityLegend = () => {
   const el = document.querySelector('[data-activity-legend]')
   if (!el) {
@@ -178,10 +206,24 @@ const renderActivityLegend = () => {
     `
 }
 
+const updateActivityStats = (element, loans, reservations) => {
+  if (!element) {
+    return
+  }
+  element.innerHTML = `
+        <span data-activity-loans class="text-[var(--text-muted)]">
+            Préstamos: <span class="text-[var(--accent)]">${formatNumber(loans)}</span>
+        </span>
+        <span data-activity-reservations class="text-[var(--text-muted)]">
+            Reservas: <span class="text-[var(--accent)]">${formatNumber(reservations)}</span>
+        </span>
+    `
+}
 const renderActivity = (
   payload,
   chartEl,
   chartWrapper,
+  statsEl,
   updatedEl,
   loaderEl,
   emptyEl,
@@ -197,6 +239,10 @@ const renderActivity = (
   const days = mergeActivityDays(payload?.days)
   const hasActivity = days.some((day) => day.loans > 0 || day.reservations > 0)
   errorEl?.classList.add('hidden')
+
+  const totalLoans = days.reduce((sum, day) => sum + Number(day.loans ?? 0), 0)
+  const totalReservations = days.reduce((sum, day) => sum + Number(day.reservations ?? 0), 0)
+  updateActivityStats(statsEl, totalLoans, totalReservations)
 
   if (!hasActivity) {
     chartWrapper?.classList.add('hidden')
@@ -312,7 +358,7 @@ const renderActivity = (
 const inventoryRenderers = {
   'low-stock': (item) => {
     const li = document.createElement('li')
-    li.className = 'flex items-start justify-between gap-3'
+    li.className = 'inventory-item flex items-start justify-between gap-3'
 
     const info = document.createElement('div')
     const name = document.createElement('p')
@@ -325,38 +371,61 @@ const inventoryRenderers = {
 
     info.append(name, meta)
 
+    const metaStack = document.createElement('div')
+    metaStack.className = 'meta-stack text-right text-[var(--text)]'
     const badge = document.createElement('span')
-    badge.className = 'text-xs font-semibold text-[var(--text-muted)]'
+    badge.className = 'text-xs font-semibold text-[var(--text)]'
     badge.textContent = `#${item.id ?? '—'}`
+    metaStack.append(badge)
 
-    li.append(info, badge)
+    li.append(info, metaStack)
     return li
   },
   overdue: (item) => {
     const li = document.createElement('li')
-    li.className = 'flex items-start justify-between gap-3'
+    li.className = 'inventory-item flex items-start justify-between gap-3'
 
     const info = document.createElement('div')
+    const titleRow = document.createElement('div')
+    titleRow.className = 'flex items-center gap-2'
+
     const title = document.createElement('p')
     title.className = 'text-sm font-medium text-[var(--text)]'
     title.textContent = item.code ? `Préstamo ${item.code}` : 'Préstamo pendiente'
+
+    const { label: statusLabel, description: statusDescription } = buildDueStatus(item.due)
+    const statusChip = document.createElement('span')
+    statusChip.className =
+      'text-[var(--text)] border border-[var(--border)] bg-[var(--card)] px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-[0.2em]'
+    statusChip.textContent = statusLabel
 
     const meta = document.createElement('p')
     meta.className = 'text-xs text-[var(--text-muted)]'
     meta.textContent = `${item.who ?? 'Sin usuario'} · vence ${item.due ?? '—'}`
 
-    info.append(title, meta)
+    const delay = document.createElement('p')
+    delay.className = 'text-xs text-[var(--text-muted)]'
+    delay.textContent = statusDescription
 
+    titleRow.append(title, statusChip)
+    info.append(titleRow, meta, delay)
+
+    const metaStack = document.createElement('div')
+    metaStack.className = 'meta-stack text-right'
     const badge = document.createElement('span')
     badge.className = 'text-xs font-semibold text-amber-600'
     badge.textContent = item.due ?? 'Sin fecha'
+    const dueLabel = document.createElement('span')
+    dueLabel.className = 'text-xs font-semibold text-[var(--text)]'
+    dueLabel.textContent = statusDescription
+    metaStack.append(badge, dueLabel)
 
-    li.append(info, badge)
+    li.append(info, metaStack)
     return li
   },
   'top-materials': (item) => {
     const li = document.createElement('li')
-    li.className = 'flex items-start justify-between gap-3'
+    li.className = 'inventory-item flex items-start justify-between gap-3'
 
     const info = document.createElement('div')
     const name = document.createElement('p')
@@ -369,11 +438,14 @@ const inventoryRenderers = {
 
     info.append(name, meta)
 
+    const metaStack = document.createElement('div')
+    metaStack.className = 'meta-stack text-right'
     const badge = document.createElement('span')
-    badge.className = 'text-xs font-semibold text-[var(--text-muted)]'
+    badge.className = 'text-xs font-semibold text-[var(--text)]'
     badge.textContent = `#${item.id ?? '—'}`
+    metaStack.append(badge)
 
-    li.append(info, badge)
+    li.append(info, metaStack)
     return li
   },
 }
@@ -394,7 +466,7 @@ const renderInventory = (
     const listEl = listMap[key]
     const countEl = countMap[key]
     const emptyEl = emptyMap[key]
-    const items = (() => {
+    let items = (() => {
       if (key === 'low-stock') {
         return Array.isArray(data.low_stock) ? data.low_stock : []
       }
@@ -403,6 +475,12 @@ const renderInventory = (
       }
       return Array.isArray(data.top_materials) ? data.top_materials : []
     })()
+
+    if (key === 'overdue' && items.length > 1) {
+      items = items
+        .slice()
+        .sort((a, b) => computeDueDiff(b.due) - computeDueDiff(a.due))
+    }
 
     if (listEl) {
       listEl.innerHTML = ''
@@ -455,6 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const activityChartBar = root.querySelector('[data-reports-chart]')
   const activityChartWrapper = root.querySelector('[data-activity-chart-wrapper]')
   const activityUpdated = root.querySelector('[data-activity-updated]')
+  const activityStats = root.querySelector('[data-activity-stats]')
   const activityLoader = root.querySelector('[data-activity-loading]')
   const activityEmpty = root.querySelector('[data-activity-empty]')
   const activityError = root.querySelector('[data-activity-error]')
@@ -504,6 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activityResult.value,
         activityChartBar,
         activityChartWrapper,
+        activityStats,
         activityUpdated,
         activityLoader,
         activityEmpty,
@@ -516,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
         null,
         activityChartBar,
         activityChartWrapper,
+        activityStats,
         activityUpdated,
         activityLoader,
         activityEmpty,

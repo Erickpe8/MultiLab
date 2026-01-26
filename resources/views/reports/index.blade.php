@@ -45,6 +45,11 @@
                 {{-- JS injects legend chips --}}
             </div>
 
+            <div class="mt-2 flex w-full max-w-3xl mx-auto flex-wrap items-center justify-center gap-6 text-sm font-semibold text-[var(--text)]" data-activity-stats>
+                <span data-activity-loans>Total préstamos: 0</span>
+                <span data-activity-reservations>Total reservas: 0</span>
+            </div>
+
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4" data-activity-chart-wrapper>
                 <div class="relative h-72" data-reports-chart>
                     <div class="absolute inset-0 flex items-center justify-center text-xs text-[var(--text-muted)]"
@@ -77,14 +82,16 @@
                         </div>
                         <span class="text-xs text-[var(--text-muted)]" data-inventory-count="low-stock">0</span>
                     </div>
-                    <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="low-stock">
-                        @for ($i = 0; $i < 2; $i++)
-                            <li>
-                                <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
-                                <div class="mt-1 h-2 w-5/6 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
-                            </li>
-                        @endfor
-                    </ul>
+                    <div class="mt-3 max-h-[360px] overflow-y-auto pr-1 scroll-smooth no-scrollbar" data-scroll-panel>
+                        <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="low-stock">
+                            @for ($i = 0; $i < 2; $i++)
+                                <li class="inventory-placeholder">
+                                    <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
+                                    <div class="mt-1 h-2 w-5/6 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
                     <p class="text-xs text-[var(--text-muted)] hidden" data-inventory-empty data-inventory-target="low-stock">
                         Sin materiales en alerta.
                     </p>
@@ -98,14 +105,16 @@
                         </div>
                         <span class="text-xs text-[var(--text-muted)]" data-inventory-count="overdue">0</span>
                     </div>
-                    <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="overdue">
-                        @for ($i = 0; $i < 2; $i++)
-                            <li>
-                                <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
-                                <div class="mt-1 h-2 w-2/3 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
-                            </li>
-                        @endfor
-                    </ul>
+                    <div class="mt-3 max-h-[360px] overflow-y-auto pr-1 scroll-smooth no-scrollbar" data-scroll-panel>
+                        <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="overdue">
+                            @for ($i = 0; $i < 2; $i++)
+                                <li class="inventory-placeholder">
+                                    <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
+                                    <div class="mt-1 h-2 w-2/3 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
                     <p class="text-xs text-[var(--text-muted)] hidden" data-inventory-empty data-inventory-target="overdue">
                         No hay préstamos vencidos.
                     </p>
@@ -119,14 +128,16 @@
                         </div>
                         <span class="text-xs text-[var(--text-muted)]" data-inventory-count="top-materials">0</span>
                     </div>
-                    <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="top-materials">
-                        @for ($i = 0; $i < 2; $i++)
-                            <li>
-                                <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
-                                <div class="mt-1 h-2 w-2/3 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
-                            </li>
-                        @endfor
-                    </ul>
+                    <div class="mt-3 max-h-[360px] overflow-y-auto pr-1 scroll-smooth no-scrollbar" data-scroll-panel>
+                        <ul class="space-y-3 text-sm text-[var(--text-muted)]" data-inventory-list="top-materials">
+                            @for ($i = 0; $i < 2; $i++)
+                                <li class="inventory-placeholder">
+                                    <div class="h-3 w-full rounded-lg bg-[var(--border)]/50 animate-pulse"></div>
+                                    <div class="mt-1 h-2 w-2/3 rounded-lg bg-[var(--border)]/30 animate-pulse"></div>
+                                </li>
+                            @endfor
+                        </ul>
+                    </div>
                     <p class="text-xs text-[var(--text-muted)] hidden"
                        data-inventory-empty data-inventory-target="top-materials">
                         Sin movimientos recientes.

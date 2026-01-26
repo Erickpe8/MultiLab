@@ -562,6 +562,49 @@ select option:selected {
     visibility: visible;
 }
 
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.inventory-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background-color: color-mix(in oklab, var(--card), transparent 40%);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.inventory-item:hover {
+    background-color: var(--card);
+    box-shadow: 0 8px 24px color-mix(in oklab, var(--border), transparent 50%);
+}
+.inventory-item .meta-stack {
+    text-align: right;
+    min-width: 90px;
+}
+.inventory-item .meta-stack span {
+    display: block;
+}
+.inventory-item .subtle {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.inventory-placeholder {
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background-color: color-mix(in oklab, var(--card), transparent 40%);
+    padding: 0.65rem 0.75rem;
+}
 /* Sidebar scroll */
 .sidebar-scroll {
     scrollbar-width: none;
