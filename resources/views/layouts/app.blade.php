@@ -12,7 +12,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/multilab.svg') }}">
     <link rel="alternate icon" href="{{ asset('images/multilab.svg') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/multilab.svg') }}">
     <meta name="theme-color" content="#1D4ED8">
     <title>
         @hasSection('title')
@@ -298,9 +298,9 @@
                 icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`
             },
             error: {
-                border: 'border-red-500',
-                iconBg: 'bg-red-100 dark:bg-red-900/30',
-                iconColor: 'text-red-600 dark:text-red-400',
+            border: 'border-[color-mix(in oklab, var(--primary) 40%, var(--border))]',
+            iconBg: 'bg-[var(--primary-soft)] dark:bg-[color-mix(in oklab, var(--primary-soft), rgba(0, 0, 0, 0.6))]',
+            iconColor: 'text-[var(--primary-600)] dark:text-[var(--primary-600)]',
                 icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`
             },
             warning: {
@@ -321,7 +321,7 @@
 
         // ✅ FIX: Nada de className.replace (revienta con SVG).
         // Limpiar clases de borde (en el card)
-        notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
+        notifyCard.classList.remove('border-green-500', 'border-yellow-500', 'border-blue-500');
         notifyCard.classList.add(config.border);
 
         // Aplicar clases al wrapper del ícono

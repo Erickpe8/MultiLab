@@ -277,8 +277,8 @@
                     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`
                 },
                 error: {
-                    border: 'border-red-500',
-                    iconBg: 'bg-red-100 dark:bg-red-900/30',
+   border: 'border-[color-mix(in oklab, var(--primary) 40%, var(--border))]',
+   iconBg: 'bg-[var(--primary-soft)] dark:bg-[color-mix(in oklab, var(--primary-soft), rgba(0, 0, 0, 0.6))]',
                     iconColor: 'text-[var(--primary-600)] dark:text-[var(--primary-600)]',
                     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`
                 },
@@ -298,7 +298,7 @@
 
             const config = configs[type] || configs.info;
 
-            notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
+            notifyCard.classList.remove('border-green-500', 'border-yellow-500', 'border-blue-500');
             notifyCard.classList.add(config.border);
 
             notifyIconWrap.className = 'inline-flex items-center justify-center w-9 h-9 rounded-full';

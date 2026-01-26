@@ -8,8 +8,8 @@
 @php
     use Illuminate\Support\Facades\Route;
 
-    // Acento activo (azul Multilab por defecto o rojo opcional)
-    $activeBgClass  = $accent === 'red' ? 'bg-red-600' : 'bg-multilab-blue';
+    // Acento activo (azul Multilab por defecto o primario opcional)
+    $activeBgClass  = $accent === 'red' ? 'bg-[var(--primary-600)]' : 'bg-multilab-blue';
     $activeTextClass = 'text-white';
     $linkBaseClass   = 'flex items-center px-3 py-2 rounded-lg transition-colors';
     $linkHoverClass  = 'hover:bg-multilab-light dark:hover:bg-multilab-darkblue/30';
