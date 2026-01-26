@@ -14,7 +14,7 @@
                     Correos sobre eventos importantes y recordatorios de hitos.
                 </p>
                 @error('notify_email')
-                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
             <div>
@@ -29,7 +29,7 @@
                     Alertas en el panel cuando hay novedades en tus áreas de interés.
                 </p>
                 @error('notify_in_app')
-                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -46,7 +46,7 @@
                     <option value="weekly">Resumen semanal</option>
                 </select>
                 @error('digest_frequency')
-                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
             <div>
@@ -64,7 +64,7 @@
                     <span x-show="!themeSaving && themeStatus" x-text="themeStatus"></span>
                 </p>
                 @error('theme')
-                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
         </div>
