@@ -6,21 +6,45 @@
     'modules' => [],
 ])
 
-<div class="min-h-[100svh] flex flex-col bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
-    {{-- Header --}}
-    <x-dashboard.header :title="$title" />
+<div
+    class="min-h-screen flex bg-multilab-light dark:bg-multilab-dark
+           text-multilab-dark dark:text-multilab-gray"
+>
+    {{-- ▸ SIDEBAR --}}
+    <div
+        id="sidebarWrapper"
+        class="fixed inset-y-0 left-0 z-40 w-64 transform transition-transform
+               -translate-x-full lg:translate-x-0 lg:static"
+    >
+        <x-dashboard.sidebar
+            :active="$active"
+            :accent="$accent"
+            :modules="$modules"
+        />
+    </div>
 
-    {{-- Contenido --}}
-    <main class="flex-1 w-full min-w-0 px-4 py-6 sm:px-6 sm:py-8 brand-content"
-          style="padding-bottom: env(safe-area-inset-bottom);">
-        {{ $slot }}
-    </main>
+    {{-- ▸ OVERLAY (móvil) --}}
+    <div
+        id="sidebarOverlay"
+        class="fixed inset-0 z-30 bg-black bg-opacity-50 hidden lg:hidden"
+    ></div>
 
-    {{-- Footer --}}
-    @include('layouts.footer')
+    {{-- ▸ CONTENIDO PRINCIPAL --}}
+    <div class="flex-1 flex flex-col min-w-0">
+        {{-- Header --}}
+        <x-dashboard.header :title="$title" />
 
-    {{-- Modal equipo desarrollador --}}
-    <x-dashboard.team-dialog />
+        {{-- Contenido dinámico --}}
+        <main class="flex-1 p-4 overflow-y-auto">
+            {{ $slot }}
+        </main>
+
+        {{-- Footer --}}
+        @include('layouts.footer')
+
+        {{-- Modal equipo desarrollador --}}
+        <x-dashboard.team-dialog />
+    </div>
 </div>
 
 {{-- ▸ ASSETS --}}
@@ -31,5 +55,49 @@
 @stack('styles')
 @stack('scripts')
 
-<x-notify />
-@include('components.toast-bridge')
+{{-- ▸ SCRIPT DEL SIDEBAR (JS VANILLA) --}}
+@push('scripts')
+    <script>
+        (function () {
+            const sidebar = document.getElementById('sidebarWrapper');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                if (overlay) overlay.classList.remove('hidden');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                if (overlay) overlay.classList.add('hidden');
+            }
+
+            function toggleDesktop() {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+
+            // Botones de control
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-sidebar-open]')) openSidebar();
+                if (e.target.closest('[data-sidebar-close]')) closeSidebar();
+                if (e.target.closest('[data-sidebar-toggle-desktop]')) toggleDesktop();
+            });
+
+            // Clic en overlay → cerrar
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // Sincronizar estado según tamaño
+            const sync = () => {
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.remove('-translate-x-full');
+                    if (overlay) overlay.classList.add('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            };
+
+            window.addEventListener('resize', sync);
+            sync();
+        })();
+    </script>
+@endpush
