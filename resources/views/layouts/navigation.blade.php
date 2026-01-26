@@ -76,6 +76,11 @@
                 </p>
 
                 {{-- Dropdown de Control de Usuarios --}}
+                @php
+                    $pendingCount = \App\Models\User::pending()->count();
+                    $userManagementView = request()->get('view', 'active');
+                @endphp
+
                 <div class="relative">
                     <button
                         @click="userManagementOpen = !userManagementOpen"
@@ -107,21 +112,28 @@
                          x-transition:leave-end="opacity-0 -translate-y-1"
                          class="mt-2 ml-3 space-y-1 border-l-2 border-[var(--border)] pl-3">
 
-                        {{-- Panel Principal --}}
-                        <a href="{{ route('user-management.index') }}"
+                        {{-- Usuarios Activos --}}
+                        <a href="{{ route('user-management.index', ['view' => 'active']) }}"
                            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
                                 transition-all duration-200 group
-                                {{ request()->routeIs('user-management.index')
+                                {{ request()->routeIs('user-management.index') && $userManagementView === 'active'
         ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
         : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70' }}">
-                            <x-ui.icon name="dashboard" size="sm" class="text-current" />
-                            <span>Panel de Control</span>
+                            <x-ui.icon name="usuarios" size="sm" class="text-current" />
+                            <span>Usuarios Activos</span>
                         </a>
 
-                        {{-- Badge de Pendientes --}}
-                        @php
-                            $pendingCount = \App\Models\User::where('is_active', false)->count();
-                        @endphp
+                        {{-- Solicitudes Pendientes --}}
+                        <a href="{{ route('user-management.index', ['view' => 'pending']) }}"
+                           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
+                                transition-all duration-200 group
+                                {{ request()->routeIs('user-management.index') && $userManagementView === 'pending'
+        ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
+        : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70' }}">
+                            <x-ui.icon name="heroicon-o-clock" size="sm" class="text-current" />
+                            <span>Solicitudes Pendientes</span>
+                        </a>
+
                         @if($pendingCount > 0)
                             <div class="px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                                 <div class="flex items-center gap-2 text-xs">
@@ -132,6 +144,17 @@
                                 </div>
                             </div>
                         @endif
+
+                        {{-- Usuarios Bloqueados --}}
+                        <a href="{{ route('user-management.index', ['view' => 'blocked']) }}"
+                           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
+                                transition-all duration-200 group
+                                {{ request()->routeIs('user-management.index') && $userManagementView === 'blocked'
+        ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
+        : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70' }}">
+                            <x-ui.icon name="heroicon-o-user-minus" size="sm" class="text-current" />
+                            <span>Usuarios Bloqueados</span>
+                        </a>
                     </div>
                 </div>
             </div>

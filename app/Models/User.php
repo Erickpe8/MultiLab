@@ -129,7 +129,8 @@ class User extends Authenticatable
 
     public function scopePending($query)
     {
-        return $query->where('is_active', false);
+        return $query->where('is_active', false)
+            ->where('is_blocked', false);
     }
 
     public function scopeActive($query)

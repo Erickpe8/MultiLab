@@ -12,7 +12,7 @@ class MainDashboard extends Page
 
     protected static string $view = 'filament.pages.main-dashboard';
 
-    protected static ?string $title = 'Panel de Control';
+    protected static ?string $title = 'Control de Usuarios';
 
     public function getSections(): array
     {

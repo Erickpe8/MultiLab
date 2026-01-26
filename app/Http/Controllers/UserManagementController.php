@@ -33,8 +33,7 @@ class UserManagementController extends Controller
         $pendingUsers = collect();
 
         if ($view === 'pending') {
-            $pendingQuery = User::where('is_active', false)
-                ->where('is_blocked', false);
+            $pendingQuery = User::pending();
 
             if ($pendingSearch !== '') {
                 $pendingQuery->where(function ($q) use ($pendingSearch) {
