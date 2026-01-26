@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             MaterialSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
+            UserRequestsSeeder::class,
             ClassroomLoanSeeder::class,
             LoanSeeder::class,
             ComputerSeeder::class,
