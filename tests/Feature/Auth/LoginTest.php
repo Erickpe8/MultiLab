@@ -42,6 +42,59 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_active_user_with_correct_credentials_can_login(): void
+    {
+        $user = User::factory()->create([
+            'is_active'  => true,
+            'is_blocked' => false,
+            'password'   => 'password123',
+        ]);
+
+        $response = $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_pending_user_cannot_authenticate_and_sees_validation_error(): void
+    {
+        $pending = User::factory()->create([
+            'is_active'  => false,
+            'is_blocked' => false,
+            'password'   => 'password123',
+        ]);
+
+        $response = $this->from(route('login'))->post(route('login'), [
+            'email' => $pending->email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_blocked_user_cannot_authenticate_and_is_denied(): void
+    {
+        $blocked = User::factory()->create([
+            'is_active'  => false,
+            'is_blocked' => true,
+            'password'   => 'password123',
+        ]);
+
+        $response = $this->from(route('login'))->post(route('login'), [
+            'email' => $blocked->email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
     public function test_valid_credentials_authenticate_and_redirect(): void
     {
         $user = User::where('email', 'superadmin@multilab.test')->first();
