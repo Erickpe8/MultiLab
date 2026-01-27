@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\Material;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
 use App\Helpers\RoleHelper;
 use Illuminate\Support\Facades\Auth;
@@ -178,6 +177,76 @@ class LoanResource extends AppResource
                         ->rows(4)
                         ->columnSpanFull(),
                 ]),
+            Forms\Components\Section::make('Estado del préstamo')
+                ->description('Actualiza el estado operativo del préstamo y aplica acciones rápidas para devoluciones o pérdidas.')
+                ->schema([
+                    Forms\Components\Grid::make(12)
+                        ->schema([
+                            Forms\Components\Select::make('status')
+                                ->label('Estado actual')
+                                ->options([
+                                    'pendiente' => 'Pendiente',
+                                    'en_curso' => 'En curso',
+                                    'devuelto' => 'Devuelto',
+                                    'rechazado' => 'Rechazado',
+                                    'cancelado' => 'Cancelado',
+                                    'con_multa' => 'Con multa',
+                                    'perdido' => 'Perdido',
+                                ])
+                                ->default('pendiente')
+                                ->helperText('Utiliza este campo para marcar cuando todos los materiales fueron devueltos, están perdidos o el préstamo fue anulado.')
+                                ->required()
+                                ->columnSpan(6),
+                            Forms\Components\ToggleButtons::make('mass_return_action')
+                                ->label('Acciones rápidas')
+                                ->options([
+                                    'return_all' => 'Marcar todo devuelto',
+                                    'mark_lost' => 'Marcar como perdido',
+                                ])
+                                ->icons([
+                                    'return_all' => 'heroicon-o-arrow-uturn-left',
+                                    'mark_lost' => 'heroicon-o-exclamation-triangle',
+                                ])
+                                ->colors([
+                                    'return_all' => 'success',
+                                    'mark_lost' => 'danger',
+                                ])
+                                ->visibleOn('edit')
+                                ->dehydrated(false)
+                                ->helperText('Disponible solo en edición: aplica el estado a todos los materiales y actualiza el préstamo.')
+                                ->columnSpan(6)
+                                ->live()
+                                ->afterStateUpdated(function (?string $state, Forms\Set $set, Forms\Get $get) {
+                                    if (!$state) {
+                                        return;
+                                    }
+
+                                    $materials = collect($get('materials') ?? [])->map(function ($item) use ($state) {
+                                        $loanQty = (int) ($item['loan_qty'] ?? 0);
+
+                                        if ($state === 'return_all') {
+                                            $item['returned_qty'] = $loanQty;
+                                        } elseif ($state === 'mark_lost') {
+                                            $item['returned_qty'] = 0;
+                                        }
+
+                                        return $item;
+                                    })->toArray();
+
+                                    $set('materials', $materials);
+
+                                    if ($state === 'return_all') {
+                                        $set('status', 'devuelto');
+                                        $set('return_at', now());
+                                    } elseif ($state === 'mark_lost') {
+                                        $set('status', 'perdido');
+                                        $set('return_at', null);
+                                    }
+
+                                    $set('mass_return_action', null);
+                                }),
+                        ]),
+                ]),
             Forms\Components\Section::make('Materiales del préstamo')
                 ->schema([
                     Forms\Components\Repeater::make('materials')
@@ -260,20 +329,45 @@ class LoanResource extends AppResource
                                         })
                                         ->visible(fn (Forms\Get $get) => filled($get('loan_qty')))
                                         ->columnSpan(4),
-                                    Hidden::make('returned_qty'),
-                                    Forms\Components\Checkbox::make('is_returned')
-                                        ->label('Marcar como devuelto')
-                                        ->helperText('Actualiza automáticamente la cantidad devuelta y el stock disponible.')
-                                        ->live()
-                                        ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                                            $set('returned_qty', $state ? $get('loan_qty') : 0);
-                                        })
-                                        ->afterStateHydrated(function (Forms\Components\Checkbox $component, Forms\Get $get) {
-                                            $loanQty = (int) $get('loan_qty');
-                                            $returnedQty = (int) $get('returned_qty');
-                                            $component->state($loanQty > 0 && $loanQty === $returnedQty);
-                                        })
+                                    Forms\Components\TextInput::make('returned_qty')
+                                        ->label('Cantidad devuelta')
+                                        ->numeric()
+                                        ->default(0)
+                                        ->minValue(0)
+                                        ->maxValue(fn (Forms\Get $get) => (int) ($get('loan_qty') ?? 0))
+                                        ->helperText('Permite registrar devoluciones parciales durante la edición.')
+                                        ->dehydrated(true)
+                                        ->columnSpan(4),
+                                    Forms\Components\ToggleButtons::make('material_state')
+                                        ->label('Estado del material')
+                                        ->options([
+                                            'pending' => 'En préstamo',
+                                            'returned' => 'Devuelto',
+                                        ])
+                                        ->icons([
+                                            'pending' => 'heroicon-o-ellipsis-horizontal',
+                                            'returned' => 'heroicon-o-check-circle',
+                                        ])
+                                        ->colors([
+                                            'pending' => 'warning',
+                                            'returned' => 'success',
+                                        ])
+                                        ->visibleOn('edit')
                                         ->dehydrated(false)
+                                        ->inline()
+                                        ->afterStateHydrated(function (Forms\Components\ToggleButtons $component, Forms\Get $get) {
+                                            $loanQty = (int) ($get('loan_qty') ?? 0);
+                                            $returnedQty = (int) ($get('returned_qty') ?? 0);
+                                            $component->state(($loanQty > 0 && $returnedQty >= $loanQty) ? 'returned' : 'pending');
+                                        })
+                                        ->afterStateUpdated(function (?string $state, Forms\Set $set, Forms\Get $get) {
+                                            if (!$state) {
+                                                return;
+                                            }
+
+                                            $loanQty = (int) ($get('loan_qty') ?? 0);
+                                            $set('returned_qty', $state === 'returned' ? $loanQty : 0);
+                                        })
                                         ->columnSpan(4),
                                 ]),
                         ])
@@ -294,7 +388,7 @@ class LoanResource extends AppResource
 
                                 $oldOnLoan = $existingPivot ? ((int) $existingPivot->loan_qty - (int) $existingPivot->returned_qty) : 0;
                                 $newLoanQty = $newItemState ? (int) $newItemState['loan_qty'] : 0;
-                                $newReturnedQty = ($newItemState && isset($newItemState['is_returned']) && $newItemState['is_returned']) ? $newLoanQty : 0;
+                                $newReturnedQty = $newItemState ? min((int) ($newItemState['returned_qty'] ?? 0), $newLoanQty) : 0;
                                 $newOnLoan = $newItemState ? ($newLoanQty - $newReturnedQty) : 0;
 
                                 $stockChange = $oldOnLoan - $newOnLoan;
@@ -368,11 +462,16 @@ class LoanResource extends AppResource
                     ->getStateUsing(fn (Loan $record): string => self::resolveStatus($record))
                     ->colors([
                         'primary' => ['pendiente', 'aprobado', 'en_curso'],
-                        'success' => ['devuelto'],
-                        'warning' => ['con_multa', 'vencido'],
+                        'success' => ['devuelto', 'devuelto_en_fecha'],
+                        'warning' => ['devuelto_con_multa', 'con_multa', 'vencido'],
                         'danger' => ['rechazado', 'cancelado', 'perdido'],
                     ])
-                    ->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
+                    ->formatStateUsing(fn (string $state) => Str::of($state)->replace('_', ' ')->title()),
+                Tables\Columns\TextColumn::make('materials_summary')
+                    ->label('Devolución')
+                    ->getStateUsing(fn (Loan $record) => self::renderReturnSummary($record))
+                    ->html()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -419,7 +518,8 @@ class LoanResource extends AppResource
                                     $record,
                                     'Tu préstamo fue aprobado',
                                     sprintf('El préstamo %s está en curso. Recoge y devuelve el material antes del %s.', $record->loan_code ?? '#', optional($record->due_at)?->format('d/m/Y H:i') ?? 'plazo acordado'),
-                                    'success'
+                                    'success',
+                                    self::returnSummaryText($record)
                                 );
                             }),
                         TableAction::make('rejectLoan')
@@ -444,7 +544,8 @@ class LoanResource extends AppResource
                                     $record,
                                     'Tu préstamo fue rechazado',
                                     'El laboratorio no pudo aprobar tu solicitud. Revisa las observaciones o solicita nuevamente.',
-                                    'danger'
+                                    'danger',
+                                    self::returnSummaryText($record)
                                 );
                             }),
                         TableAction::make('cancelLoan')
@@ -469,13 +570,15 @@ class LoanResource extends AppResource
                                     $record,
                                     'Préstamo cancelado',
                                     'El laboratorio canceló tu solicitud. Comunícate con el equipo para más detalles.',
-                                    'warning'
+                                    'warning',
+                                    self::returnSummaryText($record)
                                 );
                             }),
 
                     ])),
 
                 Tables\Actions\EditAction::make()
+                    ->visible(fn () => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']))
                     ->after(function (Loan $record) {
                         // Do nothing if the loan is already marked as returned
                         if ($record->status === 'devuelto') {
@@ -499,7 +602,11 @@ class LoanResource extends AppResource
 
                         if ($allReturned) {
                             // If all items are fully returned, update the record
-                            $record->update(['status' => 'devuelto', 'return_at' => $record->return_at ?? now()]);
+                            $newStatus = ($record->due_at && $record->due_at->isPast()) ? 'devuelto_con_multa' : 'devuelto_en_fecha';
+                            $record->update([
+                                'status' => $newStatus,
+                                'return_at' => $record->return_at ?? now(),
+                            ]);
 
                             Notification::make()
                                 ->title('Préstamo Completado')
@@ -510,8 +617,11 @@ class LoanResource extends AppResource
                             self::notifyBorrower(
                                 $record,
                                 'Hemos registrado tu devolución',
-                                'Gracias por devolver los materiales. El préstamo quedó cerrado sin novedades.',
-                                'success'
+                                $newStatus === 'devuelto_con_multa'
+                                    ? 'La devolución se registró con mora. Revisa las condiciones en laboratorio.'
+                                    : 'Gracias por devolver los materiales. El préstamo quedó cerrado sin novedades.',
+                                $newStatus === 'devuelto_con_multa' ? 'warning' : 'success',
+                                self::returnSummaryText($record)
                             );
                         }
 
@@ -528,7 +638,8 @@ class LoanResource extends AppResource
                                 $record,
                                 'Tu préstamo tiene multa por atraso',
                                 sprintf('El préstamo %s venció el %s. Por favor devuelve los materiales o comunícate con el laboratorio.', $record->loan_code ?? '#', optional($record->due_at)?->format('d/m/Y H:i') ?? 'plazo indicado'),
-                                'danger'
+                                'danger',
+                                self::returnSummaryText($record)
                             );
                         }
                     }),
@@ -548,46 +659,20 @@ class LoanResource extends AppResource
         ];
     }
 
-    protected static function resolveStatus(Loan $record): string
-    {
-        $status = self::normalizeStatus($record->status ?? 'pendiente');
-
-        if ($record->return_at) {
-            return 'devuelto';
-        }
-
-        if ($status === 'abierto') {
-            $status = 'en_curso';
-        }
-
-        if (in_array($status, ['pendiente', 'aprobado', 'rechazado', 'cancelado', 'con_multa', 'perdido', 'devuelto', 'vencido', 'en_curso'], true)) {
-            return $status;
-        }
-
-        if ($record->due_at && $record->due_at->isPast()) {
-            return 'vencido';
-        }
-
-        return $status ?: 'pendiente';
-    }
-
-    protected static function getStatusFilterOptions(): array
+    public static function getStatusFilterOptions(): array
     {
         return [
             'pendiente' => 'Pendiente',
             'aprobado' => 'Aprobado',
             'en_curso' => 'En curso',
+            'devuelto_en_fecha' => 'Devuelto en fecha',
+            'devuelto_con_multa' => 'Devuelto con multa',
             'rechazado' => 'Rechazado',
             'cancelado' => 'Cancelado',
-            'devuelto' => 'Devuelto',
             'con_multa' => 'Con multa',
+            'vencido' => 'Vencido',
             'perdido' => 'Perdido',
         ];
-    }
-
-    protected static function normalizeStatus(?string $status): string
-    {
-        return Str::of($status ?? 'pendiente')->snake()->lower()->value();
     }
 
     protected static function renderIconCell(string $icon, string $content): HtmlString
@@ -599,17 +684,94 @@ class LoanResource extends AppResource
         ));
     }
 
-    protected static function notifyBorrower(Loan $record, string $title, string $message, string $type = 'info'): void
+    protected static function resolveStatus(Loan $record): string
+    {
+        $status = self::normalizeStatus($record->status ?? 'pendiente');
+
+        if ($record->return_at) {
+            $returnedLate = $record->due_at && $record->return_at->greaterThan($record->due_at);
+            return $returnedLate ? 'devuelto_con_multa' : 'devuelto_en_fecha';
+        }
+
+        if ($status === 'abierto') {
+            $status = 'en_curso';
+        }
+
+        if (in_array($status, ['pendiente', 'aprobado', 'rechazado', 'cancelado', 'con_multa', 'perdido', 'devuelto', 'devuelto_en_fecha', 'devuelto_con_multa', 'vencido', 'en_curso'], true)) {
+            return $status;
+        }
+
+        if ($record->due_at && $record->due_at->isPast()) {
+            return 'vencido';
+        }
+
+        return $status ?: 'pendiente';
+    }
+
+    protected static function normalizeStatus(?string $status): string
+    {
+        return Str::of($status ?? 'pendiente')->snake()->lower()->value();
+    }
+
+    protected static function renderReturnSummary(Loan $record): string
+    {
+        $record->loadMissing('materials');
+        $total = 0;
+        $returned = 0;
+
+        foreach ($record->materials as $material) {
+            $total += (int) $material->pivot->loan_qty;
+            $returned += min((int) $material->pivot->returned_qty, (int) $material->pivot->loan_qty);
+        }
+
+        $badgeClass = 'text-xs rounded-full px-3 py-1 inline-flex items-center gap-1 ';
+        $state = self::resolveStatus($record);
+
+        if ($total === 0) {
+            return '<span class="text-slate-500 text-xs">Sin materiales</span>';
+        }
+
+        if (in_array($state, ['devuelto_en_fecha', 'devuelto_con_multa'], true)) {
+            $badgeClass .= $state === 'devuelto_en_fecha' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800';
+            return sprintf('<span class="%s"><x-filament::icon icon="heroicon-o-check-circle" class="h-4 w-4" />%d/%d devueltos</span>', $badgeClass, $returned, $total);
+        }
+
+        if ($returned === 0) {
+            return '<span class="text-xs text-rose-600">0 devueltos</span>';
+        }
+
+        $badgeClass .= 'bg-cyan-100 text-cyan-800';
+
+        return sprintf('<span class="%s">%d/%d devueltos</span>', $badgeClass, $returned, $total);
+    }
+
+    protected static function returnSummaryText(Loan $record): string
+    {
+        $record->loadMissing('materials', 'materials.pivot');
+        $parts = [];
+
+        foreach ($record->materials as $material) {
+            $parts[] = sprintf('%s: %d/%d devueltos',
+                $material->name,
+                min((int) $material->pivot->returned_qty, (int) $material->pivot->loan_qty),
+                (int) $material->pivot->loan_qty,
+            );
+        }
+
+        return implode(PHP_EOL, $parts);
+    }
+
+    protected static function notifyBorrower(Loan $record, string $title, string $message, string $type = 'info', ?string $footer = null): void
     {
         $record->loadMissing('borrower');
 
-        if (!$record->borrower) {
+        if (! $record->borrower) {
             return;
         }
 
         $notification = Notification::make()
             ->title($title)
-            ->body($message)
+            ->body($footer ? $message . PHP_EOL . PHP_EOL . $footer : $message)
             ->duration('persistent');
 
         match ($type) {
@@ -643,5 +805,15 @@ class LoanResource extends AppResource
         }
 
         return parent::canDeleteAny();
+    }
+
+    public static function canEdit($record): bool
+    {
+        return RoleHelper::hasAnyRole(['superadmin', 'aux_admin']);
+    }
+
+    public static function canEditAny(): bool
+    {
+        return RoleHelper::hasAnyRole(['superadmin', 'aux_admin']);
     }
 }

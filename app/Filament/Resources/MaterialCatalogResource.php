@@ -123,6 +123,7 @@ class MaterialCatalogResource extends AppResource
                             ->schema([
                                 Select::make('material_id')
                                     ->label('Material')
+                                    ->prefixIcon('heroicon-o-cube')
                                     ->options(fn () => Material::orderBy('name')->pluck('name', 'id'))
                                     ->searchable()
                                     ->preload()
@@ -130,6 +131,7 @@ class MaterialCatalogResource extends AppResource
                                     ->columnSpan(1),
                                 TextInput::make('quantity')
                                     ->label('Cantidad')
+                                    ->prefixIcon('heroicon-o-hashtag')
                                     ->numeric()
                                     ->minValue(1)
                                     ->required()
@@ -186,19 +188,26 @@ class MaterialCatalogResource extends AppResource
                             ->columnSpanFull(),
                         DateTimePicker::make('needed_at')
                             ->label('Fecha de retiro deseada')
+                            ->prefixIcon('heroicon-o-calendar')
                             ->required()
                             ->minDate(now())
                             ->seconds(false)
                             ->native(false),
                         DateTimePicker::make('planned_return_at')
                             ->label('Fecha de devolución estimada')
+                            ->prefixIcon('heroicon-o-clock')
                             ->required()
                             ->seconds(false)
                             ->native(false),
                         Textarea::make('notes')
                             ->label('Notas opcionales')
                             ->placeholder('Cuéntanos brevemente para qué necesitas estos materiales.')
+                            ->helperText('Incluye detalles del proyecto o uso previsto para agilizar la autorización.')
                             ->rows(3)
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'pl-3 border-l-4 border-primary-200 bg-primary-50/30']),
+                        Forms\Components\Placeholder::make('notes_hint')
+                            ->content('Consejo: describe con claridad el uso del material para acelerar la aprobación.')
                             ->columnSpanFull(),
                     ])
                     ->modalSubmitActionLabel('Enviar solicitud')
