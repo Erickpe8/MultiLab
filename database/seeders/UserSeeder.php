@@ -4,128 +4,104 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+
 class UserSeeder extends Seeder
 {
     private const PASSWORD = 'Password123*';
+    private const SUPERADMIN_EMAIL = 'superadmin@fesc.edu.co';
+    private const AUX_COUNT = 24;
+    private const DOCENTE_COUNT = 1020;
+    private const ESTUDIANTE_COUNT = 4080;
 
     public function run(): void
     {
-        $users = [
-            [
-                'role' => 'superadmin',
-                'attributes' => [
-                    'first_name'     => 'Admin',
-                    'middle_name'    => null,
-                    'first_surname'  => 'Central',
-                    'second_surname' => 'Fesc',
-                    'email'          => 'admin@fesc.edu.co',
-                    'gender'         => 'M',
-                    'document_type'  => 'CC',
-                    'document_number'=> '1000000001',
-                    'phone'          => '6010000001',
-                ],
-            ],
-            [
-                'role' => 'aux_admin',
-                'attributes' => [
-                    'first_name'     => 'Jesus',
-                    'middle_name'    => 'Antonio',
-                    'first_surname'  => 'Figueroa',
-                    'second_surname' => 'Guerrero',
-                    'email'          => 'director@fesc.edu.co',
-                    'gender'         => 'M',
-                    'document_type'  => 'CC',
-                    'document_number'=> '1000000002',
-                    'phone'          => '6010000002',
-                ],
-            ],
-            [
-                'role' => 'estudiante',
-                'attributes' => [
-                    'first_name'     => 'Juliana',
-                    'middle_name'    => null,
-                    'first_surname'  => 'Montoya',
-                    'second_surname' => 'Pena',
-                    'email'          => 'estudiante1@fesc.edu.co',
-                    'gender'         => 'F',
-                    'document_type'  => 'TI',
-                    'document_number'=> '2000000001',
-                    'phone'          => '6010000003',
-                ],
-            ],
-            [
-                'role' => 'estudiante',
-                'attributes' => [
-                    'first_name'     => 'Maria',
-                    'middle_name'    => 'Fernanda',
-                    'first_surname'  => 'Garcia',
-                    'second_surname' => 'Lopez',
-                    'email'          => 'estudiante2@fesc.edu.co',
-                    'gender'         => 'F',
-                    'document_type'  => 'TI',
-                    'document_number'=> '2000000002',
-                    'phone'          => '6010000006',
-                ],
-            ],
-            [
-                'role' => 'aux_admin',
-                'attributes' => [
-                    'first_name'     => 'Auxiliar',
-                    'middle_name'    => null,
-                    'first_surname'  => 'Operaciones',
-                    'second_surname' => null,
-                    'email'          => 'auxiliar@fesc.edu.co',
-                    'gender'         => 'M',
-                    'document_type'  => 'CC',
-                    'document_number'=> '1000000003',
-                    'phone'          => '6010000004',
-                ],
-            ],
-            [
-                'role' => 'docente',
-                'attributes' => [
-                    'first_name'     => 'Carlos',
-                    'middle_name'    => null,
-                    'first_surname'  => 'Munoz',
-                    'second_surname' => 'Rojas',
-                    'email'          => 'docente1@fesc.edu.co',
-                    'gender'         => 'M',
-                    'document_type'  => 'CC',
-                    'document_number'=> '1000000004',
-                    'phone'          => '6010000005',
-                ],
-            ],
-            [
-                'role' => 'docente',
-                'attributes' => [
-                    'first_name'     => 'Pedro',
-                    'middle_name'    => 'Alberto',
-                    'first_surname'  => 'Martinez',
-                    'second_surname' => 'Silva',
-                    'email'          => 'docente2@fesc.edu.co',
-                    'gender'         => 'M',
-                    'document_type'  => 'CC',
-                    'document_number'=> '1000000005',
-                    'phone'          => '6010000007',
-                ],
-            ],
+        $faker = \Faker\Factory::create('es_CO');
+        $faker->seed(20260127);
+
+        $this->createSuperadmin();
+        $this->createRoleBatch('aux_admin', self::AUX_COUNT, 'aux', 2, 'CC', 1100000000, 6011000000, $faker);
+        $this->createRoleBatch('docente', self::DOCENTE_COUNT, 'docente', 4, 'CC', 1200000000, 6012000000, $faker);
+        $this->createRoleBatch('estudiante', self::ESTUDIANTE_COUNT, 'estudiante', 4, 'TI', 2100000000, 6013000000, $faker);
+    }
+
+    private function createSuperadmin(): void
+    {
+        $admin = [
+            'first_name' => 'Camilo',
+            'middle_name' => 'Andrés',
+            'first_surname' => 'Pérez',
+            'second_surname' => 'Ávila',
+            'email' => self::SUPERADMIN_EMAIL,
+            'gender' => 'M',
+            'document_type' => 'CC',
+            'document_number' => '1000000001',
+            'phone' => '6010000001',
         ];
 
-        foreach ($users as $definition) {
-            $email = $definition['attributes']['email'];
+        $user = User::updateOrCreate(
+            ['email' => $admin['email']],
+            array_merge(
+                $admin,
+                [
+                    'password' => self::PASSWORD,
+                    'is_active' => true,
+                    'role_name' => 'superadmin',
+                ]
+            )
+        );
+
+        $user->syncRoles(['superadmin']);
+    }
+
+    private function createRoleBatch(
+        string $role,
+        int $quantity,
+        string $emailPrefix,
+        int $padLength,
+        string $documentType,
+        int $documentStart,
+        int $phoneStart,
+        \Faker\Generator $faker
+    ): void {
+        for ($i = 1; $i <= $quantity; $i++) {
+            $email = sprintf('%s%0' . $padLength . 'd@fesc.edu.co', $emailPrefix, $i);
+            $gender = $faker->randomElement(['M', 'F']);
+            $names = $this->buildNames($faker, $gender);
 
             $user = User::updateOrCreate(
                 ['email' => $email],
-                array_merge(
-                    $definition['attributes'],
-                    [
-                        'password'  => self::PASSWORD,
-                        'is_active' => true,
-                    ]
-                )
+                [
+                    'first_name' => $names['first_name'],
+                    'middle_name' => $names['middle_name'],
+                    'first_surname' => $names['first_surname'],
+                    'second_surname' => $names['second_surname'],
+                    'email' => $email,
+                    'gender' => $gender,
+                    'document_type' => $documentType,
+                    'document_number' => (string) ($documentStart + $i),
+                    'phone' => (string) ($phoneStart + $i),
+                    'password' => self::PASSWORD,
+                    'is_active' => true,
+                    'role_name' => $role,
+                ]
             );
 
-            $user->syncRoles([$definition['role']]);
+            $user->syncRoles([$role]);
         }
+    }
+
+    private function buildNames(\Faker\Generator $faker, string $gender): array
+    {
+        $firstName = $gender === 'F' ? $faker->firstNameFemale() : $faker->firstNameMale();
+        $middleName = $faker->boolean(30) ? $faker->firstNameMale() : null;
+        $firstSurname = $faker->lastName();
+        $secondSurname = $faker->boolean(70) ? $faker->lastName() : null;
+
+        return [
+            'first_name' => $firstName,
+            'middle_name' => $middleName,
+            'first_surname' => $firstSurname,
+            'second_surname' => $secondSurname,
+        ];
     }
 }

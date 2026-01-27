@@ -2,15 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Material;
+use App\Models\MaterialRequest;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class UserRequestsSeeder extends Seeder
 {
-    /**
-     * En MultiLab una solicitud no es una entidad aparte, es un usuario pendiente.
-     */
     public function run(): void
+    {
+        $this->seedPendingUsers();
+        $this->seedBlockedUsers();
+        $this->seedMaterialRequests();
+    }
+
+    private function seedPendingUsers(): void
     {
         $pendingUsers = [
             [
@@ -101,12 +107,12 @@ class UserRequestsSeeder extends Seeder
         ];
 
         foreach ($pendingUsers as $attributes) {
-            User::updateOrCreate(
-                ['email' => $attributes['email']],
-                $attributes
-            );
+            User::updateOrCreate(['email' => $attributes['email']], $attributes);
         }
+    }
 
+    private function seedBlockedUsers(): void
+    {
         $blockedUsers = [
             [
                 'first_name' => 'Luis',
@@ -196,9 +202,52 @@ class UserRequestsSeeder extends Seeder
         ];
 
         foreach ($blockedUsers as $attributes) {
-            User::updateOrCreate(
-                ['email' => $attributes['email']],
-                $attributes
+            User::updateOrCreate(['email' => $attributes['email']], $attributes);
+        }
+    }
+
+    private function seedMaterialRequests(): void
+    {
+        $materials = Material::query()->limit(8)->get();
+
+        if ($materials->isEmpty()) {
+            return;
+        }
+
+        $faker = fake()->seed(20260127);
+
+        $definitions = [
+            ['status' => 'pendiente', 'role' => 'estudiante', 'note' => 'Proyecto de bases de datos, requiere 2 adaptadores HDMI.', 'daysOffset' => 2, 'quantity' => 2],
+            ['status' => 'aprobada', 'role' => 'docente', 'note' => 'Clase magistral de redes, solicita 4 cables UTP.', 'daysOffset' => 1, 'quantity' => 10],
+            ['status' => 'rechazada', 'role' => 'estudiante', 'note' => 'Solicitud duplicada, ya hay préstamo activo.', 'daysOffset' => 0, 'quantity' => 1],
+            ['status' => 'pendiente', 'role' => 'docente', 'note' => 'Clase de ingeniería de software necesita 2 kits.', 'daysOffset' => 3, 'quantity' => 1],
+            ['status' => 'aprobada', 'role' => 'estudiante', 'note' => 'Taller de prototipado, se requiere multímetro.', 'daysOffset' => 4, 'quantity' => 2],
+            ['status' => 'pendiente', 'role' => 'docente', 'note' => 'Reunión de evaluación, pide carro de servicio.', 'daysOffset' => 5, 'quantity' => 1],
+        ];
+
+        foreach ($definitions as $index => $definition) {
+            $material = $materials->get($index % $materials->count());
+            $requester = User::role($definition['role'])->inRandomOrder()->first();
+
+            if (! $requester) {
+                continue;
+            }
+
+            $neededAt = now()->addDays($definition['daysOffset']);
+            $plannedReturn = (clone $neededAt)->addDays(3);
+
+            MaterialRequest::updateOrCreate(
+                [
+                    'user_id' => $requester->id,
+                    'material_id' => $material->id,
+                    'needed_at' => $neededAt,
+                ],
+                [
+                    'quantity' => $definition['quantity'],
+                    'planned_return_at' => $plannedReturn,
+                    'status' => $definition['status'],
+                    'notes' => $definition['note'],
+                ]
             );
         }
     }
