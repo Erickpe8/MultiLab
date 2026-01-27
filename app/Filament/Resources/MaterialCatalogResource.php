@@ -87,14 +87,6 @@ class MaterialCatalogResource extends AppResource
                 TextColumn::make('unit.name')
                     ->label('Unidad')
                     ->sortable(),
-                TextColumn::make('current_stock')
-                    ->label('Stock actual')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('quantity_on_loan')
-                    ->label('Prestado')
-                    ->numeric()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('available_stock')
                     ->label('Disponible')
                     ->getStateUsing(fn (Material $record) => max($record->current_stock - $record->quantity_on_loan, 0))
@@ -129,6 +121,54 @@ class MaterialCatalogResource extends AppResource
                                     ->numeric()
                                     ->minValue(1)
                                     ->required()
+                                    ->helperText(function (Forms\Get $get) {
+                                        $materialId = $get('material_id');
+
+                                        if (! $materialId) {
+                                            return 'Selecciona un material para ver el stock disponible.';
+                                        }
+
+                                        $material = Material::find($materialId);
+
+                                        if (! $material) {
+                                            return 'El material ya no está disponible.';
+                                        }
+
+                                        $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                                        return "Stock disponible: {$available} unidad(es).";
+                                    })
+                                    ->rule(function (Forms\Get $get) {
+                                        return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                            $materialId = $get('material_id');
+
+                                            if (! $materialId) {
+                                                return;
+                                            }
+
+                                            $material = Material::find($materialId);
+
+                                            if (! $material) {
+                                                $fail('El material seleccionado ya no existe.');
+
+                                                return;
+                                            }
+
+                        
+
+                                            $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                                            if ($available <= 0) {
+                                                $fail("Actualmente no hay stock disponible de {$material->name}.");
+
+                                                return;
+                                            }
+
+                                            if ((int) $value > $available) {
+                                                $fail("Solo hay {$available} unidad(es) disponibles para {$material->name}.");
+                                            }
+                                        };
+                                    })
                                     ->columnSpan(1),
                             ])
                             ->columnSpanFull(),
