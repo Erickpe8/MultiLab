@@ -7,6 +7,7 @@ use App\Helpers\RoleHelper;
 use App\Models\Material;
 use App\Models\Loan;
 use App\Models\User;
+use App\Support\CategoryIconResolver;
 use App\Notifications\NewLoanRequestNotification;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -22,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
@@ -82,6 +84,16 @@ class MaterialCatalogResource extends AppResource
                 TextColumn::make('name')
                     ->label('Material')
                     ->description(fn (Material $record) => $record->category?->name)
+                    ->formatStateUsing(function (string $state, Material $record) {
+                        $icon = CategoryIconResolver::resolve($record->category?->name);
+
+                        return new HtmlString(sprintf(
+                            '<span class="flex items-center gap-2"><x-filament::icon icon="%s" class="h-4 w-4 text-primary-500" />%s</span>',
+                            $icon,
+                            e($state)
+                        ));
+                    })
+                    ->html()
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('unit.name')
@@ -292,4 +304,5 @@ class MaterialCatalogResource extends AppResource
             'index' => Pages\BrowseMaterials::route('/'),
         ];
     }
+
 }
