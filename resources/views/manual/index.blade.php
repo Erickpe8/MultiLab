@@ -26,13 +26,13 @@
                 <button
                     type="button"
                     onclick="window.print()"
-                    class="manual-print-hide mt-1 inline-flex shrink-0 items-center justify-center gap-2 h-10 w-fit rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)] transition hover:border-[var(--accent)]/70 hover:text-[var(--text)] dark:bg-[color-mix(in oklab, var(--card), rgba(255,255,255,0.08))]"
+                    class="manual-print-hide mt-1 inline-flex shrink-0 items-center justify-center gap-2 h-10 w-fit lg:w-auto rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)] transition hover:border-[var(--accent)]/70 hover:text-[var(--text)] dark:bg-[color-mix(in oklab, var(--card), rgba(255,255,255,0.08))]"
                 >
                     Imprimir / PDF
                 </button>
             </div>
-            <div class="max-w-3xl text-sm leading-relaxed text-[var(--text-muted)] space-y-4">
-                <p class="text-[var(--accent)]">
+            <div class="w-full max-w-6xl pr-2 text-sm text-[var(--text-muted)] lg:pr-6 space-y-4 leading-7 lg:text-base">
+                <p class="text-[var(--accent)] font-medium">
                     Esta guía reúne los datos clave de operación para el laboratorio, con el objetivo de centralizar la información necesaria para el uso cotidiano del sistema, sin introducir módulos nuevos ni alterar la estructura existente.
                 </p>
 

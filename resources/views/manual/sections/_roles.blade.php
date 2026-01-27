@@ -9,14 +9,9 @@
     <div class="grid gap-4 md:grid-cols-2">
         @foreach ($roleCards as $card)
             <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-                <div class="flex flex-wrap items-baseline justify-between gap-3">
-                    <div>
-                        <p class="text-xs uppercase tracking-[0.3em] text-[var(--text-muted)]">Rol</p>
-                        <h3 class="text-xl font-semibold text-[var(--text)]">{{ $card['title'] }}</h3>
-                    </div>
-                    <span class="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)]">
-                        {{ $card['slug'] }}
-                    </span>
+                <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-[var(--text-muted)]">Rol</p>
+                    <h3 class="text-xl font-semibold text-[var(--text)]">{{ $card['title'] }}</h3>
                 </div>
                 <p class="mt-2 text-sm text-[var(--text-muted)]">{{ $card['overview'] }}</p>
                 <div class="mt-4 grid gap-4 md:grid-cols-2 text-sm text-[var(--text-muted)]">
