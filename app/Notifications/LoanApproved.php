@@ -38,7 +38,7 @@ class LoanApproved extends Notification
     {
         $filamentNotification = FilamentNotification::make()
             ->title('Reserva de Aula Aprobada')
-            ->body("Tu reserva del aula B201 para el tema '{$this->loan->subject}' ha sido aprobada por {$this->loan->approver->name}.")
+            ->body("Tu reserva del aula B202 para el tema '{$this->loan->subject}' ha sido aprobada por {$this->loan->approver->name}.")
             ->actions([
                 Action::make('view')
                     ->label('Ver Detalles de la Reserva')

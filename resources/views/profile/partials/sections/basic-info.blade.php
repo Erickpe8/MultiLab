@@ -12,7 +12,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('first_name')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -24,7 +24,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('middle_name')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -39,7 +39,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('first_surname')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -51,7 +51,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('second_surname')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -71,7 +71,7 @@
                 </select>
 
                 @error('gender')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -83,7 +83,7 @@
                            transition-colors" placeholder="correo@institucion.edu" />
 
                 @error('email')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
 
                 {{-- bloque verificación queda igual --}}
@@ -117,7 +117,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('phone')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -129,7 +129,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('mobile')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -141,7 +141,7 @@
                            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]
                            transition-colors" />
                 @error('phone_extension')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-[var(--primary-600)]">{{ $message }}</p>
                 @enderror
             </div>
         </div>

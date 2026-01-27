@@ -37,7 +37,9 @@
                     <h3 class="font-semibold text-gray-700">Roles asignados</h3>
                     <div class="flex flex-wrap gap-2 mt-1">
                         @foreach ($user->roles as $role)
-                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold
+                                     bg-[color-mix(in oklab, var(--primary-soft) 70%, var(--card) 30%)]
+                                     text-[var(--primary-600)]">
                                 {{ ucfirst($role->name) }}
                             </span>
                         @endforeach

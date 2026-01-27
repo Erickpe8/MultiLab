@@ -2,7 +2,9 @@
 
 use App\Filament\Pages\MainDashboard; // Import the Filament page
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\ManualController;
 use App\Http\Controllers\ProfileThemeController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserManagementController;
 use App\Modules\Profile\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -53,7 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/password/verify', [PasswordController::class, 'verify'])->name('password.verify');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
+
 });
+Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +80,16 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])
         Route::patch('{user}/unblock', [UserManagementController::class, 'unblock'])->name('unblock');
         Route::put('{user}/update-role', [UserManagementController::class, 'updateRole'])->name('update-role');
         Route::delete('{user}', [UserManagementController::class, 'destroy'])->name('destroy');
+    });
+
+Route::middleware(['auth', 'verified', 'role:superadmin'])
+    ->prefix('reports')
+    ->name('reports.')
+    ->group(function () {
+        Route::get('/', [ReportsController::class, 'index'])->name('index');
+        Route::get('/summary', [ReportsController::class, 'summary'])->name('summary');
+        Route::get('/activity', [ReportsController::class, 'activity'])->name('activity');
+        Route::get('/inventory', [ReportsController::class, 'inventory'])->name('inventory');
     });
 
 require __DIR__.'/auth.php';

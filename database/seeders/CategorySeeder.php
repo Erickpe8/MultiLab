@@ -8,36 +8,63 @@ use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
-
     public function run(): void
     {
         $categories = [
             [
-                'name' => 'Herramienta',
-                'description' => 'General purpose tools for mechanical and electronic work.',
+                'code' => 'computadores',
+                'name' => 'Computadores de escritorio',
+                'description' => 'Torres y estaciones fijas alineadas con los salones del laboratorio, listas para pruebas de sistemas embebidos y redes.',
             ],
             [
-                'name' => 'Componente Electrónico',
-                'description' => 'Resistors, capacitors, LEDs, integrated circuits, etc.',
+                'code' => 'portatiles',
+                'name' => 'Portátiles',
+                'description' => 'Laptops para prácticas externas, acompañamiento de proyectos y uso en espacios múltiples de la universidad.',
             ],
             [
-                'name' => 'Suministro de Práctica',
-                'description' => 'Protoboards, wires, and other consumables for labs.',
+                'code' => 'perifericos',
+                'name' => 'Periféricos',
+                'description' => 'Teclados, mouse, monitores, audífonos y cámaras para equipar estaciones de trabajo y laboratorios móviles.',
             ],
             [
-                'name' => 'Periférico',
-                'description' => 'Keyboards, mice, monitors, and other computer peripherals.',
+                'code' => 'red',
+                'name' => 'Red y conectividad',
+                'description' => 'Switches, routers, paneles de parcheo y cables Cat6/Cat6a para mantener la infraestructura cableada del laboratorio.',
+            ],
+            [
+                'code' => 'proyeccion',
+                'name' => 'Proyección y audio',
+                'description' => 'Cañones, sistemas de audio, controles y cables AV para salas multimedia, auditorio y clases guiadas.',
+            ],
+            [
+                'code' => 'herramientas',
+                'name' => 'Herramientas',
+                'description' => 'Herramientas manuales y eléctricas usadas para montaje, calibración y mantenimiento de equipos y estructuras.',
+            ],
+            [
+                'code' => 'consumibles',
+                'name' => 'Consumibles',
+                'description' => 'Adaptadores, baterías, cargadores, cables, cartuchos y otros insumos que se reponen frecuentemente.',
+            ],
+            [
+                'code' => 'mobiliario',
+                'name' => 'Mobiliario técnico',
+                'description' => 'Mesas, sillas, carros y apoyos ergonómicos que soportan la operación diaria del laboratorio.',
             ],
         ];
 
-        foreach ($categories as $category) {
-            Category::create([
-                'name' => $category['name'],
-                'description' => $category['description'],
-                'uuid' => Str::uuid(),
-                'code' => Str::slug($category['name']),
-                'is_active' => true,
-            ]);
+        foreach ($categories as $definition) {
+            $uuid = Category::where('code', $definition['code'])->value('uuid') ?? Str::uuid();
+
+            Category::updateOrCreate(
+                ['code' => $definition['code']],
+                [
+                    'name' => $definition['name'],
+                    'description' => $definition['description'],
+                    'uuid' => (string) $uuid,
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

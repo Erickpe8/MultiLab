@@ -189,25 +189,16 @@
                                     </button>
 
                                     <button type="button"
-                                        onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', this)"
+                                        onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
                                         class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                               bg-amber-500/10 text-amber-600 dark:text-amber-400
-                                               hover:bg-amber-500/20 transition-all
-                                               border border-amber-500/20 hover:border-amber-500/40"
+                                               bg-[var(--primary-soft)] text-[var(--primary-600)]
+                                               hover:bg-[color-mix(in oklab, var(--primary), transparent 70%)]
+                                               transition-all
+                                               border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]
+                                               hover:border-[color-mix(in oklab, var(--primary) 70%, var(--border))]"
                                         title="Bloquear usuario">
                                         <x-ui.icon name="lock-closed" size="sm"
-                                            class="text-amber-600 dark:text-amber-400" />
-                                    </button>
-
-                                    <button type="button"
-                                        onclick="deleteUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                               bg-red-500/10 text-red-600 dark:text-red-400
-                                               hover:bg-red-500/20 transition-all
-                                               border border-red-500/20 hover:border-red-500/40"
-                                        title="Eliminar usuario">
-                                        <x-ui.icon name="eliminar" size="sm"
-                                            class="text-red-600 dark:text-red-400" />
+                                            class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
                                     </button>
                                     </div>
                                 </td>

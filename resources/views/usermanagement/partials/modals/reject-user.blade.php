@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="flex items-start gap-4 mb-6">
             <div
-                class="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
                         flex items-center justify-center shrink-0">
                 <x-ui.icon name="advertencia" size="lg" class="text-white" />
             </div>
@@ -23,9 +23,9 @@
         </div>
 
         <!-- User Info -->
-        <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+        <div class="mb-6 p-4 rounded-lg bg-[var(--primary-soft)] border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
                             flex items-center justify-center text-white font-bold"
                     id="reject-user-avatar">
                     ?
@@ -64,7 +64,7 @@
                 Cancelar
             </button>
             <button type="button" id="reject-confirm-btn" onclick="confirmRejectUser()"
-                class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600
+                class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-600)]
                        text-white font-semibold hover:shadow-lg hover:scale-[1.02]
                        active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                 <x-ui.icon name="eliminar" size="sm" class="text-white" />

@@ -38,7 +38,7 @@ class LoanApprovalRequest extends Notification
     {
         $filamentNotification = FilamentNotification::make()
             ->title('Nueva Solicitud de Reserva de Aula')
-            ->body("El docente {$this->loan->requester->name} ha solicitado una reserva del aula B201 para el tema '{$this->loan->subject}'.")
+            ->body("El docente {$this->loan->requester->name} ha solicitado una reserva del aula B202 para el tema '{$this->loan->subject}'.")
             ->actions([
                 Action::make('view')
                     ->label('Revisar Solicitud')

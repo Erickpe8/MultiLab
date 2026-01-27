@@ -57,47 +57,47 @@
 
 {{-- ▸ SCRIPT DEL SIDEBAR (JS VANILLA) --}}
 @push('scripts')
-<script>
-(function () {
-    const sidebar = document.getElementById('sidebarWrapper');
-    const overlay = document.getElementById('sidebarOverlay');
+    <script>
+        (function () {
+            const sidebar = document.getElementById('sidebarWrapper');
+            const overlay = document.getElementById('sidebarOverlay');
 
-    function openSidebar() {
-        sidebar.classList.remove('-translate-x-full');
-        if (overlay) overlay.classList.remove('hidden');
-    }
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                if (overlay) overlay.classList.remove('hidden');
+            }
 
-    function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        if (overlay) overlay.classList.add('hidden');
-    }
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                if (overlay) overlay.classList.add('hidden');
+            }
 
-    function toggleDesktop() {
-        sidebar.classList.toggle('-translate-x-full');
-    }
+            function toggleDesktop() {
+                sidebar.classList.toggle('-translate-x-full');
+            }
 
-    // Botones de control
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('[data-sidebar-open]')) openSidebar();
-        if (e.target.closest('[data-sidebar-close]')) closeSidebar();
-        if (e.target.closest('[data-sidebar-toggle-desktop]')) toggleDesktop();
-    });
+            // Botones de control
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-sidebar-open]')) openSidebar();
+                if (e.target.closest('[data-sidebar-close]')) closeSidebar();
+                if (e.target.closest('[data-sidebar-toggle-desktop]')) toggleDesktop();
+            });
 
-    // Clic en overlay → cerrar
-    if (overlay) overlay.addEventListener('click', closeSidebar);
+            // Clic en overlay → cerrar
+            if (overlay) overlay.addEventListener('click', closeSidebar);
 
-    // Sincronizar estado según tamaño
-    const sync = () => {
-        if (window.innerWidth >= 1024) {
-            sidebar.classList.remove('-translate-x-full');
-            if (overlay) overlay.classList.add('hidden');
-        } else {
-            sidebar.classList.add('-translate-x-full');
-        }
-    };
+            // Sincronizar estado según tamaño
+            const sync = () => {
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.remove('-translate-x-full');
+                    if (overlay) overlay.classList.add('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            };
 
-    window.addEventListener('resize', sync);
-    sync();
-})();
-</script>
+            window.addEventListener('resize', sync);
+            sync();
+        })();
+    </script>
 @endpush

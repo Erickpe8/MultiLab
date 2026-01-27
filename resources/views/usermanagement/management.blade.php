@@ -22,7 +22,7 @@
     @include('usermanagement.partials.modals.approve-user')
     @include('usermanagement.partials.modals.reject-user')
     @include('usermanagement.partials.modals.edit-role')
-    @include('usermanagement.partials.modals.delete-user')
+    @include('usermanagement.partials.modals.block-user')
     @include('usermanagement.partials.icon-templates')
 
 </x-app-layout>

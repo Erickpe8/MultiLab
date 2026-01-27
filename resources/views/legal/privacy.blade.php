@@ -7,7 +7,9 @@
         ? (\Illuminate\Support\Facades\Route::has('filament.dashboard.pages.dashboard')
             ? route('filament.dashboard.pages.dashboard')
             : url('/dashboard'))
-        : (\Illuminate\Support\Facades\Route::has('login') ? route('login') : url('/'));
+        : (\Illuminate\Support\Facades\Route::has('login')
+            ? route('login')
+            : url('/'));
 @endphp
 
 @section('legal-header')
@@ -35,7 +37,8 @@
                 <div
                     class="px-6 sm:px-8 py-6 border-b border-[var(--border)] bg-gradient-to-r from-[var(--primary)]/5 to-transparent">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
+                        <div
+                            class="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
                                 flex items-center justify-center shadow-lg">
                             <x-ui.icon name="bloquear" size="md" class="w-6 h-6 text-white" />
                         </div>
@@ -62,7 +65,7 @@
                                 con el fin de
                                 garantizar el manejo ético, seguro y transparente de los datos personales administrados
                                 en <strong>MultiLab</strong>,
-                                sistema institucional orientado a la operación del Laboratorio de Software B201,
+                                sistema institucional orientado a la operación del Laboratorio de Software B202,
                                 incluyendo el control de acceso,
                                 la gestión de reservas, préstamos de recursos y la trazabilidad de uso.
                                 En cumplimiento de la Ley 1581 de 2012, el Decreto 1377 de 2013, la Ley 1266 de 2008, el
@@ -224,7 +227,7 @@
                             <div class="text-[var(--text-secondary)] leading-relaxed space-y-4">
                                 <p>
                                     La información recopilada por MultiLab se utiliza exclusivamente para fines
-                                    institucionales y operativos del Laboratorio de Software B201,
+                                    institucionales y operativos del Laboratorio de Software B202,
                                     garantizando control de acceso, trazabilidad, seguridad y continuidad del servicio.
                                 </p>
 
@@ -576,7 +579,7 @@
                                 <p><span class="font-semibold">Titular:</span> Persona natural a quien pertenecen los
                                     datos.</p>
                                 <p><span class="font-semibold">MultiLab:</span> Plataforma institucional para
-                                    administrar la operación del Laboratorio de Software B201 (reservas, préstamos,
+                                    administrar la operación del Laboratorio de Software B202 (reservas, préstamos,
                                     control de acceso, observaciones e históricos).</p>
                                 <p><span class="font-semibold">Trazabilidad:</span> Registro sistemático de acciones y
                                     cambios para fines de verificación y control.</p>

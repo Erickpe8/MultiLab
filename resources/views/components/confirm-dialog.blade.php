@@ -27,7 +27,7 @@
         <div class="flex items-start gap-3">
             <div
                 class="mt-0.5 shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full
-                @if ($icon === 'danger') bg-red-500/15 text-red-500
+                @if ($icon === 'danger') bg-[var(--primary-soft)] text-[var(--primary)]
                 @elseif($icon === 'warn') bg-yellow-500/15 text-yellow-500
                 @else bg-[var(--accent)]/15 text-[var(--accent)] @endif">
                 <!-- ícono -->
@@ -51,7 +51,7 @@
                         open=false;
                         @if ($confirmEvent) window.dispatchEvent(new CustomEvent('{{ $confirmEvent }}')) @endif
                     "
-                class="px-4 py-2 rounded-lg bg-[var(--accent)] text-white hover:bg-[var(--primary)]
+                class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-600)]
                     text-sm font-semibold">
                 {{ $confirmText }}
             </button>

@@ -45,7 +45,7 @@
             <!-- Rol -->
             <div>
                 <label for="approve-role" class="block text-sm font-semibold text-[var(--text)] mb-2">
-                    Rol <span class="text-red-500">*</span>
+                    Rol <span class="text-[var(--primary-600)]">*</span>
                 </label>
                 <div class="relative">
                     <select name="role" id="approve-role" required

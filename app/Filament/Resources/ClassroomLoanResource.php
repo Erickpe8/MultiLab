@@ -26,11 +26,11 @@ class ClassroomLoanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Aula B201';
+    protected static ?string $navigationGroup = 'Aula B202';
 
     protected static ?string $modelLabel = 'Reserva de aula';
 
-    protected static ?string $pluralModelLabel = 'Reservas Aula B201';
+    protected static ?string $pluralModelLabel = 'Reservas Aula B202';
 
     public static function canViewAny(): bool
     {
@@ -57,36 +57,36 @@ class ClassroomLoanResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('classroom_code')
                             ->label('Aula')
-                            ->default('B201')
+                            ->default('B202')
                             ->maxLength(20)
                             ->readonly()
                             ->disabled()
                             ->required(),
                         Forms\Components\Select::make('requested_by')
-                            ->relationship('requester', 'first_name', fn (Builder $query) => $query->role(['docente', 'superadmin', 'aux_admin']))
+                            ->relationship('requester', 'first_name', fn(Builder $query) => $query->role(['docente', 'superadmin', 'aux_admin']))
                             ->label('Docente solicitante')
                             ->default(Auth::id())
-                            ->disabled(fn () => Auth::user()->hasRole('docente'))
+                            ->disabled(fn() => Auth::user()->hasRole('docente'))
                             ->dehydrated()
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->required()
                             ->native(false),
                         Forms\Components\Select::make('approved_by')
-                            ->relationship('approver', 'first_name', fn (Builder $query) => $query->role(['superadmin', 'aux_admin']))
+                            ->relationship('approver', 'first_name', fn(Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
-                            ->default(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
+                            ->default(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
                             ->afterStateHydrated(function (Forms\Components\Select $component, $state) {
                                 if (blank($state) && Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])) {
                                     $component->state(Auth::id());
                                 }
                             })
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
-                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
-                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
                             ->native(false),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
@@ -113,9 +113,9 @@ class ClassroomLoanResource extends Resource
 
                                 return $allOptions;
                             })
-                            ->disabled(fn () => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
+                            ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
                             ->default('pendiente')
-                            ->required(fn () => Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
+                            ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
                             ->native(false),
                     ])
                     ->columns(2),
@@ -155,19 +155,19 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('pc_disponibles')
                             ->label('PCs disponibles')
                             ->numeric()
-                            ->default(fn () => static::getAvailableComputerCount())
+                            ->default(fn() => static::getAvailableComputerCount())
                             ->afterStateHydrated(function (Forms\Components\TextInput $component) {
                                 $component->state(static::getAvailableComputerCount());
                             })
                             ->disabled()
                             ->dehydrated(false)
-                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null),
+                            ->helperText(fn() => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null),
                         Forms\Components\TextInput::make('pc_unavailable')
                             ->label('PCs no disponibles')
                             ->numeric()
-                            ->default(fn () => Computer::query()->where('status', 'no_disponible')->count())
+                            ->default(fn() => Computer::query()->where('status', 'no_disponible')->count())
                             ->disabled()
-                            ->helperText(fn () => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
+                            ->helperText(fn() => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
                             ->dehydrated(),
                         Forms\Components\KeyValue::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
@@ -204,7 +204,7 @@ class ClassroomLoanResource extends Resource
                         TextEntry::make('purpose')->label('Propósito')->placeholder('—')->columnSpanFull(),
                         TextEntry::make('status')
                             ->label('Estado')
-                            ->formatStateUsing(fn (string $state) => match ($state) {
+                            ->formatStateUsing(fn(string $state) => match ($state) {
                                 'pendiente' => 'Pendiente',
                                 'aprobado' => 'Aprobado',
                                 'rechazado' => 'Rechazado',
@@ -232,7 +232,7 @@ class ClassroomLoanResource extends Resource
                         TextEntry::make('pc_required')->label('PCs requeridos'),
                         TextEntry::make('pc_disponibles')
                             ->label('PCs disponibles')
-                            ->state(fn () => static::getAvailableComputerCount()),
+                            ->state(fn() => static::getAvailableComputerCount()),
                         TextEntry::make('pc_unavailable')->label('PCs no disponibles'),
                         TextEntry::make('workstations_snapshot')
                             ->label('Estado rápido de estaciones')
@@ -244,7 +244,7 @@ class ClassroomLoanResource extends Resource
                                 }
 
                                 return collect($snapshot)
-                                    ->map(fn ($value, $key) => e($key).': '.e($value))
+                                    ->map(fn($value, $key) => e($key) . ': ' . e($value))
                                     ->implode('<br>');
                             })
                             ->columnSpanFull()
@@ -272,7 +272,7 @@ class ClassroomLoanResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Sesión')
-                    ->description(fn (ClassroomLoan $record) => $record->purpose)
+                    ->description(fn(ClassroomLoan $record) => $record->purpose)
                     ->searchable()
                     ->wrap(),
                 Tables\Columns\TextColumn::make('requester.name')
@@ -295,7 +295,7 @@ class ClassroomLoanResource extends Resource
                         'danger' => ['rechazado', 'cancelado'],
                         'info' => 'en_uso',
                     ])
-                    ->formatStateUsing(fn (string $state) => match ($state) {
+                    ->formatStateUsing(fn(string $state) => match ($state) {
                         'pendiente' => 'Pendiente',
                         'aprobado' => 'Aprobado',
                         'rechazado' => 'Rechazado',
@@ -337,8 +337,8 @@ class ClassroomLoanResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('scheduled_start_at', '>=', $date))
-                            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('scheduled_end_at', '<=', $date));
+                            ->when($data['from'] ?? null, fn($q, $date) => $q->whereDate('scheduled_start_at', '>=', $date))
+                            ->when($data['until'] ?? null, fn($q, $date) => $q->whereDate('scheduled_end_at', '<=', $date));
                     }),
             ])
             ->actions([

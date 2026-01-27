@@ -49,7 +49,7 @@ class ClassroomLoanFactory extends Factory
         $pcUnavailable = max(0, $pcRequired - $pcInUse - $this->faker->numberBetween(0, 2));
 
         return [
-            'classroom_code' => 'B201',
+            'classroom_code' => 'B202',
             'requested_by' => User::factory(),
             'approved_by' => User::factory(),
             'subject' => $this->faker->randomElement([

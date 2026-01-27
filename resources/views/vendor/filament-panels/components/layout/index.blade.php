@@ -202,7 +202,7 @@
             @include('layouts.navigation')
 
             <div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" x-transition.opacity
-                @click="sidebarOpen=false" style="display: none;"></div>
+                 @click="sidebarOpen=false" style="display: none;"></div>
 
             <div class="flex-1 min-w-0 w-full lg:ml-64 flex flex-col">
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
@@ -210,11 +210,11 @@
                 <div class="lg:hidden sticky top-0 z-20 bg-[var(--card)] border-b border-[var(--border)]">
                     <div class="h-14 px-4 flex items-center justify-between">
                         <button @click="sidebarOpen = true"
-                            class="p-2 rounded-md text-[var(--text)] hover:text-[var(--accent)] hover:bg-[var(--border)]/20 transition-colors"
-                            aria-label="Abrir menú">
+                                class="p-2 rounded-md text-[var(--text)] hover:text-[var(--accent)] hover:bg-[var(--border)]/20 transition-colors"
+                                aria-label="Abrir menú">
                             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
+                                      d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
                         <div class="text-sm text-[var(--text)] truncate">
@@ -277,9 +277,9 @@
                     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`
                 },
                 error: {
-                    border: 'border-red-500',
-                    iconBg: 'bg-red-100 dark:bg-red-900/30',
-                    iconColor: 'text-red-600 dark:text-red-400',
+   border: 'border-[color-mix(in oklab, var(--primary) 40%, var(--border))]',
+   iconBg: 'bg-[var(--primary-soft)] dark:bg-[color-mix(in oklab, var(--primary-soft), rgba(0, 0, 0, 0.6))]',
+                    iconColor: 'text-[var(--primary-600)] dark:text-[var(--primary-600)]',
                     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`
                 },
                 warning: {
@@ -298,7 +298,7 @@
 
             const config = configs[type] || configs.info;
 
-            notifyCard.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500', 'border-blue-500');
+            notifyCard.classList.remove('border-green-500', 'border-yellow-500', 'border-blue-500');
             notifyCard.classList.add(config.border);
 
             notifyIconWrap.className = 'inline-flex items-center justify-center w-9 h-9 rounded-full';

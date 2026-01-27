@@ -7,11 +7,11 @@
     </style>
 
     @php
-        $inputClass = 'h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--card)]/70 px-4 text-sm text-[var(--text)] placeholder:text-[color:var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[#D84040]/40 focus:border-[#D84040] transition';
-        $buttonClass = 'w-full h-11 rounded-xl font-semibold text-white bg-[#8E1616] hover:bg-[#D84040] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#D84040]/50 focus-visible:ring-offset-[var(--bg)]';
+        $inputClass = 'h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--card)]/70 px-4 text-sm text-[var(--text)] placeholder:text-[color:var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition';
+        $buttonClass = 'w-full h-11 rounded-xl font-semibold text-white bg-[var(--primary)] hover:bg-[var(--primary-600)] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)]/50 focus-visible:ring-offset-[var(--bg)]';
     @endphp
 
-    <x-auth-session-status class="text-sm text-center text-[#8E1616]" :status="session('status')" />
+    <x-auth-session-status class="text-sm text-center text-[var(--primary)]" :status="session('status')" />
 
     <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
@@ -23,7 +23,7 @@
             <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
                 placeholder="correo@fesc.edu.co"
                 class="{{ $inputClass }}" />
-            <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[#D84040]" />
+            <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 
         <div>
@@ -32,18 +32,18 @@
             </label>
             <input id="password" name="password" type="password" required autocomplete="current-password"
                 class="{{ $inputClass }}" />
-            <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[#D84040]" />
+            <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 
         <div class="flex items-center justify-between text-sm">
             <label for="remember_me" class="inline-flex items-center gap-2 text-[color:var(--text-muted)]">
                 <input id="remember_me" name="remember" type="checkbox"
-                    class="h-4 w-4 rounded border-[var(--border)] text-[#D84040] focus:ring-[#D84040]" />
+                    class="h-4 w-4 rounded border-[var(--border)] text-[var(--primary)] focus:ring-[var(--primary)]" />
                 <span>Recuérdame</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="text-[#8E1616] hover:underline">
+                <a href="{{ route('password.request') }}" class="text-[var(--primary)] hover:underline">
                     ¿Olvidaste tu contraseña?
                 </a>
             @endif
@@ -56,7 +56,7 @@
 
     <p class="text-sm text-center text-[color:var(--text-muted)]">
         ¿No tienes cuenta?
-        <a href="{{ route('register') }}" class="text-[#8E1616] font-semibold hover:underline">
+        <a href="{{ route('register') }}" class="text-[var(--primary)] font-semibold hover:underline">
             Regístrate
         </a>
     </p>
