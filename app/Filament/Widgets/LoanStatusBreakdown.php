@@ -26,12 +26,10 @@ class LoanStatusBreakdown extends ChartWidget
     {
         $statuses = [
             'pendiente',
-            'aprobado',
             'rechazado',
             'cancelado',
             'devuelto',
-            'con_multa',
-            'perdido',
+            'devuelto_con_multa',
             'vencido',
         ];
 

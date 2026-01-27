@@ -8,7 +8,7 @@
         $totalUnits = \App\Models\Material::sum('current_stock');
         $loanedUnits = (int) (\Illuminate\Support\Facades\DB::table('loan_materials as lm')
             ->join('loans as l', 'l.id', '=', 'lm.loan_id')
-            ->whereNotIn('l.status', ['devuelto', 'perdido', 'cancelado', 'rechazado'])
+            ->whereNotIn('l.status', ['devuelto', 'devuelto_con_multa', 'cancelado', 'rechazado'])
             ->selectRaw('SUM(GREATEST(lm.loan_qty - lm.returned_qty, 0)) as total')
             ->value('total') ?? 0);
         $availableUnits = max($totalUnits - $loanedUnits, 0);
