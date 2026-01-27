@@ -25,6 +25,13 @@ class ClassroomWorkstation extends Model
         'status',
         'seat_number',
         'specs',
+        'marca',
+        'main_card',
+        'processor',
+        'ram',
+        'hard_drive',
+        'network_card',
+        'graphics_card',
         'notes',
     ];
 
@@ -62,6 +69,13 @@ class ClassroomWorkstation extends Model
                     'label' => $label,
                     'status' => $computer->status === 'disponible' ? 'disponible' : 'fuera_servicio',
                     'notes' => $computer->notes,
+                    'marca' => $computer->marca,
+                    'main_card' => $computer->main_card,
+                    'processor' => $computer->processor,
+                    'ram' => $computer->ram,
+                    'hard_drive' => $computer->hard_drive,
+                    'network_card' => $computer->network_card,
+                    'graphics_card' => $computer->graphics_card,
                 ]
             );
         }

@@ -14,5 +14,12 @@ class Computer extends Model
         'serial_number',
         'status',
         'notes',
+        'marca',
+        'main_card',
+        'processor',
+        'ram',
+        'hard_drive',
+        'network_card',
+        'graphics_card',
     ];
 }

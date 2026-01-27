@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('serial_number')->unique();
             $table->enum('status', ['disponible', 'no_disponible'])->default('disponible');
             $table->text('notes')->nullable();
+            $table->string('marca')->nullable();
+            $table->string('main_card')->nullable();
+            $table->string('processor')->nullable();
+            $table->string('ram')->nullable();
+            $table->string('hard_drive')->nullable();
+            $table->string('network_card')->nullable();
+            $table->string('graphics_card')->nullable();
             $table->timestamps();
         });
     }
@@ -27,5 +34,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('computers');
+        Schema::table('computers', function (Blueprint $table) {
+            $table->dropColumn([
+                'marca',
+                'main_card',
+                'processor',
+                'ram',
+                'hard_drive',
+                'network_card',
+                'graphics_card',
+            ]);
+        });
     }
 };

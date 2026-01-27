@@ -17,6 +17,13 @@ return new class extends Migration
             $table->enum('status', ['disponible', 'mantenimiento', 'fuera_servicio'])->default('disponible');
             $table->unsignedTinyInteger('seat_number')->nullable();
             $table->json('specs')->nullable();
+            $table->string('marca')->nullable();
+            $table->string('main_card')->nullable();
+            $table->string('processor')->nullable();
+            $table->string('ram')->nullable();
+            $table->string('hard_drive')->nullable();
+            $table->string('network_card')->nullable();
+            $table->string('graphics_card')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
 
@@ -27,5 +34,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('classroom_workstations');
+        Schema::table('classroom_workstations', function (Blueprint $table) {
+            $table->dropColumn([
+                'marca',
+                'main_card',
+                'processor',
+                'ram',
+                'hard_drive',
+                'network_card',
+                'graphics_card',
+            ]);
+        });
     }
 };

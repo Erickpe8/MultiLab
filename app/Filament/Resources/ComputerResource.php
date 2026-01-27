@@ -42,6 +42,9 @@ class ComputerResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('marca')
+                            ->label('Marca')
+                            ->maxLength(255),
                     ])->columns(2),
                 Forms\Components\Section::make('Estado y Notas')
                     ->schema([
@@ -57,6 +60,21 @@ class ComputerResource extends Resource
                             ->label('Notas')
                             ->columnSpanFull(),
                     ]),
+                Forms\Components\Section::make('Componentes')
+                    ->schema([
+                        Forms\Components\TextInput::make('main_card')
+                            ->label('Tarjeta Principal'),
+                        Forms\Components\TextInput::make('processor')
+                            ->label('Procesador'),
+                        Forms\Components\TextInput::make('ram')
+                            ->label('RAM'),
+                        Forms\Components\TextInput::make('hard_drive')
+                            ->label('Disco Duro'),
+                        Forms\Components\TextInput::make('network_card')
+                            ->label('Tarjeta de Red'),
+                        Forms\Components\TextInput::make('graphics_card')
+                            ->label('Tarjeta Gráfica'),
+                    ])->columns(2),
             ]);
     }
 
@@ -82,6 +100,28 @@ class ComputerResource extends Resource
                         'no_disponible' => 'No Disponible',
                         default => $state,
                     }),
+                Tables\Columns\TextColumn::make('marca')
+                    ->label('Marca')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('main_card')
+                    ->label('Tarjeta Principal')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('processor')
+                    ->label('Procesador')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('ram')
+                    ->label('RAM')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('hard_drive')
+                    ->label('Disco Duro')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('network_card')
+                    ->label('Tarjeta de Red')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('graphics_card')
+                    ->label('Tarjeta Gráfica')
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -89,7 +129,8 @@ class ComputerResource extends Resource
                         'disponible' => 'Disponible',
                         'no_disponible' => 'No Disponible',
                     ])
-                    ->label('Estado'),
+                    ->label('Estado')
+                    ->native(false),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -100,13 +141,6 @@ class ComputerResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
