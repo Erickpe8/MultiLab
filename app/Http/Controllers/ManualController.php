@@ -8,115 +8,153 @@ class ManualController extends Controller
 {
     public function index(): View
     {
-        $rolesManual = [
+        $roleCards = [
             [
-                'id' => 'rol-superadmin',
-                'title' => 'Superadmin',
-                'description' => 'Gestiona el ecosistema completo de MultiLab: configuración global, roles y supervisión de operaciones críticas.',
-                'steps' => [
-                    'Ingresar al sistema con autenticación verificada y acceder al panel principal.',
-                    'Revisar reportes generales del laboratorio y alertas pendientes.',
-                    'Administrar roles, permisos y aprobaciones críticas antes de delegar operaciones.',
-                    'Monitorear cierres y respaldos de movimientos para consultas posteriores.'
+                'slug' => 'superadmin',
+                'title' => 'Super Administración',
+                'overview' => 'Lidera el ecosistema MultiLab y mantiene la visibilidad de reservas, préstamos y solicitudes.',
+                'capabilities' => [
+                    'Ver el panel principal y los resúmenes de actividad global en tiempo real.',
+                    'Revisar, aprobar o rechazar solicitudes y préstamos con fundamentos claros.',
+                    'Editar perfiles y asignar auxiliares para equilibrar cargas operativas.',
+                    'Supervisar inventario en riesgo y activar alertas de auditoría cuando sea necesario.',
                 ],
-                'actions' => [
-                    'Validar nuevas cuentas, bloquear accesos no autorizados y asignar roles.',
-                    'Configurar límites de préstamo y reglas de ahorro de recursos.',
-                    'Supervisar alertas de estados críticos y coordinar con auxiliares.',
-                    'Respaldar decisiones en el historial de movimientos para auditorías.'
+                'limitations' => [
+                    'No se debe reservar el Aula B202 directamente en nombre de docentes.',
+                    'No puede crearse un quinto rol fuera de los cuatro autorizados.',
                 ],
-                'states' => [
-                    ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
-                    ['label' => 'Aprobado', 'class' => 'bg-emerald-100 text-emerald-800'],
-                    ['label' => 'Rechazado', 'class' => 'bg-[var(--primary-soft)] text-[var(--primary)]'],
-                ],
-                'tips' => [
-                    'Usar filtros por estado para priorizar aprobaciones urgentes.',
-                    'Documentar las razones de rechazo dentro de notas para trazabilidad.',
-                    'Respaldar configuraciones con capturas antes de cambios masivos.'
+                'flows' => [
+                    'Abre el módulo de solicitudes pendientes y anota observaciones antes de decidir.',
+                    'Actualiza un perfil con datos corregidos y deja constancia en la sección de auditoría.',
+                    'Coordina con un Administrador Auxiliar para validar niveles de stock antes de responder a un préstamo masivo.',
                 ],
             ],
             [
-                'id' => 'rol-auxiliar',
-                'title' => 'Auxiliar / Admin de laboratorio',
-                'description' => 'Coordina el préstamo y devolución de equipos, mantiene inventario y responde a solicitudes diarias.',
-                'steps' => [
-                    'Loguearse y revisar el dashboard de préstamos y devoluciones.',
-                    'Validar las solicitudes de los docentes o estudiantes antes de entregar recursos.',
-                    'Registrar cada movimiento al entregar o recibir materiales/herramientas.',
-                    'Cerrar los ciclos con observaciones y confirmar estados de devolución.'
+                'slug' => 'aux_admin',
+                'title' => 'Administrador Auxiliar',
+                'overview' => 'Ejecuta tareas tácticas: aprueba préstamos, registra devoluciones y coordina reservas del laboratorio.',
+                'capabilities' => [
+                    'Crear y confirmar reservas del Aula B202 solicitadas por docentes.',
+                    'Aprobar préstamos tras validar stock y condiciones del ítem.',
+                    'Registrar devoluciones, movimientos de materiales y ajustes de inventario.',
                 ],
-                'actions' => [
-                    'Revisar y confirmar reservas con fecha y responsable.',
-                    'Actualizar observaciones de cada equipo antes de prestarlo.',
-                    'Enviar recordatorios de devolución y marcar entregas recibidas.',
-                    'Reportar inconsistencias al superadmin cuando se detecten daños.'
+                'limitations' => [
+                    'No puede revertir decisiones de un Super Administrador sin respaldo documental.',
+                    'No realiza cambios en la estructura de roles o migraciones del sistema.',
                 ],
-                'states' => [
-                    ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
-                    ['label' => 'En préstamo', 'class' => 'bg-blue-100 text-blue-800'],
-                    ['label' => 'Devuelto', 'class' => 'bg-slate-100 text-slate-800'],
-                ],
-                'tips' => [
-                    'Etiqueta cada equipo con su código antes de entregarlo para facilitar búsquedas.',
-                    'Revisa el historial del equipo para detectar patrones de fallas.',
-                    'Confirma los detalles del estado antes de cerrar el préstamo.'
+                'flows' => [
+                    'Recibe una solicitud de reserva, revisa la disponibilidad y la aprueba con fechas concretas.',
+                    'Aprueba un préstamo confirmando que la unidad solicitada está disponible y en buen estado.',
+                    'Registra el ingreso de nuevos materiales con código interno y observa el stock mínimo.',
                 ],
             ],
             [
-                'id' => 'rol-docente',
+                'slug' => 'docente',
                 'title' => 'Docente',
-                'description' => 'Solicita recursos para clases y supervisa la devolución por parte de estudiantes.',
-                'steps' => [
-                    'Acceder al dashboard y crear una solicitud indicando materiales y plazos.',
-                    'Adjuntar justificativos académicos si se requieren aprobaciones especiales.',
-                    'Supervisar el estado de la solicitud y responder retroalimentación del auxiliar.',
-                    'Confirmar la entrega en el aula y el estado de los recursos al concluir.'
+                'overview' => 'Organiza clases y eventos solicitando espacios y materiales clave para las actividades académicas.',
+                'capabilities' => [
+                    'Solicitar la reserva del Aula B202 con objetivos, horarios y materiales de apoyo.',
+                    'Pedir préstamos de proyectores, portátiles o periféricos para clases especiales.',
+                    'Consultar su propio historial de préstamos y devoluciones.',
                 ],
-                'actions' => [
-                    'Bloquear fechas de laboratorio para clases especiales.',
-                    'Solicitar soporte técnico antes de fechas críticas.',
-                    'Revisar el estado de los materiales usados por estudiantes.'
+                'limitations' => [
+                    'No aprueba ni rechaza solicitudes de otros usuarios.',
+                    'No registra materiales nuevos ni edita inventario.',
                 ],
-                'states' => [
-                    ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
-                    ['label' => 'Hecho', 'class' => 'bg-emerald-100 text-emerald-800'],
-                    ['label' => 'Devuelto', 'class' => 'bg-slate-100 text-slate-800'],
-                ],
-                'tips' => [
-                    'Planifica las solicitudes con al menos 48h de anticipación.',
-                    'Agrega notas claras para el auxiliar sobre prioridades o urgencias.',
-                    'Usa plantillas guardadas para solicitudes recurrentes.'
+                'flows' => [
+                    'Describe el propósito de la reserva, fechas y número de estudiantes antes de enviarla.',
+                    'Selecciona los materiales específicos y justifica el préstamo con la unidad académica.',
+                    'Confirma la devolución indicando la condición del equipo y responde a observaciones del Administrador Auxiliar.',
                 ],
             ],
             [
-                'id' => 'rol-estudiante',
+                'slug' => 'estudiante',
                 'title' => 'Estudiante',
-                'description' => 'Reserva y utiliza recursos del laboratorio para prácticas guiadas por docentes.',
-                'steps' => [
-                    'Entrar al tablero y revisar qué préstamos están autorizados.',
-                    'Solicitar materiales reservando fecha, hora y responsable.',
-                    'Recoger el equipo según indicaciones del auxiliar.',
-                    'Entregar puntualmente y dejar evidencia de estado.'
+                'overview' => 'Solicita materiales de apoyo y monitorea el estado de sus préstamos personales.',
+                'capabilities' => [
+                    'Solicitar préstamos de materiales disponibles para actividades prácticas.',
+                    'Consultar el historial propio de préstamos, devoluciones y sanciones.',
+                    'Recibir notificaciones sobre vencimientos y regularizaciones.',
                 ],
-                'actions' => [
-                    'Agregar comentarios sobre uso o incidencias durante el préstamo.',
-                    'Responder notificaciones de devolución o cambio de estado.',
-                    'Subir evidencias (fotos/observaciones) si se solicita.'
+                'limitations' => [
+                    'No puede reservar el Aula B202 ni modificar perfiles de otros usuarios.',
+                    'No aprueba ni rechaza solicitudes ajenas.',
                 ],
-                'states' => [
-                    ['label' => 'Pendiente', 'class' => 'bg-yellow-100 text-yellow-800'],
-                    ['label' => 'Aprobado', 'class' => 'bg-emerald-100 text-emerald-800'],
-                    ['label' => 'Rechazado', 'class' => 'bg-[var(--primary-soft)] text-[var(--primary)]'],
-                ],
-                'tips' => [
-                    'Lee las instrucciones específicas del material antes de usarlo.',
-                    'Anota obstáculos para que el docente o auxiliar puedan mejorar procesos.',
-                    'Cumple los plazos de devolución para evitar bloqueos.'
+                'flows' => [
+                    'Escoge el material necesario, explica el uso académico y envía el préstamo.',
+                    'Sigue las indicaciones de devolución para evitar estados vencidos o sanciones.',
                 ],
             ],
         ];
 
-        return view('manual.index', compact('rolesManual'));
+        $faqEntries = [
+            [
+                'question' => '¿Qué hago si olvido mi contraseña?',
+                'answer' => 'En la pantalla de ingreso busca el enlace "¿Olvidó su contraseña?" y sigue los pasos. Si la cuenta universitaria no responde, contacta al responsable de TI para que reestablezca el acceso.',
+            ],
+            [
+                'question' => '¿Qué requisitos debo cumplir antes de ingresar al sistema?',
+                'answer' => 'Usar un navegador actualizado, tener conexión estable y contar con credenciales válidas. Verifica que el rol asignado (Super Administrador, Administrador Auxiliar, docente o estudiante) esté activado antes de iniciar sesión.',
+            ],
+            [
+                'question' => '¿Cómo ingreso a la plataforma MultiLab?',
+                'answer' => 'Accede a la URL principal del laboratorio, introduce tu correo institucional y contraseña. Si el sistema solicita un segundo factor, sigue el paso adicional que aparezca en pantalla.',
+            ],
+            [
+                'question' => '¿Qué muestra el panel principal y cómo lo interpreto?',
+                'answer' => 'El panel despliega tarjetas clave como solicitudes recientes, préstamos activos y alertas de inventario. Consulta la barra de estado para detectar bloqueos e ingresa a cada módulo desde los accesos rápidos.',
+            ],
+            [
+                'question' => '¿Cómo reviso el listado de usuarios registrados?',
+                'answer' => 'Desde la gestión de usuarios (solo Super Administrador) filtra por rol, estado o unidad. Puedes usar el buscador para localizar personas por nombre o correo y observar cuándo fue la última actualización.',
+            ],
+            [
+                'question' => '¿Qué debo hacer con una solicitud pendiente de usuario?',
+                'answer' => 'Lee la causa adjunta, verifica datos y decide si apruebas, rechazas o solicitas más información. Todo cambio debe documentarse para conservar trazabilidad.',
+            ],
+            [
+                'question' => '¿Cómo solicito una reserva en el Aula B202?',
+                'answer' => 'Desde el módulo de reservas elige aula, fecha, rango horario y materiales. Agrega el objetivo de la sesión y guarda la solicitud para que el Administrador Auxiliar la revise.',
+            ],
+            [
+                'question' => '¿Qué significan los estados de reserva?',
+                'answer' => 'Pendiente: en revisión (sin confirmación). Aprobada: el Administrador Auxiliar confirmó la hora. En uso: la sesión está activa y el aula se registra como ocupada. Finalizada: la actividad concluyó. Cancelada: la solicitud se anuló y no se puede reactivar.',
+            ],
+            [
+                'question' => '¿Cómo consulto el inventario disponible?',
+                'answer' => 'Ve a gestión de materiales, filtra por categoría o unidad y consulta stock, código y estado. Los registros indican si la unidad está disponible, en préstamo o en mantenimiento.',
+            ],
+            [
+                'question' => '¿Qué debo verificar antes de aprobar un préstamo?',
+                'answer' => 'Confirma que el ítem solicitado esté en estado "Disponible", revisa el stock mínimo y valida que el solicitante tenga permiso para ese material. Registra cualquier anotación antes de dar el visto bueno.',
+            ],
+            [
+                'question' => '¿Cómo gestiono una devolución de material?',
+                'answer' => 'Marca el préstamo como devuelto, registra la condición del equipo y vuelve a ajustar el inventario. Si hay daños, detalla la observación y activa la alerta correspondiente.',
+            ],
+            [
+                'question' => '¿Dónde encuentro el historial y auditoría?',
+                'answer' => 'En la sección de historial puedes filtrar por usuario, material o fecha. Cada acción queda registrada para consultas posteriores sobre préstamos, reservas y cambios en usuarios.',
+            ],
+        ];
+
+        $tocSections = [
+            ['id' => 'intro', 'label' => 'Introducción'],
+            ['id' => 'access', 'label' => 'Acceso al sistema'],
+            ['id' => 'roles', 'label' => 'Roles de usuario'],
+            ['id' => 'dashboard', 'label' => 'Panel principal'],
+            ['id' => 'users', 'label' => 'Gestión de usuarios'],
+            ['id' => 'reservations', 'label' => 'Reservas del laboratorio'],
+            ['id' => 'materials', 'label' => 'Gestión de materiales'],
+            ['id' => 'loans', 'label' => 'Préstamos de materiales'],
+            ['id' => 'audit', 'label' => 'Historial y auditoría'],
+            ['id' => 'logout', 'label' => 'Cierre de sesión'],
+            ['id' => 'recommendations', 'label' => 'Recomendaciones finales'],
+            ['id' => 'faq', 'label' => 'FAQ'],
+        ];
+
+        $roleChips = ['superadmin', 'aux_admin', 'docente', 'estudiante'];
+
+        return view('manual.index', compact('roleCards', 'faqEntries', 'tocSections', 'roleChips'));
     }
 }

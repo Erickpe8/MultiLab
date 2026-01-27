@@ -1,111 +1,161 @@
-@extends('layouts.manual')
+@section('title', 'Manual de Usuario MultiLab')
 
-@section('title', 'Manual de Usuario')
+@push('head_end')
+    <style>
+        @media print {
+            body {
+                background-color: #ffffff;
+            }
+            .manual-toc,
+            .manual-print-hide {
+                display: none !important;
+            }
+            .manual-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+@endpush
 
-@section('content')
-    <section class="space-y-10">
-        <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-soft p-8 space-y-4">
-            <div class="space-y-2">
-                <p class="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                    Manual de Usuario
-                </p>
-                    <h1 class="text-3xl font-extrabold text-brand">
-                    Guías por roles para usar {{ config('app.name') }}
-                </h1>
-                <p class="text-sm text-[color:var(--text-muted)] max-w-3xl">
-                    Encuentra el flujo de trabajo diario, acciones clave y estados recurrentes para cada perfil
-                    operativo. Esta guía es pública y está pensada como referencia antes de iniciar ciclos de
-                    préstamo, aprobación o devoluciones.
-                </p>
-            </div>
-        </div>
-
-        <div class="rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-soft p-6 space-y-4">
-            <div class="flex items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-lg font-semibold text-[var(--text)]">Índice rápido</h2>
-                    <p class="text-sm text-[color:var(--text-muted)]">
-                        Salta rápidamente a la sección del rol que necesitas.
-                    </p>
+<x-app-layout>
+    <div class="max-w-6xl mx-auto space-y-8 py-6">
+        <header class="space-y-6">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                <div class="space-y-3">
+                    <p class="text-xs uppercase tracking-[0.4em] text-[var(--text-muted)]">Manual de Usuario</p>
+                    <h1 class="text-3xl font-semibold text-[var(--text)]">Manual de Usuario MultiLab</h1>
+                    <div class="space-y-1 text-sm text-[var(--text-muted)]">
+                        <p>Esta guía centraliza la operación diaria del laboratorio sin inventar módulos nuevos.</p>
+                        <p>Describe roles reales y procesos del Panel principal (dashboard), gestión de usuarios, reservas, materiales y préstamos.</p>
+                        <p>Incluye ejemplos y pasos para que cada rol entienda sus límites.</p>
+                        <p>Explica estados concretos como Pendiente, Aprobada, En uso y Finalizada.</p>
+                        <p>Precisa qué ocurre cuando los materiales se reportan de mantenimiento o vencidos.</p>
+                        <p>Ofrece pasos para registrar materiales nuevos sin alterar la estructura.</p>
+                        <p>Conecta reservas con inventario al relacionar equipos de Aula B202.</p>
+                        <p>Detalla los mensajes más comunes que verás en pantalla.</p>
+                        <p>Incluye recomendaciones del día a día y buenas prácticas.</p>
+                        <p>Se actualiza según lo haga el sistema, respetando las migraciones actuales.</p>
+                        <p>Está pensado para la operación real en el laboratorio universitario.</p>
+                        <p>Utiliza este contenido antes de tomar decisiones críticas o comunicar excepciones.</p>
+                    </div>
                 </div>
-                <span class="text-xs font-semibold tracking-wide uppercase text-[var(--accent)]">
-                    Todos los roles
-                </span>
+                <button
+                    type="button"
+                    onclick="window.print()"
+                    class="manual-print-hide inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--text)]"
+                >
+                    Imprimir / PDF
+                </button>
             </div>
-
-            <nav class="flex flex-wrap gap-3">
-                @foreach ($rolesManual as $section)
-                    <a href="#{{ $section['id'] }}"
-                        class="inline-flex items-center rounded-xl border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] bg-[var(--card)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition">
-                        {{ $section['title'] }}
-                    </a>
+            @php
+                $roleLabels = [
+                    'superadmin' => 'Super Administrador',
+                    'aux_admin' => 'Administrador Auxiliar',
+                    'docente' => 'Docente',
+                    'estudiante' => 'Estudiante',
+                ];
+            @endphp
+            <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-[var(--text-muted)]">
+                @foreach (($roleChips ?? []) as $chip)
+                    <span class="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--text-muted)]">
+                        {{ $roleLabels[$chip] ?? ucfirst(str_replace('_', ' ', $chip)) }}
+                    </span>
                 @endforeach
-            </nav>
-        </div>
-
-        <div class="space-y-8">
-            @foreach ($rolesManual as $section)
-                <article id="{{ $section['id'] }}"
-                    class="rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-soft p-8 space-y-6">
-                    <header class="space-y-2">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Rol en
-                            {{ config('app.name') }}</p>
-                        <h3 class="text-2xl font-bold text-brand">{{ $section['title'] }}</h3>
-                        <p class="text-sm text-[color:var(--text-muted)]">
-                            {{ $section['description'] }}
-                        </p>
-                    </header>
-
-                    <div class="flex flex-wrap gap-2">
-                        @foreach ($section['states'] as $state)
-                            <span class="text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full border border-transparent {{ $state['class'] }}">
-                                {{ $state['label'] }}
-                            </span>
+            </div>
+            <div class="lg:hidden">
+                <details class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm shadow-sm">
+                    <summary class="cursor-pointer font-semibold text-[var(--text)]">Índice rápido</summary>
+                    <nav class="mt-3 space-y-2">
+                        @foreach ($tocSections ?? [] as $section)
+                            <a
+                                href="#{{ $section['id'] }}"
+                                class="flex items-center gap-3 rounded-2xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)] transition hover:bg-[var(--accent)]/10 hover:text-[var(--text)]"
+                            >
+                                <span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span>{{ $section['label'] }}</span>
+                            </a>
                         @endforeach
-                    </div>
-
-                    <div class="grid gap-6 md:grid-cols-2">
-                        <div>
-                            <h4 class="text-sm font-semibold text-[var(--text)]">Flujo típico</h4>
-                            <ol class="mt-4 space-y-3 text-sm text-[color:var(--text-muted)]">
-                                @foreach ($section['steps'] as $index => $step)
-                                    <li class="flex gap-3">
-                                        <span
-                                            class="flex-shrink-0 rounded-full border border-[var(--border)] px-2 py-1 text-[var(--text)] text-[0.65rem] font-semibold">
-                                            {{ $index + 1 }}
-                                        </span>
-                                        <p>{{ $step }}</p>
-                                    </li>
-                                @endforeach
-                            </ol>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-semibold text-[var(--text)]">Acciones clave</h4>
-                            <ul class="mt-4 space-y-3 text-sm text-[color:var(--text-muted)]">
-                                @foreach ($section['actions'] as $action)
-                                    <li class="flex gap-3">
-                                        <span class="mt-1 h-2 w-2 rounded-full bg-[var(--accent)]"></span>
-                                        <span>{{ $action }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)]/60 p-5 text-sm text-[color:var(--text-muted)]">
-                        <p class="font-semibold text-[var(--text)]">Tips útiles</p>
-                        <ul class="mt-3 space-y-2">
-                            @foreach ($section['tips'] as $tip)
-                                <li class="flex gap-2">
-                                    <span class="text-[var(--accent)]">•</span>
-                                    <span>{{ $tip }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </article>
-            @endforeach
+                    </nav>
+                </details>
+            </div>
+        </header>
+        <div class="lg:flex lg:gap-6">
+            <aside class="manual-toc hidden lg:block w-64 shrink-0 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm sticky top-24">
+                <p class="text-xs uppercase tracking-[0.3em] text-[var(--text-muted)]">Índice</p>
+                <nav class="mt-4 space-y-2">
+                    @foreach ($tocSections ?? [] as $section)
+                        <a
+                            href="#{{ $section['id'] }}"
+                            class="flex items-center gap-3 rounded-2xl px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-muted)] transition hover:bg-[var(--accent)]/10 hover:text-[var(--text)]"
+                        >
+                            <span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span>{{ $section['label'] }}</span>
+                        </a>
+                    @endforeach
+                </nav>
+            </aside>
+            <div class="flex-1 space-y-6">
+                <section id="intro" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._intro')
+                    </article>
+                </section>
+                <section id="access" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._access')
+                    </article>
+                </section>
+                <section id="roles" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._roles')
+                    </article>
+                </section>
+                <section id="dashboard" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._dashboard')
+                    </article>
+                </section>
+                <section id="users" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._users')
+                    </article>
+                </section>
+                <section id="reservations" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._reservations')
+                    </article>
+                </section>
+                <section id="materials" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._materials')
+                    </article>
+                </section>
+                <section id="loans" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._loans')
+                    </article>
+                </section>
+                <section id="audit" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._audit')
+                    </article>
+                </section>
+                <section id="logout" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._logout')
+                    </article>
+                </section>
+                <section id="recommendations" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._recommendations')
+                    </article>
+                </section>
+                <section id="faq" class="manual-section scroll-mt-28 space-y-6">
+                    <article class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+                        @include('manual.sections._faq')
+                    </article>
+                </section>
+            </div>
         </div>
-    </section>
-@endsection
+    </div>
+</x-app-layout>

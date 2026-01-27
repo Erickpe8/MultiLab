@@ -36,20 +36,35 @@
             $user = Auth::user();
         @endphp
 
-        <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
-                    border border-[var(--border)] text-center
-                    hover:from-[var(--primary)]/15 hover:to-[var(--accent)]/10 transition-all duration-300">
-            <p class="font-semibold text-sm truncate text-[var(--text)]">
-                {{ $user->name }}
-            </p>
-            <p class="text-xs text-[var(--accent)] font-medium mt-1 leading-snug break-words">
-                {{ $user->display_role_label }}
-            </p>
-        </div>
+        @if ($user)
+            <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
+                        border border-[var(--border)] text-center
+                        hover:from-[var(--primary)]/15 hover:to-[var(--accent)]/10 transition-all duration-300">
+                <p class="font-semibold text-sm truncate text-[var(--text)]">
+                    {{ $user->name }}
+                </p>
+                <p class="text-xs text-[var(--accent)] font-medium mt-1 leading-snug break-words">
+                    {{ $user->display_role_label }}
+                </p>
+            </div>
+        @else
+            <div class="p-3 rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg)] text-center text-sm text-[var(--text-muted)]">
+                <p class="font-semibold">Acceso restringido</p>
+                <p class="mt-1 text-[0.75rem]">Inicia sesión para cargar el menú completo.</p>
+            </div>
+        @endif
     </div>
 
     <!-- Navegación -->
-    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+    @if (!$user)
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+            <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--text-muted)]">
+                <p class="font-semibold text-[var(--text)]">Manual público</p>
+                <p class="mt-2">Solo los usuarios autenticados pueden navegar en el dashboard.</p>
+            </div>
+        </div>
+    @else
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
         {{-- Principal --}}
         <div>
             <x-sidebar.section-label label="Principal" />
@@ -371,5 +386,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 </nav>
