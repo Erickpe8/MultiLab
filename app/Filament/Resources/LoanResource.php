@@ -11,6 +11,7 @@ use Filament\Infolists\Infolist;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action as TableAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -21,6 +22,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
 use App\Helpers\RoleHelper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class LoanResource extends AppResource
@@ -42,6 +44,7 @@ class LoanResource extends AppResource
                             Forms\Components\Select::make('user_id')
                                 ->relationship('borrower', 'first_name')
                                 ->label('Solicitante')
+                                ->prefixIcon('heroicon-o-user-circle')
                                 ->getOptionLabelFromRecordUsing(fn (User $record) => $record->name)
                                 ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                                 ->preload()
@@ -51,6 +54,7 @@ class LoanResource extends AppResource
                             Forms\Components\Select::make('issued_by')
                                 ->relationship('issuer', 'first_name')
                                 ->label('Entregado por')
+                                ->prefixIcon('heroicon-o-clipboard-document-check')
                                 ->getOptionLabelFromRecordUsing(fn (User $record) => $record->name)
                                 ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                                 ->preload()
@@ -84,6 +88,7 @@ class LoanResource extends AppResource
                         ]),
                     Forms\Components\TextInput::make('loan_code')
                         ->label('Código de Préstamo')
+                        ->prefixIcon('heroicon-o-hashtag')
                         ->default('P-' . strtoupper(Str::random(8)))
                         ->readOnly()
                         ->required()
@@ -149,16 +154,19 @@ class LoanResource extends AppResource
                         ->schema([
                             Forms\Components\DateTimePicker::make('loan_at')
                                 ->label('Fecha de Préstamo')
+                                ->prefixIcon('heroicon-o-calendar')
                                 ->required()
                                 ->helperText('Inicio del retiro por parte del solicitante.')
                                 ->columnSpan(4),
                             Forms\Components\DateTimePicker::make('due_at')
                                 ->label('Fecha de Devolución')
+                                ->prefixIcon('heroicon-o-clock')
                                 ->required()
                                 ->helperText('Fecha comprometida para la devolución.')
                                 ->columnSpan(4),
                             Forms\Components\DateTimePicker::make('return_at')
                                 ->label('Fecha de Devolución Real')
+                                ->prefixIcon('heroicon-o-arrow-uturn-left')
                                 ->hiddenOn('create')
                                 ->readOnly()
                                 ->helperText('Se registra automáticamente cuando todos los materiales se devuelven.')
@@ -183,6 +191,7 @@ class LoanResource extends AppResource
                                 ->schema([
                                     Forms\Components\Select::make('material_id')
                                         ->label('Material')
+                                        ->prefixIcon('heroicon-o-cube')
                                         ->options(Material::query()->pluck('name', 'id'))
                                         ->required()
                                         ->disabledOn('edit')
@@ -207,6 +216,7 @@ class LoanResource extends AppResource
                                         ->columnSpan(3),
                                     Forms\Components\TextInput::make('loan_qty')
                                         ->label('Cantidad prestada')
+                                        ->prefixIcon('heroicon-o-clipboard-document-list')
                                         ->numeric()
                                         ->required()
                                         ->rule(function (Forms\Get $get, Forms\Components\Component $component) {
@@ -310,39 +320,6 @@ class LoanResource extends AppResource
         ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Infolists\Components\Section::make('Información del Préstamo')
-                    ->schema([
-                        Infolists\Components\TextEntry::make('borrower.name')->label('Solicitante'),
-                        Infolists\Components\TextEntry::make('issuer.name')->label('Entregado por'),
-                        Infolists\Components\TextEntry::make('loan_code')->label('Código de Préstamo'),
-                        Infolists\Components\TextEntry::make('status')->label('Estado')->badge(),
-                        Infolists\Components\TextEntry::make('loan_at')->label('Fecha de Préstamo')->dateTime(),
-                        Infolists\Components\TextEntry::make('due_at')->label('Fecha de Devolución')->dateTime(),
-                        Infolists\Components\TextEntry::make('return_at')->label('Fecha de Devolución Real')->dateTime(),
-                    ])->columns(2),
-                Infolists\Components\Section::make('Materiales Prestados')
-                    ->schema([
-                        Infolists\Components\RepeatableEntry::make('materials')
-                            ->hiddenLabel()
-                            ->schema([
-                                Infolists\Components\TextEntry::make('name')
-                                    ->label('Material')
-                                    ->weight('bold'),
-                                Infolists\Components\TextEntry::make('pivot.loan_qty')
-                                    ->label('Cantidad Prestada'),
-                                Infolists\Components\TextEntry::make('pivot.returned_qty')
-                                    ->label('Cantidad Devuelta')
-                                    ->badge()
-                                    ->color(fn (string $state, $record) => $state < $record->pivot->loan_qty ? 'warning' : 'success'),
-                            ])
-                            ->columns(3),
-                    ]),
-            ]);
-    }
 
     public static function table(Table $table): Table
     {
@@ -355,33 +332,42 @@ class LoanResource extends AppResource
             ->columns([
                 Tables\Columns\TextColumn::make('borrower.name')
                     ->label('Solicitante')
+                    ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-user-circle', $state ?? 'Sin solicitante'))
+                    ->html()
                     ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('issuer.name')
                     ->label('Entregado por')
+                    ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-clipboard-document-check', $state ?? 'Sin asignar'))
+                    ->html()
                     ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('loan_code')
                     ->label('Código de Préstamo')
+                    ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-hashtag', $state ?? 'N/A'))
+                    ->html()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('loan_at')
                     ->label('Inicio del prestamo')
-                    ->dateTime()
+                    ->formatStateUsing(fn ($state) => self::renderIconCell('heroicon-o-calendar', $state ? $state->format('d/m/Y H:i') : 'Sin definir'))
+                    ->html()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Fin del prestamo')
-                    ->dateTime()
+                    ->formatStateUsing(fn ($state) => self::renderIconCell('heroicon-o-clock', $state ? $state->format('d/m/Y H:i') : 'Sin definir'))
+                    ->html()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('return_at')
                     ->label('Entrega del prestamo')
-                    ->dateTime()
+                    ->formatStateUsing(fn ($state) => self::renderIconCell('heroicon-o-arrow-uturn-left', $state ? $state->format('d/m/Y H:i') : 'Pendiente'))
+                    ->html()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
                     ->getStateUsing(fn (Loan $record): string => self::resolveStatus($record))
                     ->colors([
-                        'primary' => ['pendiente', 'aprobado'],
+                        'primary' => ['pendiente', 'aprobado', 'en_curso'],
                         'success' => ['devuelto'],
                         'warning' => ['con_multa', 'vencido'],
                         'danger' => ['rechazado', 'cancelado', 'perdido'],
@@ -403,7 +389,92 @@ class LoanResource extends AppResource
                     ->query(fn (Builder $query) => $query->whereNull('return_at')->whereDate('due_at', '<', now())),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Ver detalle')
+                    ->icon('heroicon-o-eye')
+                    ->modalHeading('Detalle del préstamo')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar')
+                    ->modalWidth('7xl')
+                    ->modalActions(fn (): array => array_filter([
+                        TableAction::make('approveLoan')
+                            ->label('Aprobar')
+                            ->icon('heroicon-o-check-badge')
+                            ->color('success')
+                            ->visible(fn (Loan $record) => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && in_array(self::resolveStatus($record), ['pendiente', 'rechazado', 'cancelado']))
+                            ->requiresConfirmation()
+                            ->action(function (Loan $record) {
+                                $record->update([
+                                    'status' => 'en_curso',
+                                    'issued_by' => $record->issued_by ?? Auth::id(),
+                                ]);
+
+                                Notification::make()
+                                    ->title('Préstamo aprobado')
+                                    ->body('El préstamo ' . ($record->loan_code ?? '#') . ' fue aprobado correctamente.')
+                                    ->success()
+                                    ->send();
+
+                                self::notifyBorrower(
+                                    $record,
+                                    'Tu préstamo fue aprobado',
+                                    sprintf('El préstamo %s está en curso. Recoge y devuelve el material antes del %s.', $record->loan_code ?? '#', optional($record->due_at)?->format('d/m/Y H:i') ?? 'plazo acordado'),
+                                    'success'
+                                );
+                            }),
+                        TableAction::make('rejectLoan')
+                            ->label('Rechazar')
+                            ->icon('heroicon-o-x-circle')
+                            ->color('danger')
+                            ->visible(fn (Loan $record) => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && !in_array(self::resolveStatus($record), ['rechazado', 'en_curso', 'aprobado', 'devuelto'], true))
+                            ->requiresConfirmation()
+                            ->action(function (Loan $record) {
+                                $record->update([
+                                    'status' => 'rechazado',
+                                    'return_at' => null,
+                                ]);
+
+                                Notification::make()
+                                    ->title('Préstamo rechazado')
+                                    ->body('El préstamo ' . ($record->loan_code ?? '#') . ' fue marcado como rechazado.')
+                                    ->danger()
+                                    ->send();
+
+                                self::notifyBorrower(
+                                    $record,
+                                    'Tu préstamo fue rechazado',
+                                    'El laboratorio no pudo aprobar tu solicitud. Revisa las observaciones o solicita nuevamente.',
+                                    'danger'
+                                );
+                            }),
+                        TableAction::make('cancelLoan')
+                            ->label('Cancelar')
+                            ->icon('heroicon-o-no-symbol')
+                            ->color('gray')
+                            ->visible(fn (Loan $record) => RoleHelper::hasAnyRole(['superadmin', 'aux_admin']) && in_array(self::resolveStatus($record), ['aprobado', 'en_curso'], true))
+                            ->requiresConfirmation()
+                            ->action(function (Loan $record) {
+                                $record->update([
+                                    'status' => 'cancelado',
+                                    'return_at' => null,
+                                ]);
+
+                                Notification::make()
+                                    ->title('Préstamo cancelado')
+                                    ->body('El préstamo ' . ($record->loan_code ?? '#') . ' fue cancelado.')
+                                    ->warning()
+                                    ->send();
+
+                                self::notifyBorrower(
+                                    $record,
+                                    'Préstamo cancelado',
+                                    'El laboratorio canceló tu solicitud. Comunícate con el equipo para más detalles.',
+                                    'warning'
+                                );
+                            }),
+
+                    ])),
+
                 Tables\Actions\EditAction::make()
                     ->after(function (Loan $record) {
                         // Do nothing if the loan is already marked as returned
@@ -435,6 +506,30 @@ class LoanResource extends AppResource
                                 ->body('Todos los materiales han sido devueltos y el préstamo se ha marcado como "devuelto".')
                                 ->success()
                                 ->send();
+
+                            self::notifyBorrower(
+                                $record,
+                                'Hemos registrado tu devolución',
+                                'Gracias por devolver los materiales. El préstamo quedó cerrado sin novedades.',
+                                'success'
+                            );
+                        }
+
+                        if (!$allReturned && $record->due_at && $record->due_at->isPast() && self::resolveStatus($record) !== 'con_multa') {
+                            $record->update(['status' => 'con_multa']);
+
+                            Notification::make()
+                                ->title('Préstamo con multa')
+                                ->body('El préstamo ' . ($record->loan_code ?? '#') . ' superó la fecha límite y se marcó con multa.')
+                                ->warning()
+                                ->send();
+
+                            self::notifyBorrower(
+                                $record,
+                                'Tu préstamo tiene multa por atraso',
+                                sprintf('El préstamo %s venció el %s. Por favor devuelve los materiales o comunícate con el laboratorio.', $record->loan_code ?? '#', optional($record->due_at)?->format('d/m/Y H:i') ?? 'plazo indicado'),
+                                'danger'
+                            );
                         }
                     }),
             ])
@@ -450,19 +545,22 @@ class LoanResource extends AppResource
         return [
             'index' => Pages\ManageLoans::route('/'),
             'create' => Pages\CreateLoan::route('/create'),
-            'view' => Pages\ViewLoan::route('/{record}'),
         ];
     }
 
     protected static function resolveStatus(Loan $record): string
     {
-        $status = $record->status ?? 'pendiente';
+        $status = self::normalizeStatus($record->status ?? 'pendiente');
 
         if ($record->return_at) {
             return 'devuelto';
         }
 
-        if (in_array($status, ['pendiente', 'aprobado', 'rechazado', 'cancelado', 'con_multa', 'perdido', 'devuelto', 'vencido'], true)) {
+        if ($status === 'abierto') {
+            $status = 'en_curso';
+        }
+
+        if (in_array($status, ['pendiente', 'aprobado', 'rechazado', 'cancelado', 'con_multa', 'perdido', 'devuelto', 'vencido', 'en_curso'], true)) {
             return $status;
         }
 
@@ -470,7 +568,7 @@ class LoanResource extends AppResource
             return 'vencido';
         }
 
-        return $status;
+        return $status ?: 'pendiente';
     }
 
     protected static function getStatusFilterOptions(): array
@@ -478,12 +576,50 @@ class LoanResource extends AppResource
         return [
             'pendiente' => 'Pendiente',
             'aprobado' => 'Aprobado',
+            'en_curso' => 'En curso',
             'rechazado' => 'Rechazado',
             'cancelado' => 'Cancelado',
             'devuelto' => 'Devuelto',
             'con_multa' => 'Con multa',
             'perdido' => 'Perdido',
         ];
+    }
+
+    protected static function normalizeStatus(?string $status): string
+    {
+        return Str::of($status ?? 'pendiente')->snake()->lower()->value();
+    }
+
+    protected static function renderIconCell(string $icon, string $content): HtmlString
+    {
+        return new HtmlString(sprintf(
+            '<span class="flex items-center gap-2"><x-filament::icon icon="%s" class="h-4 w-4 text-primary-500" />%s</span>',
+            $icon,
+            e($content)
+        ));
+    }
+
+    protected static function notifyBorrower(Loan $record, string $title, string $message, string $type = 'info'): void
+    {
+        $record->loadMissing('borrower');
+
+        if (!$record->borrower) {
+            return;
+        }
+
+        $notification = Notification::make()
+            ->title($title)
+            ->body($message)
+            ->duration('persistent');
+
+        match ($type) {
+            'success' => $notification->success(),
+            'warning' => $notification->warning(),
+            'danger' => $notification->danger(),
+            default => $notification->info(),
+        };
+
+        $notification->sendToDatabase($record->borrower);
     }
 
     public static function canCreate(): bool
