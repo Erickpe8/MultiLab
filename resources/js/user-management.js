@@ -373,18 +373,58 @@
         }
     }
 
-    const confirmUnblockUser = async (userId, userName, button) => {
+    let unblockTargetName = '';
+
+    const openUnblockModal = (userId, userName, userEmail = '') => {
         if (!userId) {
             window.notify?.show('ID de usuario inválido', 'error');
             return;
         }
 
-        if (!window.confirm(`¿Desbloquear a ${userName}?`)) {
+        unblockTargetName = userName || 'este usuario';
+
+        const userIdInput = document.getElementById('unblock-user-id');
+        const userNameEl = document.getElementById('unblock-user-name');
+        const userLabel = document.getElementById('unblock-confirm-user');
+        const avatarEl = document.getElementById('unblock-user-avatar');
+        const userEmailEl = document.getElementById('unblock-user-email');
+
+        if (userIdInput) userIdInput.value = userId;
+        if (userNameEl) userNameEl.textContent = userName;
+        if (userLabel) userLabel.textContent = userName || 'este usuario';
+        if (avatarEl) {
+            avatarEl.textContent = (userName || 'U').charAt(0).toUpperCase();
+        }
+        if (userEmailEl) userEmailEl.textContent = userEmail || 'No disponible';
+
+        window.dispatchEvent(new CustomEvent('open-modal', {
+            detail: 'unblock-user-modal',
+            bubbles: true,
+            composed: true,
+        }));
+    };
+
+    async function handleUnblockSubmit(event) {
+        event.preventDefault();
+        const userId = document.getElementById('unblock-user-id')?.value;
+        const confirmBtn = document.getElementById('unblock-user-confirm-btn');
+        const userName = unblockTargetName || document.getElementById('unblock-user-name')?.textContent || 'este usuario';
+
+        if (!userId) {
+            window.notify?.show('ID de usuario inválido', 'error');
             return;
         }
 
-        await handleBlockToggle(`/user-management/${userId}/unblock`, button, `Usuario ${userName} desbloqueado correctamente.`);
-    };
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+        }
+
+        const success = await handleBlockToggle(`/user-management/${userId}/unblock`, confirmBtn, `Usuario ${userName} desbloqueado correctamente.`);
+
+        if (success) {
+            closeModal('unblock-user-modal');
+        }
+    }
 
     async function confirmRejectUser() {
         const userId = document.getElementById('reject-user-id').value;
@@ -512,6 +552,10 @@
         if (blockForm) {
             blockForm.addEventListener('submit', handleBlockSubmit);
         }
+        const unblockForm = document.getElementById('unblock-user-form');
+        if (unblockForm) {
+            unblockForm.addEventListener('submit', handleUnblockSubmit);
+        }
     }
 
     function exposeGlobals() {
@@ -519,7 +563,8 @@
         window.openEditRoleModal = openEditRoleModal;
         window.openRejectModal = openRejectModal;
         window.confirmBlockUser = confirmBlockUser;
-        window.confirmUnblockUser = confirmUnblockUser;
+        window.openUnblockModal = openUnblockModal;
+        window.confirmUnblockUser = openUnblockModal;
         window.confirmRejectUser = confirmRejectUser;
         window.closeModal = closeModal;
         window.showUserMgmtNotification = showNotification;
