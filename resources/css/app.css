@@ -616,13 +616,19 @@ select option:selected {
     display: none;
 }
 
-.sidebar-scrollbar-hidden {
+.sidebar-scroll-hidden {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
-.sidebar-scrollbar-hidden::-webkit-scrollbar {
+.sidebar-scroll-hidden::-webkit-scrollbar {
     width: 0;
     height: 0;
+}
+.sidebar-scroll-hidden::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+.sidebar-scroll-hidden::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* Animación suave para las transiciones */

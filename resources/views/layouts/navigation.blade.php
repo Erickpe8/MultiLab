@@ -57,14 +57,14 @@
 
     <!-- Navegación -->
     @if (!$user)
-        <div class="flex-1 overflow-y-auto sidebar-scrollbar-hidden px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scroll-hidden px-3 py-4 space-y-3">
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--text-muted)]">
                 <p class="font-semibold text-[var(--text)]">Manual público</p>
                 <p class="mt-2">Solo los usuarios autenticados pueden navegar en el dashboard.</p>
             </div>
         </div>
     @else
-        <div class="flex-1 overflow-y-auto sidebar-scrollbar-hidden px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scroll-hidden px-3 py-4 space-y-3">
         {{-- Principal --}}
         <div>
             <x-sidebar.section-label label="Principal" />
