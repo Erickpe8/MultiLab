@@ -40,7 +40,7 @@
             <div class="p-3 rounded-lg bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent)]/5
                         border border-[var(--border)] text-center
                         hover:from-[var(--primary)]/15 hover:to-[var(--accent)]/10 transition-all duration-300">
-                <p class="font-semibold text-sm truncate text-[var(--text)]">
+                <p class="font-semibold text-sm whitespace-normal break-words text-[var(--text)]">
                     {{ $user->name }}
                 </p>
                 <p class="text-xs text-[var(--accent)] font-medium mt-1 leading-snug break-words">
@@ -57,14 +57,14 @@
 
     <!-- Navegación -->
     @if (!$user)
-        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scrollbar-hidden px-3 py-4 space-y-3">
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--text-muted)]">
                 <p class="font-semibold text-[var(--text)]">Manual público</p>
                 <p class="mt-2">Solo los usuarios autenticados pueden navegar en el dashboard.</p>
             </div>
         </div>
     @else
-        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scrollbar-hidden px-3 py-4 space-y-3">
         {{-- Principal --}}
         <div>
             <x-sidebar.section-label label="Principal" />
@@ -119,6 +119,10 @@
                         @php
                             $pendingCount = \App\Models\User::pending()->count();
                             $userManagementView = request()->get('view', 'active');
+                            $pendingIsActive = request()->routeIs('user-management.index') && $userManagementView === 'pending';
+                            $pendingStateClasses = $pendingIsActive
+                                ? 'bg-[var(--primary)]/10 text-[var(--primary)] font-medium'
+                                : 'hover:bg-[var(--border)]/10 text-[var(--text)]/70';
                         @endphp
 
                         <x-sidebar.sub-item
@@ -127,22 +131,27 @@
                             label="Usuarios Activos"
                             :active="request()->routeIs('user-management.index') && $userManagementView === 'active'" />
 
-                        <x-sidebar.sub-item
-                            :href="route('user-management.index', ['view' => 'pending'])"
-                            icon="heroicon-o-clock"
-                            label="Solicitudes Pendientes"
-                            :active="request()->routeIs('user-management.index') && $userManagementView === 'pending'">
+                        <a
+                            href="{{ route('user-management.index', ['view' => 'pending']) }}"
+                            class="flex flex-col items-start gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200 group {{ $pendingStateClasses }}"
+                            @if($pendingIsActive) aria-current="page" @endif
+                        >
+                            <span class="flex items-center gap-2">
+                                <x-ui.icon name="heroicon-o-clock" size="sm" class="text-current" />
+                                <span>Solicitudes Pendientes</span>
+                            </span>
+
                             @if($pendingCount > 0)
-                                <div class="px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                                    <div class="flex items-center gap-2 text-xs">
+                                <div class="w-full rounded-lg border border-yellow-500/20 bg-yellow-500/10">
+                                    <div class="flex items-center gap-2 px-3 py-2 text-xs font-medium text-yellow-600 dark:text-yellow-400">
                                         <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                                        <span class="text-yellow-600 dark:text-yellow-400 font-medium">
+                                        <span>
                                             {{ $pendingCount }} solicitud{{ $pendingCount > 1 ? 'es' : '' }} pendiente{{ $pendingCount > 1 ? 's' : '' }}
                                         </span>
                                     </div>
                                 </div>
                             @endif
-                        </x-sidebar.sub-item>
+                        </a>
 
                         <x-sidebar.sub-item
                             :href="route('user-management.index', ['view' => 'blocked'])"

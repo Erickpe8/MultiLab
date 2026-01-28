@@ -616,6 +616,15 @@ select option:selected {
     display: none;
 }
 
+.sidebar-scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.sidebar-scrollbar-hidden::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
 /* Animación suave para las transiciones */
 .pending-user-card,
 .active-user-row {
