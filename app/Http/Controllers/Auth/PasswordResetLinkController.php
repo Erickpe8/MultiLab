@@ -15,7 +15,11 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
-        return view('auth.forgot-password');
+        $defaultMailer = config('mail.default');
+        $mailerHost = $defaultMailer ? config("mail.mailers.{$defaultMailer}.host") : null;
+        $mailConfigured = !empty($defaultMailer) && !empty($mailerHost) && !empty(config('mail.from.address'));
+
+        return view('auth.forgot-password', compact('mailConfigured'));
     }
 
     /**

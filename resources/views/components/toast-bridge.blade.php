@@ -1,7 +1,7 @@
 @php
     $allowedTypes = ['success', 'error', 'warning', 'info'];
     $notifyPayload = null;
-    $sessionNotify = session('notify');
+    $sessionNotify = session()->pull('notify');
 
     if ($sessionNotify) {
         if (is_array($sessionNotify)) {
@@ -26,7 +26,7 @@
     }
 
     $statusPayload = null;
-    if (!$notifyPayload && $status = session('status')) {
+    if (!$notifyPayload && $status = session()->pull('status')) {
         $statusPayload = [
             'message' => (string) $status,
             'type' => 'success',
