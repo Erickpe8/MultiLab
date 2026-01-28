@@ -10,9 +10,7 @@
         'mobile' => old('mobile', $user->mobile),
         'phone_extension' => old('phone_extension', $user->phone_extension),
 
-        'notify_email' => (bool) old('notify_email', $user->notify_email ?? true),
         'notify_in_app' => (bool) old('notify_in_app', $user->notify_in_app ?? true),
-        'digest_frequency' => old('digest_frequency', $user->digest_frequency ?? 'weekly'),
 
         'theme' => old('theme', $user->theme ?? 'system'),
         'compact_mode' => (bool) old('compact_mode', $user->compact_mode ?? false),

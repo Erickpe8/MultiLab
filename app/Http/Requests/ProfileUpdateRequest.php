@@ -49,7 +49,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'notify_email' => ['boolean'],
             'notify_in_app' => ['boolean'],
-            'digest_frequency' => ['required', Rule::in(['none', 'daily', 'weekly'])],
+            'digest_frequency' => ['nullable', Rule::in(['none', 'daily', 'weekly'])],
             'theme' => ['required', Rule::in(['system', 'light', 'dark'])],
             'compact_mode' => ['boolean'],
             'phone' => ['nullable', 'string', 'max:64'],
