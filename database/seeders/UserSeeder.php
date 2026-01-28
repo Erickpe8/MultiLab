@@ -9,9 +9,9 @@ class UserSeeder extends Seeder
 {
     private const PASSWORD = 'Password123*';
     private const SUPERADMIN_EMAIL = 'superadmin@fesc.edu.co';
-    private const AUX_COUNT = 24;
-    private const DOCENTE_COUNT = 1020;
-    private const ESTUDIANTE_COUNT = 4080;
+
+    private const DOCENTE_COUNT = 10;
+    private const ESTUDIANTE_COUNT = 250;
 
     public function run(): void
     {
@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         $faker->seed(20260127);
 
         $this->createSuperadmin();
-        $this->createRoleBatch('aux_admin', self::AUX_COUNT, 'aux', 2, 'CC', 1100000000, 6011000000, $faker);
+        $this->createAuxiliarYeison();
         $this->createRoleBatch('docente', self::DOCENTE_COUNT, 'docente', 4, 'CC', 1200000000, 6012000000, $faker);
         $this->createRoleBatch('estudiante', self::ESTUDIANTE_COUNT, 'estudiante', 4, 'TI', 2100000000, 6013000000, $faker);
     }
@@ -27,10 +27,10 @@ class UserSeeder extends Seeder
     private function createSuperadmin(): void
     {
         $admin = [
-            'first_name' => 'Camilo',
-            'middle_name' => 'Andrés',
-            'first_surname' => 'Pérez',
-            'second_surname' => 'Ávila',
+            'first_name' => 'Jesús',
+            'middle_name' => 'Antonio',
+            'first_surname' => 'Figueroa',
+            'second_surname' => 'Guerrero',
             'email' => self::SUPERADMIN_EMAIL,
             'gender' => 'M',
             'document_type' => 'CC',
@@ -40,17 +40,40 @@ class UserSeeder extends Seeder
 
         $user = User::updateOrCreate(
             ['email' => $admin['email']],
-            array_merge(
-                $admin,
-                [
-                    'password' => self::PASSWORD,
-                    'is_active' => true,
-                    'role_name' => 'superadmin',
-                ]
-            )
+            array_merge($admin, [
+                'password' => self::PASSWORD,
+                'is_active' => true,
+                'role_name' => 'superadmin',
+            ])
         );
 
         $user->syncRoles(['superadmin']);
+    }
+
+    private function createAuxiliarYeison(): void
+    {
+        $aux = [
+            'first_name' => 'Yeison',
+            'middle_name' => 'Edward',
+            'first_surname' => 'Rolón',
+            'second_surname' => 'Ortiz',
+            'email' => 'yeison.rolon@fesc.edu.co',
+            'gender' => 'M',
+            'document_type' => 'CC',
+            'document_number' => '1100000001',
+            'phone' => '6011000001',
+        ];
+
+        $user = User::updateOrCreate(
+            ['email' => $aux['email']],
+            array_merge($aux, [
+                'password' => self::PASSWORD,
+                'is_active' => true,
+                'role_name' => 'aux_admin',
+            ])
+        );
+
+        $user->syncRoles(['aux_admin']);
     }
 
     private function createRoleBatch(
