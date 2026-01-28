@@ -92,7 +92,7 @@
                                 <ul
                                     class="mt-3 space-y-1 text-xs text-[var(--text-muted)] leading-relaxed list-disc list-inside">
                                     <li>Arquitectura general del sistema</li>
-                                    <li>Implementación del patrón MVC + UseCases</li>
+                                    <li>Implementación del patrón MVC</li>
                                     <li>Desarrollo de pruebas automatizadas</li>
                                     <li>Componentes de autenticación y seguridad</li>
                                     <li>Módulo de perfil de usuario</li>

@@ -1,27 +1,30 @@
-FROM php:8.1-cli
+FROM php:8.4-fpm
 
+# Dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    zip \
-    unzip \
     git \
+    unzip \
     libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    libicu-dev \
-    default-mysql-client \
-    && docker-php-ext-install \
-        pdo_mysql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        intl \
-        zip
+    zip \
+    curl \
+    mariadb-client \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
 
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY php.ini /usr/local/etc/php/php.ini
-
+# Directorio de trabajo
 WORKDIR /var/www
+
+# Copiar proyecto
+COPY . /var/www
+
+# Permisos
+RUN chown -R www-data:www-data /var/www
+
+USER www-data
