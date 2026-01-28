@@ -67,22 +67,6 @@
                 </p>
             </div>
 
-            <!-- Área -->
-            <div>
-                <label for="approve-area" class="block text-sm font-semibold text-[var(--text)] mb-2">
-                    Área <span class="text-[var(--text-muted)] font-normal">(opcional)</span>
-                </label>
-                <input type="text" name="area" id="approve-area"
-                    class="w-full px-4 py-2.5 rounded-lg border border-[var(--border)]
-                           bg-[var(--card)] text-[var(--text)]
-                           focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
-                           placeholder:text-[var(--text-muted)] transition-all"
-                    placeholder="Ej: Recursos Humanos, IT, Ventas...">
-                <p class="mt-1.5 text-xs text-[var(--text-muted)]">
-                    Departamento o área de trabajo del usuario
-                </p>
-            </div>
-
             <!-- Actions -->
             <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4 border-t border-[var(--border)]">
                 <button type="button"

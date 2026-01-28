@@ -105,22 +105,6 @@
                 </p>
             </div>
 
-            <!-- Área -->
-            <div>
-                <label for="edit-area" class="block text-sm font-semibold text-[var(--text)] mb-2">
-                    Área <span class="text-[var(--text-muted)] font-normal">(opcional)</span>
-                </label>
-                <input type="text" name="area" id="edit-area"
-                    class="w-full px-4 py-2.5 rounded-lg border border-[var(--border)]
-                           bg-[var(--card)] text-[var(--text)]
-                           focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
-                           placeholder:text-[var(--text-muted)] transition-all"
-                    placeholder="Ej: Recursos Humanos, IT, Ventas...">
-                <p class="mt-1.5 text-xs text-[var(--text-muted)]">
-                    Actualiza el departamento o área de trabajo
-                </p>
-            </div>
-
             <!-- Warning Info -->
             <div class="flex items-start gap-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <x-ui.icon name="info" size="sm"
