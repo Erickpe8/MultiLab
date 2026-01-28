@@ -2,24 +2,31 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <script>
+        (function () {
+            try {
+                const stored = localStorage.getItem('theme');
+                const theme = stored || 'light';
+                if (!stored) {
+                    localStorage.setItem('theme', 'light');
+                }
+                document.documentElement.dataset.theme = theme;
+                document.documentElement.classList.toggle('dark', theme === 'dark');
+                document.documentElement.style.colorScheme = theme;
+            } catch (error) {
+                document.documentElement.dataset.theme = 'light';
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+            }
+        })();
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/multilab.svg') }}">
     <link rel="alternate icon" href="{{ asset('images/multilab.svg') }}">
-
-    <script>
-        (function() {
-            const saved = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = saved || (prefersDark ? 'dark' : 'light');
-
-            document.documentElement.dataset.theme = theme;
-            document.documentElement.classList.toggle('dark', theme === 'dark');
-            document.documentElement.style.colorScheme = theme;
-        })();
-    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

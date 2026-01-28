@@ -17,7 +17,8 @@
             </button>
         </form>
 
-        <form method="POST" action="{{ route('logout') }}" onsubmit="localStorage.clear(); sessionStorage.clear();">
+        <form method="POST" action="{{ route('logout') }}"
+              onsubmit="localStorage.clear(); sessionStorage.clear(); localStorage.setItem('theme', 'light'); document.documentElement.dataset.theme = 'light'; document.documentElement.classList.remove('dark');">
             @csrf
             <button type="submit" class="w-full h-11 rounded-xl border border-[var(--border)] text-sm font-semibold text-[var(--primary)] hover:underline hover:border-[var(--primary)] transition">
                 Cerrar sesión

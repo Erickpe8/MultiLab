@@ -374,7 +374,8 @@
                         label="Perfil"
                         :active="request()->routeIs('profile.*')" />
 
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}"
+                          onsubmit="localStorage.setItem('theme', 'light'); document.documentElement.dataset.theme = 'light'; document.documentElement.classList.remove('dark');">
                         @csrf
                         <button type="submit" class="w-full text-left">
                             <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[var(--text)] hover:bg-[var(--border)]/10 transition-all duration-200">

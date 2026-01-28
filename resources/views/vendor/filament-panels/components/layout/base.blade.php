@@ -12,6 +12,25 @@
     ])
 >
     <head>
+        <script>
+            (function () {
+                try {
+                    const stored = localStorage.getItem('theme');
+                    const theme = stored || 'light';
+                    if (!stored) {
+                        localStorage.setItem('theme', 'light');
+                    }
+                    document.documentElement.dataset.theme = theme;
+                    document.documentElement.classList.toggle('dark', theme === 'dark');
+                    document.documentElement.style.colorScheme = theme;
+                } catch (error) {
+                    document.documentElement.dataset.theme = 'light';
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                }
+            })();
+        </script>
+
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_START, scopes: $livewire?->getRenderHookScopes()) }}
 
         <meta charset="utf-8" />

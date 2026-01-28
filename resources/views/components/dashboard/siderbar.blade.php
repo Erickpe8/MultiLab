@@ -121,7 +121,11 @@
         >
             <i class="fas fa-user-secret"></i>
         </a>
-        <form method="POST" action="{{ Route::has('logout') ? route('logout') : '#' }}">
+        <form
+            method="POST"
+            action="{{ Route::has('logout') ? route('logout') : '#' }}"
+            onsubmit="localStorage.setItem('theme', 'light'); document.documentElement.dataset.theme = 'light'; document.documentElement.classList.remove('dark');"
+        >
             @csrf
             <button
                 type="submit"

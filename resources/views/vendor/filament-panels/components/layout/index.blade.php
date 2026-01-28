@@ -180,7 +180,8 @@
                 }
             });
 
-            const stored = normalize(localStorage.getItem('theme'));
+            const storedValue = localStorage.getItem('theme');
+            const stored = typeof storedValue === 'string' ? storedValue : 'light';
 
             window.theme = {
                 normalize,
