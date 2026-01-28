@@ -7,6 +7,7 @@ use App\Filament\Resources\MaterialResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Material;
 use App\Models\Unit;
+use App\Support\CategoryIconResolver;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -21,6 +22,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -49,6 +51,7 @@ class MaterialResource extends AppResource
                                         ->schema([
                                             TextInput::make('sku')
                                                 ->label('Código SKU')
+                                                ->prefixIcon('heroicon-o-identification')
                                                 ->placeholder('Ej: CAB-00045')
                                                 ->helperText('Usa un código consistente para búsquedas más rápidas.')
                                                 ->unique(ignoreRecord: true)
@@ -57,6 +60,7 @@ class MaterialResource extends AppResource
                                                 ->columnSpan(4),
                                             TextInput::make('name')
                                                 ->label('Nombre comercial')
+                                                ->prefixIcon('heroicon-o-tag')
                                                 ->placeholder('Cables HDMI 1.5m')
                                                 ->helperText('Se mostrará en listados de préstamos e inventario.')
                                                 ->required()
@@ -64,6 +68,7 @@ class MaterialResource extends AppResource
                                                 ->columnSpan(8),
                                             Select::make('category_id')
                                                 ->label('Categoría')
+                                                ->prefixIcon('heroicon-o-squares-2x2')
                                                 ->relationship('category', 'name')
                                                 ->searchable()
                                                 ->preload()
@@ -72,6 +77,7 @@ class MaterialResource extends AppResource
                                                 ->columnSpan(6),
                                             Select::make('unit_id')
                                                 ->label('Unidad de medida')
+                                                ->prefixIcon('heroicon-o-adjustments-horizontal')
                                                 ->relationship('unit', 'name')
                                                 ->searchable()
                                                 ->preload()
@@ -91,6 +97,7 @@ class MaterialResource extends AppResource
                                         ->schema([
                                             TextInput::make('min_stock')
                                                 ->label('Stock mínimo')
+                                                ->prefixIcon('heroicon-o-arrow-trending-down')
                                                 ->numeric()
                                                 ->default(0)
                                                 ->minValue(0)
@@ -98,6 +105,7 @@ class MaterialResource extends AppResource
                                                 ->columnSpan(4),
                                             TextInput::make('max_stock')
                                                 ->label('Stock máximo')
+                                                ->prefixIcon('heroicon-o-arrow-trending-up')
                                                 ->numeric()
                                                 ->default(0)
                                                 ->minValue(0)
@@ -105,6 +113,7 @@ class MaterialResource extends AppResource
                                                 ->columnSpan(4),
                                             TextInput::make('current_stock')
                                                 ->label('Stock actual')
+                                                ->prefixIcon('heroicon-o-archive-box')
                                                 ->numeric()
                                                 ->default(0)
                                                 ->minValue(0)
@@ -171,6 +180,16 @@ class MaterialResource extends AppResource
                     ->sortable(),
                 TextColumn::make('category.name')
                     ->label('Categoría')
+                    ->formatStateUsing(function (?string $state) {
+                        $icon = CategoryIconResolver::resolve($state);
+
+                        return new HtmlString(sprintf(
+                            '<span class="flex items-center gap-2"><x-filament::icon icon="%s" class="h-4 w-4 text-primary-500" />%s</span>',
+                            $icon,
+                            e($state ?? 'Sin categoría')
+                        ));
+                    })
+                    ->html()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('unit.name')

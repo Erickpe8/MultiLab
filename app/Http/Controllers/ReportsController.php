@@ -64,7 +64,7 @@ class ReportsController extends Controller
             $activeLoans = Loan::query()
                 ->whereNull('return_at')
                 ->where('due_at', '>=', $now)
-                ->whereNotIn('status', ['devuelto', 'perdido'])
+                ->whereNotIn('status', ['devuelto', 'devuelto_con_multa', 'cancelado', 'rechazado'])
                 ->count();
 
             $cards['active_loans']['value'] = $activeLoans;
@@ -76,7 +76,7 @@ class ReportsController extends Controller
             $overdueLoans = Loan::query()
                 ->whereNull('return_at')
                 ->where('due_at', '<', $now)
-                ->whereNotIn('status', ['devuelto', 'perdido'])
+                ->whereNotIn('status', ['devuelto', 'devuelto_con_multa', 'cancelado', 'rechazado'])
                 ->count();
 
             $cards['overdue_loans']['value'] = $overdueLoans;
@@ -176,7 +176,7 @@ class ReportsController extends Controller
             $overdueLoans = Loan::with(['borrower:id,first_name,middle_name,first_surname,second_surname'])
                 ->whereNull('return_at')
                 ->where('due_at', '<', $now)
-                ->whereNotIn('status', ['devuelto', 'perdido'])
+                ->whereNotIn('status', ['devuelto', 'devuelto_con_multa', 'cancelado', 'rechazado'])
                 ->orderBy('due_at', 'asc')
                 ->limit(5)
                 ->get();

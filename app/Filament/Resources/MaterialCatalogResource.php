@@ -7,6 +7,7 @@ use App\Helpers\RoleHelper;
 use App\Models\Material;
 use App\Models\Loan;
 use App\Models\User;
+use App\Support\CategoryIconResolver;
 use App\Notifications\NewLoanRequestNotification;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -22,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
@@ -82,19 +84,21 @@ class MaterialCatalogResource extends AppResource
                 TextColumn::make('name')
                     ->label('Material')
                     ->description(fn (Material $record) => $record->category?->name)
+                    ->formatStateUsing(function (string $state, Material $record) {
+                        $icon = CategoryIconResolver::resolve($record->category?->name);
+
+                        return new HtmlString(sprintf(
+                            '<span class="flex items-center gap-2"><x-filament::icon icon="%s" class="h-4 w-4 text-primary-500" />%s</span>',
+                            $icon,
+                            e($state)
+                        ));
+                    })
+                    ->html()
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('unit.name')
                     ->label('Unidad')
                     ->sortable(),
-                TextColumn::make('current_stock')
-                    ->label('Stock actual')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('quantity_on_loan')
-                    ->label('Prestado')
-                    ->numeric()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('available_stock')
                     ->label('Disponible')
                     ->getStateUsing(fn (Material $record) => max($record->current_stock - $record->quantity_on_loan, 0))
@@ -119,6 +123,7 @@ class MaterialCatalogResource extends AppResource
                             ->schema([
                                 Select::make('material_id')
                                     ->label('Material')
+                                    ->prefixIcon('heroicon-o-cube')
                                     ->options(fn () => Material::orderBy('name')->pluck('name', 'id'))
                                     ->searchable()
                                     ->preload()
@@ -126,27 +131,83 @@ class MaterialCatalogResource extends AppResource
                                     ->columnSpan(1),
                                 TextInput::make('quantity')
                                     ->label('Cantidad')
+                                    ->prefixIcon('heroicon-o-hashtag')
                                     ->numeric()
                                     ->minValue(1)
                                     ->required()
+                                    ->helperText(function (Forms\Get $get) {
+                                        $materialId = $get('material_id');
+
+                                        if (! $materialId) {
+                                            return 'Selecciona un material para ver el stock disponible.';
+                                        }
+
+                                        $material = Material::find($materialId);
+
+                                        if (! $material) {
+                                            return 'El material ya no está disponible.';
+                                        }
+
+                                        $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                                        return "Stock disponible: {$available} unidad(es).";
+                                    })
+                                    ->rule(function (Forms\Get $get) {
+                                        return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                            $materialId = $get('material_id');
+
+                                            if (! $materialId) {
+                                                return;
+                                            }
+
+                                            $material = Material::find($materialId);
+
+                                            if (! $material) {
+                                                $fail('El material seleccionado ya no existe.');
+
+                                                return;
+                                            }
+
+                        
+
+                                            $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                                            if ($available <= 0) {
+                                                $fail("Actualmente no hay stock disponible de {$material->name}.");
+
+                                                return;
+                                            }
+
+                                            if ((int) $value > $available) {
+                                                $fail("Solo hay {$available} unidad(es) disponibles para {$material->name}.");
+                                            }
+                                        };
+                                    })
                                     ->columnSpan(1),
                             ])
                             ->columnSpanFull(),
                         DateTimePicker::make('needed_at')
                             ->label('Fecha de retiro deseada')
+                            ->prefixIcon('heroicon-o-calendar')
                             ->required()
                             ->minDate(now())
                             ->seconds(false)
                             ->native(false),
                         DateTimePicker::make('planned_return_at')
                             ->label('Fecha de devolución estimada')
+                            ->prefixIcon('heroicon-o-clock')
                             ->required()
                             ->seconds(false)
                             ->native(false),
                         Textarea::make('notes')
                             ->label('Notas opcionales')
                             ->placeholder('Cuéntanos brevemente para qué necesitas estos materiales.')
+                            ->helperText('Incluye detalles del proyecto o uso previsto para agilizar la autorización.')
                             ->rows(3)
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'pl-3 border-l-4 border-primary-200 bg-primary-50/30']),
+                        Forms\Components\Placeholder::make('notes_hint')
+                            ->content('Consejo: describe con claridad el uso del material para acelerar la aprobación.')
                             ->columnSpanFull(),
                     ])
                     ->modalSubmitActionLabel('Enviar solicitud')
@@ -252,4 +313,5 @@ class MaterialCatalogResource extends AppResource
             'index' => Pages\BrowseMaterials::route('/'),
         ];
     }
+
 }

@@ -28,7 +28,7 @@ class LoanSeeder extends Seeder
         $loanDefinitions = [
             [
                 'loan_code' => 'L-EST-ABIERTO-001',
-                'status' => 'abierto',
+                'status' => 'pendiente',
                 'borrower_role' => 'estudiante',
                 'loan_offset' => -2,
                 'duration' => 7,
@@ -53,7 +53,7 @@ class LoanSeeder extends Seeder
             ],
             [
                 'loan_code' => 'L-DOC-MULTA-001',
-                'status' => 'con_multa',
+                'status' => 'devuelto_con_multa',
                 'borrower_role' => 'docente',
                 'loan_offset' => -30,
                 'duration' => 12,
@@ -62,7 +62,7 @@ class LoanSeeder extends Seeder
             ],
             [
                 'loan_code' => 'L-EST-PERDIDO-001',
-                'status' => 'perdido',
+                'status' => 'devuelto_con_multa',
                 'borrower_role' => 'estudiante',
                 'loan_offset' => -40,
                 'duration' => 6,
@@ -70,7 +70,7 @@ class LoanSeeder extends Seeder
             ],
             [
                 'loan_code' => 'L-EST-ABIERTO-002',
-                'status' => 'abierto',
+                'status' => 'pendiente',
                 'borrower_role' => 'estudiante',
                 'loan_offset' => -1,
                 'duration' => 4,
@@ -110,7 +110,9 @@ class LoanSeeder extends Seeder
                 $loanQty = random_int(1, min(3, $available));
                 $pivotData[$material->getKey()] = [
                     'loan_qty' => $loanQty,
-                    'returned_qty' => $definition['status'] === 'devuelto' ? $loanQty : 0,
+                    'returned_qty' => in_array($definition['status'], ['devuelto', 'devuelto_con_multa'], true)
+                        ? ($definition['status'] === 'devuelto' ? $loanQty : max(0, $loanQty - 1))
+                        : 0,
                 ];
             }
 

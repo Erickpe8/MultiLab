@@ -34,7 +34,7 @@ class Material extends Model
         return Loan::whereHas('materials', function (Builder $query) {
             $query->where('materials.id', $this->id);
         })
-        ->whereNotIn('status', ['devuelto', 'perdido', 'cancelado'])
+        ->whereNotIn('status', ['devuelto', 'devuelto_con_multa', 'cancelado', 'rechazado'])
         ->get()
         ->sum(function ($loan) {
             $pivot = $loan->materials->firstWhere('id', $this->id)->pivot;
