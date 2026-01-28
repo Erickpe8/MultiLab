@@ -33,9 +33,9 @@
                         value="{{ request('active_search') }}"
                         placeholder="Buscar por nombre o correo"
                         class="w-full h-10 rounded-xl border border-[var(--border)] bg-[var(--card)]
-                              text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] px-4 transition-all
+                              text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] pl-10 pr-4 transition-all
                               focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20">
-                    <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
+                    <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
                         <x-ui.icon name="buscar" size="sm" class="text-[var(--text-muted)]" />
                     </div>
                 </div>
@@ -196,8 +196,9 @@
                                                transition-all
                                                border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]
                                                hover:border-[color-mix(in oklab, var(--primary) 70%, var(--border))]"
-                                        title="Bloquear usuario">
-                                        <x-ui.icon name="lock-closed" size="sm"
+                                        title="Bloquear usuario"
+                                        aria-label="Bloquear usuario">
+                                        <x-ui.icon name="block-user" size="sm"
                                             class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
                                     </button>
                                     </div>
