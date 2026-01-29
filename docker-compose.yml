@@ -13,6 +13,21 @@ services:
     networks:
       - laravel
 
+  scheduler:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      container_name: laravel_scheduler
+      volumes:
+          - .:/var/www
+          - laravel_storage:/var/www/storage
+          - laravel_bootstrap_cache:/var/www/bootstrap/cache
+      depends_on:
+          - mariadbmultilab
+      command: sh -c "while true; do php artisan schedule:run >> /dev/null 2>&1; sleep 60; done"
+      networks:
+          - laravel
+
   nginx:
     image: nginx:1.27
     container_name: laravel_nginx
