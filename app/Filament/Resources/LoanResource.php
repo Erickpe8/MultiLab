@@ -155,12 +155,22 @@ class LoanResource extends AppResource
                                 ->label('Fecha de Préstamo')
                                 ->prefixIcon('heroicon-o-calendar')
                                 ->required()
+                                ->native(false)
+                                ->minDate(now())
+                                ->seconds(false)
                                 ->helperText('Inicio del retiro por parte del solicitante.')
                                 ->columnSpan(4),
                             Forms\Components\DateTimePicker::make('due_at')
                                 ->label('Fecha de Devolución')
                                 ->prefixIcon('heroicon-o-clock')
                                 ->required()
+                                ->native(false)
+                                ->maxDate(now()->addYears(5))
+                                ->seconds(false)
+                                ->afterOrEqual('loan_at')
+                                ->validationMessages([
+                                    'after_or_equal' => 'La fecha de devolución no puede ser anterior a la fecha de préstamo.',
+                                ])
                                 ->helperText('Fecha comprometida para la devolución.')
                                 ->columnSpan(4),
                             Forms\Components\DateTimePicker::make('return_at')

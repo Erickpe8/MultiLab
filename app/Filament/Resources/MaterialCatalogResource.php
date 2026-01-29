@@ -168,7 +168,7 @@ class MaterialCatalogResource extends AppResource
                                                 return;
                                             }
 
-                        
+
 
                                             $available = max($material->current_stock - $material->quantity_on_loan, 0);
 
@@ -190,15 +190,20 @@ class MaterialCatalogResource extends AppResource
                             ->label('Fecha de retiro deseada')
                             ->prefixIcon('heroicon-o-calendar')
                             ->required()
-                            ->minDate(now())
+                            ->minDate(now()->subYear())
                             ->seconds(false)
                             ->native(false),
                         DateTimePicker::make('planned_return_at')
                             ->label('Fecha de devolución estimada')
                             ->prefixIcon('heroicon-o-clock')
                             ->required()
+                            ->maxDate(now()->addYears(5))
                             ->seconds(false)
-                            ->native(false),
+                            ->native(false)
+                            ->afterOrEqual('needed_at')
+                            ->validationMessages([
+                                'after_or_equal' => 'La fecha de devolución no puede ser anterior a la fecha de retiro deseada.',
+                            ]),
                         Textarea::make('notes')
                             ->label('Notas opcionales')
                             ->placeholder('Cuéntanos brevemente para qué necesitas estos materiales.')
@@ -206,9 +211,6 @@ class MaterialCatalogResource extends AppResource
                             ->rows(3)
                             ->columnSpanFull()
                             ->extraAttributes(['class' => 'pl-3 border-l-4 border-primary-200 bg-primary-50/30']),
-                        Forms\Components\Placeholder::make('notes_hint')
-                            ->content('Consejo: describe con claridad el uso del material para acelerar la aprobación.')
-                            ->columnSpanFull(),
                     ])
                     ->modalSubmitActionLabel('Enviar solicitud')
                     ->action(function (array $data) {

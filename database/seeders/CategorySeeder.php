@@ -12,16 +12,6 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'code' => 'computadores',
-                'name' => 'Computadores de escritorio',
-                'description' => 'Torres y estaciones fijas alineadas con los salones del laboratorio, listas para pruebas de sistemas embebidos y redes.',
-            ],
-            [
-                'code' => 'portatiles',
-                'name' => 'Portátiles',
-                'description' => 'Laptops para prácticas externas, acompañamiento de proyectos y uso en espacios múltiples de la universidad.',
-            ],
-            [
                 'code' => 'perifericos',
                 'name' => 'Periféricos',
                 'description' => 'Teclados, mouse, monitores, audífonos y cámaras para equipar estaciones de trabajo y laboratorios móviles.',
