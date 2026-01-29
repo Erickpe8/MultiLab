@@ -1,0 +1,18 @@
+﻿name: Guard main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce-pr:
+    name: enforce-pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure PR originates from pruebas
+        run: |
+          if [ "${GITHUB_HEAD_REF}" != "pruebas" ]; then
+            echo "Only pull requests coming from the pruebas branch can merge into main."
+            exit 1
+          fi
