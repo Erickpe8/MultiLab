@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -101,8 +101,8 @@
         </header>
 
         {{-- MAIN --}}
-        <main class="flex-1 min-h-[calc(100vh-140px)] pt-20 pb-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 py-10 lg:py-14">
+        <main class="flex-1 min-h-[calc(100vh-140px)] pt-4 pb-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 py-4 lg:py-6">
 
                 <!-- WELCOME_REDESIGN_V1 -->
                 <section
@@ -157,7 +157,7 @@
                     </div>
                 </section>
 
-                <section class="space-y-6 pb-6">
+                <section class="space-y-6 pb-2">
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <article
                             class="flex flex-col rounded-3xl bg-white/80 dark:bg-white/5 ring-1 ring-slate-200/70 dark:ring-white/10 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-20px_rgba(15,23,42,0.35)]">
