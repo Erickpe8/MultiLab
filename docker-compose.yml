@@ -20,6 +20,7 @@ services:
       container_name: laravel_scheduler
       volumes:
           - .:/var/www
+          - /var/www/vendor
           - laravel_storage:/var/www/storage
           - laravel_bootstrap_cache:/var/www/bootstrap/cache
       depends_on:

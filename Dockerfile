@@ -1,6 +1,6 @@
-FROM php:8.4-fpm
+FROM php:8.1-fpm
 
-# Dependencias del sistema + librerías PHP
+# Dependencias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -35,7 +35,14 @@ WORKDIR /var/www
 # Copiar proyecto
 COPY . /var/www
 
-# Permisos para Laravel
+# Instalar dependencias
+RUN composer install \
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-dev
+
+# Permisos
 RUN chown -R www-data:www-data /var/www
 
 USER www-data
