@@ -7,11 +7,11 @@
         classroomOpen: {{ json_encode(request()->routeIs('filament.dashboard.resources.classroom-loans.*')) }},
         accountOpen: false,
     }"
-     class="fixed inset-y-0 left-0 z-40 w-64
+    class="fixed inset-y-0 left-0 z-40 w-64
         bg-[var(--card)] text-[var(--text)] border-r border-[var(--border)]
-        transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 lg:overflow-y-auto
+        transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 lg:overflow-y-auto sidebar-scroll
         backdrop-blur-sm"
-     x-bind:class="{ 'translate-x-0': sidebarOpen }">
+    x-bind:class="{ 'translate-x-0': sidebarOpen }">
     <!-- Header / Logo + Theme toggle -->
     <div
         class="h-16 px-4 flex items-center justify-between border-b border-[var(--border)]
@@ -97,14 +97,14 @@
 
     <!-- Navegación -->
     @if (!$user)
-        <div class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--text-muted)]">
                 <p class="font-semibold text-[var(--text)]">Manual público</p>
                 <p class="mt-2">Solo los usuarios autenticados pueden navegar en el dashboard.</p>
             </div>
         </div>
     @else
-        <div class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto px-3 py-4 space-y-3">
         {{-- Principal --}}
         <div>
             <x-sidebar.section-label label="Principal" />
