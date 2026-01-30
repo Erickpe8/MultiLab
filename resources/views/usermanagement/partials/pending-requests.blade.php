@@ -1,4 +1,9 @@
 {{-- resources/views/usermanagement/partials/pending-requests.blade.php --}}
+@php
+    $actionButtonBase = 'h-10 w-10 inline-flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm';
+    $btnIconGreen = $actionButtonBase . ' bg-[#009B72] border-[#009B72] text-white hover:bg-[#007f5d] hover:border-[#007f5d] focus-visible:ring-[#009B72]';
+    $btnIconRose = $actionButtonBase . ' bg-[#F40000] border-[#F40000] text-white hover:bg-[#cf0000] hover:border-[#cf0000] focus-visible:ring-[#F40000]';
+@endphp
 <div class="space-y-4">
     <!-- Header con Búsqueda y Filtros -->
     <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
@@ -58,17 +63,18 @@
             <div class="overflow-x-auto rounded-lg border border-[var(--border)]">
                 <table class="w-full" id="pending-users-table">
                     <thead>
-                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)]">
+                        <tr
+                            class="bg-[var(--border)]/5 border-b border-[var(--border)] text-center">
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Usuario
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
                                 Email
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
                                 Fecha de Solicitud
                             </th>
                             <th
@@ -76,7 +82,7 @@
                                 Estado
                             </th>
                             <th
-                                class="px-6 py-3 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
@@ -130,30 +136,24 @@
                                 </td>
 
                                 <!-- Acciones -->
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center gap-2">
                                         <button type="button"
                                             onclick="openApprovalModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                                                   bg-gradient-to-r from-green-500 to-emerald-600
-                                                   text-white text-sm font-medium
-                                                   hover:shadow-lg hover:scale-105 active:scale-95
-                                                   transition-all duration-200"
-                                            title="Aprobar usuario">
-                                            <x-ui.icon name="exito" size="sm" class="text-white" />
-                                            <span class="hidden sm:inline">Aprobar</span>
+                                            class="{{ $btnIconGreen }}"
+                                            title="Aprobar usuario"
+                                            aria-label="Aprobar usuario">
+                                            <x-ui.icon name="exito" size="sm"
+                                                class="text-white" />
                                         </button>
+
                                         <button type="button"
                                             onclick="openRejectModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                            class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                                   bg-[var(--primary-soft)] text-[var(--primary-600)]
-                                                   dark:text-[var(--primary-600)]
-                                                   hover:bg-[color-mix(in oklab, var(--primary), transparent 70%)]
-                                                   transition-all
-                                                   border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]
-                                                   hover:border-[color-mix(in oklab, var(--primary) 70%, var(--border))]"
-                                            title="Rechazar solicitud">
-                                            <x-ui.icon name="eliminar" size="sm" class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
+                                            class="{{ $btnIconRose }}"
+                                            title="Rechazar solicitud"
+                                            aria-label="Rechazar solicitud">
+                                            <x-ui.icon name="block-user" size="sm"
+                                                class="text-white" />
                                         </button>
                                     </div>
                                 </td>

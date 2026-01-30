@@ -1,4 +1,9 @@
 {{-- resources/views/usermanagement/partials/active-users.blade.php --}}
+@php
+    $actionButtonBase = 'h-10 w-10 inline-flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm';
+    $btnIconAmber = $actionButtonBase . ' bg-[#F0C808] border-[#F0C808] text-black hover:bg-[#d9b307] hover:border-[#d9b307] focus-visible:ring-[#F0C808]';
+    $btnIconRose = $actionButtonBase . ' bg-[#F40000] border-[#F40000] text-white hover:bg-[#cf0000] hover:border-[#cf0000] focus-visible:ring-[#F40000]';
+@endphp
 <div class="space-y-4">
     <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -83,17 +88,18 @@
             <div class="overflow-x-auto rounded-lg border border-[var(--border)]">
                 <table class="w-full" id="active-users-table">
                     <thead>
-                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)]">
+                        <tr
+                            class="bg-[var(--border)]/5 border-b border-[var(--border)] text-center">
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Usuario
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
                                 Email
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
                                 Rol
                             </th>
                             <th
@@ -101,7 +107,7 @@
                                 Estado
                             </th>
                             <th
-                                class="px-6 py-3 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
@@ -175,31 +181,21 @@
                                     </span>
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center gap-2">
                                     <button type="button"
                                         onclick="openEditRoleModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($mainRole) }}', '', {{ $user->is_active ? 'true' : 'false' }})"
-                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                                bg-blue-500/10 text-blue-600 dark:text-blue-400
-                                                hover:bg-blue-500/20 transition-all
-                                                border border-blue-500/20 hover:border-blue-500/40"
+                                        class="{{ $btnIconAmber }}"
                                         title="Editar usuario">
-                                        <x-ui.icon name="editar" size="sm"
-                                            class="text-blue-600 dark:text-blue-400" />
+                                        <x-ui.icon name="editar" size="sm" class="text-white" />
                                     </button>
 
                                     <button type="button"
                                         onclick="confirmBlockUser({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                        class="inline-flex items-center justify-center p-1.5 rounded-lg
-                                               bg-[var(--primary-soft)] text-[var(--primary-600)]
-                                               hover:bg-[color-mix(in oklab, var(--primary), transparent 70%)]
-                                               transition-all
-                                               border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]
-                                               hover:border-[color-mix(in oklab, var(--primary) 70%, var(--border))]"
+                                        class="{{ $btnIconRose }}"
                                         title="Bloquear usuario"
                                         aria-label="Bloquear usuario">
-                                        <x-ui.icon name="block-user" size="sm"
-                                            class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
+                                        <x-ui.icon name="block-user" size="sm" class="text-white" />
                                     </button>
                                     </div>
                                 </td>

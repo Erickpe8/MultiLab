@@ -1,6 +1,8 @@
 {{-- resources/views/usermanagement/partials/blocked-users.blade.php --}}
 @php
     use Illuminate\Support\Str;
+    $actionButtonBase = 'h-10 w-10 inline-flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm';
+    $btnIconGreen = $actionButtonBase . ' bg-[#009B72] border-[#009B72] text-white hover:bg-[#007f5d] hover:border-[#007f5d] focus-visible:ring-[#009B72]';
 @endphp
 <div class="space-y-4">
     <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
@@ -89,17 +91,17 @@
             <div class="overflow-x-auto rounded-lg border border-[var(--border)]">
                 <table class="w-full" id="blocked-users-table">
                     <thead>
-                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)]">
+                        <tr class="bg-[var(--border)]/5 border-b border-[var(--border)] text-center">
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Usuario
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden md:table-cell">
                                 Email
                             </th>
                             <th
-                                class="px-6 py-3 text-left text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider hidden lg:table-cell">
                                 Rol
                             </th>
                             <th
@@ -107,7 +109,7 @@
                                 Estado
                             </th>
                             <th
-                                class="px-6 py-3 text-right text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-semibold text-[var(--text)] uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
@@ -157,16 +159,15 @@
                                     </span>
                                 </td>
 
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
                                         <button type="button"
                                             onclick="openUnblockModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}')"
-                                            class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg
-                                                   bg-gradient-to-r from-emerald-500 to-teal-600
-                                                   text-white text-sm font-medium
-                                                   hover:shadow-lg transition-all">
-                                            <x-ui.icon name="lock-open" size="sm" class="text-white" />
-                                            Desbloquear
+                                            class="{{ $btnIconGreen }}"
+                                            title="Desbloquear usuario"
+                                            aria-label="Desbloquear usuario">
+                                            <x-ui.icon name="heroicon-o-lock-open" size="sm"
+                                                class="text-white" />
                                         </button>
                                     </div>
                                 </td>
