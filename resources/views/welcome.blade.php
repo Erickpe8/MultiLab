@@ -86,13 +86,13 @@
                 <div class="flex items-center gap-3">
                     @if (Route::has('login'))
                         <a href="{{ route('login') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-full px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70">
+                            class="inline-flex h-11 items-center justify-center rounded-full px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] hover:text-[var(--primary-700)] dark:hover:text-[var(--primary-300)]">
                             Iniciar sesión
                         </a>
                     @endif
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-full bg-blue-600 px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700">
+                            class="inline-flex h-11 items-center justify-center rounded-full bg-blue-600 px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 hover:text-white">
                             Registrarse
                         </a>
                     @endif
@@ -121,19 +121,26 @@
                                 trazabilidad y reportes claros para cada turno.
                             </p>
                             <div class="flex flex-wrap gap-3">
-                                <a href="{{ route('manual.index') }}"
-                                    class="inline-flex h-11 items-center justify-center rounded-full bg-blue-600 px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400">
-                                    Explorar manual
-                                </a>
+                            <x-ui.button
+                                variant="primary"
+                                href="{{ route('manual.index') }}"
+                                class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em]
+                                    text-white hover:text-white
+                                    hover:brightness-95
+                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40
+                                    relative"
+                            >
+                                <span class="relative z-10">Explorar manual</span>
+                            </x-ui.button>
                                 @if (Route::has('login'))
                                     <x-ui.button variant="ghost" href="{{ route('login') }}"
-                                        class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em] rounded-full border border-blue-500/40 text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:border-blue-400 dark:text-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70">
+                                        class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em] rounded-full border border-blue-500/40 text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:border-blue-400 dark:text-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70 hover:text-[var(--primary-700)] dark:hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]">
                                         Iniciar sesión
                                     </x-ui.button>
                                 @endif
                                 @if (Route::has('register'))
                                     <x-ui.button variant="ghost" href="{{ route('register') }}"
-                                        class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em] rounded-full border border-[var(--border)] text-[var(--text)] transition ring-1 ring-slate-200/70 hover:ring-slate-300 dark:ring-white/10">
+                                        class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em] rounded-full border border-[var(--border)] text-[var(--text)] transition ring-1 ring-slate-200/70 hover:ring-slate-300 dark:ring-white/10 hover:text-[var(--primary-700)] dark:hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]">
                                         Registrarse
                                     </x-ui.button>
                                 @endif
@@ -217,11 +224,17 @@
                                     ejecución adecuada de cada proceso del laboratorio.
                                 </p>
                                 <div class="mt-auto flex items-center justify-start gap-4">
-                                <a href="{{ route('manual.index') }}"
-                                    class="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400">
-                                    Ver manual
-                                    <x-ui.icon name="siguiente" size="xs" class="text-current" />
-                                </a>
+                            <x-ui.button
+                                variant="primary"
+                                href="{{ route('manual.index') }}"
+                                class="h-11 px-6 text-xs font-semibold uppercase tracking-[0.3em]
+                                    text-white hover:text-white
+                                    hover:brightness-95
+                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40
+                                    relative"
+                            >
+                                <span class="relative z-10">Ver manual</span>
+                            </x-ui.button>
                                 </div>
                             </div>
                         </article>
