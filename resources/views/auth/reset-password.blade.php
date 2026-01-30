@@ -15,7 +15,8 @@
                 Correo institucional
             </label>
             <input id="email" name="email" type="email" value="{{ old('email', $request->email) }}" required autofocus
-                class="{{ $inputClass }}" />
+                class="{{ $inputClass }} @error('email') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}" />
             <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 
@@ -24,7 +25,8 @@
                 Nueva contraseña
             </label>
             <input id="password" name="password" type="password" required autocomplete="new-password"
-                class="{{ $inputClass }}" />
+                class="{{ $inputClass }} @error('password') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}" />
             <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 
@@ -33,7 +35,9 @@
                 Confirmar contraseña
             </label>
             <input id="password_confirmation" name="password_confirmation" type="password" required
-                autocomplete="new-password" class="{{ $inputClass }}" />
+                autocomplete="new-password"
+                class="{{ $inputClass }} @error('password_confirmation') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                aria-invalid="{{ $errors->has('password_confirmation') ? 'true' : 'false' }}" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 

@@ -27,24 +27,27 @@
                     </h2>
                 </div>
                 <p class="text-sm text-[var(--text-muted)]">
-                    La recuperación de contraseña por correo aún no está habilitada. Para activar este servicio, se debe configurar un proveedor de correo (SMTP) en el entorno de la aplicación. Esto se define en las variables de entorno (.env) por ejemplo: MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD y MAIL_FROM_ADDRESS. Cuando el correo esté configurado, podrás solicitar el enlace de recuperación sin problemas.
+                    La recuperación de contraseña por correo no está disponible en este momento.
+                    Por favor, contacta al administrador del sistema para restablecer tu acceso.
                 </p>
-                <p class="text-xs text-[var(--text-muted)]">
-                    Si necesitas acceso inmediato, contacta al administrador del sistema.
-                </p>
+
                 <div class="flex justify-end">
-                    <a
-                        href="{{ route('login') }}"
-                        class="rounded-lg bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--primary-600)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
-                        @click="open = false"
-                    >
-                        Entendido
-                    </a>
+                <x-ui.button
+                    variant="primary"
+                    href="{{ route('login') }}"
+                    class="px-4 py-2 text-sm font-semibold
+                        text-white hover:text-white
+                        hover:bg-[var(--primary)]/90
+                        hover:opacity-100
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40
+                        relative"
+                    @click="open = false"
+                >
+                    <span class="relative z-10">Entendido</span>
+                </x-ui.button>
                 </div>
             </div>
         </div>
-
-        <x-auth-session-status class="text-sm text-center text-[var(--primary)]" :status="session('status')" />
 
         <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
             @csrf
@@ -54,7 +57,9 @@
                     Correo institucional
                 </label>
                 <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
-                    placeholder="correo@fesc.edu.co" class="{{ $inputClass }}" />
+                    placeholder="correo@fesc.edu.co"
+                    class="{{ $inputClass }} @error('email') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                    aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[var(--primary-600)]" />
             </div>
 

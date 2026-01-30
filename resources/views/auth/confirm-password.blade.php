@@ -17,7 +17,8 @@
                 Contraseña
             </label>
             <input id="password" name="password" type="password" required autocomplete="current-password"
-                class="{{ $inputClass }}" />
+                class="{{ $inputClass }} @error('password') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}" />
             <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[var(--primary-600)]" />
         </div>
 

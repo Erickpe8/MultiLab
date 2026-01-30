@@ -18,8 +18,8 @@
     @endphp
 
 
-    <form method="POST" action="{{ route('register') }}" class="space-y-4">
-        @csrf
+        <form method="POST" action="{{ route('register') }}" class="space-y-4">
+            @csrf
 
         <div class="grid gap-2 md:grid-cols-2">
             <div>
@@ -27,7 +27,9 @@
                     Nombre completo
                 </label>
                 <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus
-                    placeholder="Juan Pablo Pérez" class="{{ $inputClass }}" />
+                    placeholder="Juan Pablo Pérez"
+                    class="{{ $inputClass }} @error('name') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                    aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('name')" class="mt-1 text-xs text-[var(--primary-600)]" />
             </div>
 
@@ -36,7 +38,9 @@
                     Correo institucional
                 </label>
                 <input id="email" name="email" type="email" value="{{ old('email') }}" required
-                    placeholder="correo@fesc.edu.co" class="{{ $inputClass }}" />
+                    placeholder="correo@fesc.edu.co"
+                    class="{{ $inputClass }} @error('email') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                    aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[var(--primary-600)]" />
             </div>
 
@@ -45,7 +49,9 @@
                     Contraseña
                 </label>
                 <input id="password" name="password" type="password" required
-                    placeholder="●●●●●●●●" class="{{ $inputClass }}" />
+                    placeholder="●●●●●●●●"
+                    class="{{ $inputClass }} @error('password') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                    aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-[var(--primary-600)]" />
             </div>
 
@@ -54,7 +60,9 @@
                     Confirmar contraseña
                 </label>
                 <input id="password_confirmation" name="password_confirmation" type="password" required
-                    placeholder="●●●●●●●●" class="{{ $inputClass }}" />
+                    placeholder="●●●●●●●●"
+                    class="{{ $inputClass }} @error('password_confirmation') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
+                    aria-invalid="{{ $errors->has('password_confirmation') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-xs text-[var(--primary-600)]" />
             </div>
         </div>
