@@ -605,30 +605,15 @@ select option:selected {
     background-color: color-mix(in oklab, var(--card), transparent 40%);
     padding: 0.65rem 0.75rem;
 }
-/* Sidebar scroll */
+/* Sidebar scrollbar invisible (mantiene scroll funcional) */
 .sidebar-scroll {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
+
 .sidebar-scroll::-webkit-scrollbar {
     width: 0;
     height: 0;
-    display: none;
-}
-
-.sidebar-scroll-hidden {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-.sidebar-scroll-hidden::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-}
-.sidebar-scroll-hidden::-webkit-scrollbar-thumb {
-    background: transparent;
-}
-.sidebar-scroll-hidden::-webkit-scrollbar-track {
-    background: transparent;
 }
 
 /* Animación suave para las transiciones */

@@ -20,8 +20,48 @@
             <img src="{{ asset('images/FESC-30.png') }}" alt="Logo FESC"
                  class="h-8 w-auto transition-transform duration-300 group-hover:scale-105" />
         </a>
-        {{-- Switch de tema --}}
-        <x-theme-toggle id="theme-toggle-side" size="md" />
+        {{-- Botón de alternancia de tema --}}
+        <button
+            type="button"
+            x-data="{
+                dark: document.documentElement.classList.contains('dark'),
+                sync() {
+                    this.dark = document.documentElement.classList.contains('dark');
+                },
+                toggle() {
+                    if (window.theme?.toggle) {
+                        window.theme.toggle();
+                    } else {
+                        const next = !this.dark;
+                        document.documentElement.classList.toggle('dark', next);
+                        try {
+                            localStorage.setItem('theme', next ? 'dark' : 'light');
+                        } catch (error) {
+                            // Ignorar errores de localStorage.
+                        }
+                        this.dark = next;
+                    }
+                },
+            }"
+            x-init="
+                sync();
+                const listener = () => sync();
+                window.addEventListener('theme:changed', listener);
+                $once('hook:destroyed', () => window.removeEventListener('theme:changed', listener));
+            "
+            @click="toggle()"
+            @keydown.enter.prevent="toggle()"
+            @keydown.space.prevent="toggle()"
+            :aria-label="dark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+            class="h-10 w-10 inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+        >
+            <span x-show="dark" class="inline-flex">
+                <x-ui.icon name="sol" class="h-5 w-5" />
+            </span>
+            <span x-show="!dark" class="inline-flex">
+                <x-ui.icon name="luna" class="h-5 w-5" />
+            </span>
+        </button>
 
         @if (filament()->auth()->check())
             @livewire(Filament\Livewire\DatabaseNotifications::class, [
@@ -57,14 +97,14 @@
 
     <!-- Navegación -->
     @if (!$user)
-        <div class="flex-1 overflow-y-auto sidebar-scroll-hidden px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-3">
             <div class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--text-muted)]">
                 <p class="font-semibold text-[var(--text)]">Manual público</p>
                 <p class="mt-2">Solo los usuarios autenticados pueden navegar en el dashboard.</p>
             </div>
         </div>
     @else
-        <div class="flex-1 overflow-y-auto sidebar-scroll-hidden px-3 py-4 space-y-3">
+        <div class="flex-1 overflow-y-auto sidebar-scroll px-3 py-4 space-y-3">
         {{-- Principal --}}
         <div>
             <x-sidebar.section-label label="Principal" />
