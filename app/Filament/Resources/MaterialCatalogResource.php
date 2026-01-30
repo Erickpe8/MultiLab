@@ -128,11 +128,13 @@ class MaterialCatalogResource extends AppResource
                                     ->searchable()
                                     ->preload()
                                     ->required()
+                                    ->rules(['exists:materials,id'])
                                     ->columnSpan(1),
                                 TextInput::make('quantity')
                                     ->label('Cantidad')
                                     ->prefixIcon('heroicon-o-hashtag')
                                     ->numeric()
+                                    ->integer()
                                     ->minValue(1)
                                     ->required()
                                     ->helperText(function (Forms\Get $get) {
@@ -168,8 +170,6 @@ class MaterialCatalogResource extends AppResource
                                                 return;
                                             }
 
-
-
                                             $available = max($material->current_stock - $material->quantity_on_loan, 0);
 
                                             if ($available <= 0) {
@@ -183,6 +183,27 @@ class MaterialCatalogResource extends AppResource
                                             }
                                         };
                                     })
+                                    ->rule(function (Forms\Get $get) {
+                                        return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                            $materialId = $get('material_id');
+
+                                            if (! $materialId) {
+                                                return;
+                                            }
+
+                                            $material = Material::find($materialId);
+
+                                            if (! $material) {
+                                                return;
+                                            }
+
+                                            $available = max($material->current_stock - $material->quantity_on_loan, 0);
+
+                                            if ((int) $value > $available) {
+                                                $fail("La cantidad solicitada ({$value}) supera el stock disponible ({$available}).");
+                                            }
+                                        };
+                                    })
                                     ->columnSpan(1),
                             ])
                             ->columnSpanFull(),
@@ -190,7 +211,10 @@ class MaterialCatalogResource extends AppResource
                             ->label('Fecha de retiro deseada')
                             ->prefixIcon('heroicon-o-calendar')
                             ->required()
-                            ->minDate(now()->subYear())
+                            ->minDate(now()->startOfDay())
+                            ->displayFormat('d/m/Y H:i')
+                            ->format('Y-m-d H:i')
+                            ->timezone(config('app.timezone'))
                             ->seconds(false)
                             ->native(false),
                         DateTimePicker::make('planned_return_at')
@@ -208,6 +232,7 @@ class MaterialCatalogResource extends AppResource
                             ->label('Notas opcionales')
                             ->placeholder('Cuéntanos brevemente para qué necesitas estos materiales.')
                             ->helperText('Incluye detalles del proyecto o uso previsto para agilizar la autorización.')
+                            ->maxLength(1000)
                             ->rows(3)
                             ->columnSpanFull()
                             ->extraAttributes(['class' => 'pl-3 border-l-4 border-primary-200 bg-primary-50/30']),

@@ -19,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ClassroomLoanResource extends Resource
 {
@@ -72,11 +73,13 @@ class ClassroomLoanResource extends Resource
                             ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                             ->preload()
                             ->required()
+                            ->rules(['exists:users,id'])
                             ->native(false),
                         Forms\Components\Select::make('approved_by')
                             ->relationship('approver', 'first_name', fn(Builder $query) => $query->role(['superadmin', 'aux_admin']))
                             ->label('Aprobado por')
                             ->default(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']) ? Auth::id() : null)
+                            ->nullable()
                             ->afterStateHydrated(function (Forms\Components\Select $component, $state) {
                                 if (blank($state) && Auth::user()->hasAnyRole(['superadmin', 'aux_admin'])) {
                                     $component->state(Auth::id());
@@ -87,6 +90,7 @@ class ClassroomLoanResource extends Resource
                             ->preload()
                             ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
                             ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
+                            ->rules(['nullable', 'exists:users,id'])
                             ->native(false),
                         Forms\Components\TextInput::make('subject')
                             ->label('Asignatura/Sesión')
@@ -94,21 +98,16 @@ class ClassroomLoanResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('purpose')
                             ->label('Propósito')
-                            ->maxLength(180),
+                            ->maxLength(180)
+                            ->nullable(),
                         Forms\Components\Select::make('status')
                             ->label('Estado')
                             ->options(function () {
-                                $allOptions = [
-                                    'pendiente' => 'Pendiente',
-                                    'aprobado' => 'Aprobado',
-                                    'rechazado' => 'Rechazado',
-                                    'en_uso' => 'En uso',
-                                    'finalizado' => 'Finalizado',
-                                    'cancelado' => 'Cancelado',
-                                ];
+                                $allOptions = static::statusOptions();
+                                $teacherOptions = ['pendiente', 'en_uso', 'finalizado', 'cancelado'];
 
-                                if (Auth::user()->hasRole('docente')) {
-                                    return collect($allOptions)->only(['pendiente', 'en_uso', 'finalizado', 'cancelado'])->toArray();
+                                if (Auth::user()?->hasRole('docente')) {
+                                    return collect($allOptions)->only($teacherOptions)->toArray();
                                 }
 
                                 return $allOptions;
@@ -116,6 +115,13 @@ class ClassroomLoanResource extends Resource
                             ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
                             ->default('pendiente')
                             ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
+                            ->rules([
+                                fn() => Rule::in(
+                                    Auth::user()?->hasRole('docente')
+                                        ? ['pendiente', 'en_uso', 'finalizado', 'cancelado']
+                                        : array_keys(static::statusOptions())
+                                ),
+                            ])
                             ->native(false),
                     ])
                     ->columns(2),
@@ -125,6 +131,7 @@ class ClassroomLoanResource extends Resource
                             ->label('Inicio programado')
                             ->seconds(false)
                             ->required()
+                            ->afterOrEqual(Carbon::now())
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set) {
                                 if (! $state) {
@@ -141,7 +148,8 @@ class ClassroomLoanResource extends Resource
                             ->displayFormat('H:i')
                             ->format('Y-m-d H:i:s')
                             ->seconds(false)
-                            ->required(),
+                            ->required()
+                            ->after('scheduled_start_at'),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Control de PCs')
@@ -149,7 +157,9 @@ class ClassroomLoanResource extends Resource
                         Forms\Components\TextInput::make('pc_required')
                             ->label('PCs requeridos')
                             ->numeric()
+                            ->integer()
                             ->minValue(1)
+                            ->maxValue(fn() => static::getAvailableComputerCount())
                             ->required()
                             ->dehydrated(),
                         Forms\Components\TextInput::make('pc_disponibles')
@@ -166,6 +176,7 @@ class ClassroomLoanResource extends Resource
                             ->label('PCs no disponibles')
                             ->numeric()
                             ->default(fn() => Computer::query()->where('status', 'no_disponible')->count())
+                            ->minValue(0)
                             ->disabled()
                             ->helperText(fn() => Auth::user()->hasRole('docente') ? 'Campo gestionado por el laboratorio.' : null)
                             ->dehydrated(),
@@ -181,9 +192,11 @@ class ClassroomLoanResource extends Resource
                     ->schema([
                         Forms\Components\Textarea::make('access_instructions')
                             ->label('Instrucciones de acceso')
+                            ->maxLength(1000)
                             ->rows(3),
                         Forms\Components\Textarea::make('notes')
                             ->label('Notas internas')
+                            ->maxLength(1000)
                             ->rows(5),
                     ])
                     ->columns(1)
@@ -321,14 +334,7 @@ class ClassroomLoanResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Estado')
                     ->native(false)
-                    ->options([
-                        'pendiente' => 'Pendiente',
-                        'aprobado' => 'Aprobado',
-                        'rechazado' => 'Rechazado',
-                        'en_uso' => 'En uso',
-                        'finalizado' => 'Finalizado',
-                        'cancelado' => 'Cancelado',
-                    ]),
+                    ->options(static::statusOptions()),
                 Tables\Filters\Filter::make('fecha')
                     ->form([
                         Forms\Components\DatePicker::make('from')
@@ -337,9 +343,25 @@ class ClassroomLoanResource extends Resource
                             ->label('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
+                        $from = $data['from'] ?? null;
+                        $until = $data['until'] ?? null;
+
+                        if ($from && $until) {
+                            $fromDate = Carbon::parse($from);
+                            $untilDate = Carbon::parse($until);
+
+                            if ($fromDate->greaterThan($untilDate)) {
+                                [$fromDate, $untilDate] = [$untilDate, $fromDate];
+                            }
+
+                            return $query
+                                ->whereDate('scheduled_start_at', '>=', $fromDate->toDateString())
+                                ->whereDate('scheduled_end_at', '<=', $untilDate->toDateString());
+                        }
+
                         return $query
-                            ->when($data['from'] ?? null, fn($q, $date) => $q->whereDate('scheduled_start_at', '>=', $date))
-                            ->when($data['until'] ?? null, fn($q, $date) => $q->whereDate('scheduled_end_at', '<=', $date));
+                            ->when($from, fn($q, $date) => $q->whereDate('scheduled_start_at', '>=', $date))
+                            ->when($until, fn($q, $date) => $q->whereDate('scheduled_end_at', '<=', $date));
                     }),
             ])
             ->actions([
@@ -374,5 +396,17 @@ class ClassroomLoanResource extends Resource
     protected static function getAvailableComputerCount(): int
     {
         return Computer::query()->where('status', 'disponible')->count();
+    }
+
+    protected static function statusOptions(): array
+    {
+        return [
+            'pendiente' => 'Pendiente',
+            'aprobado' => 'Aprobado',
+            'rechazado' => 'Rechazado',
+            'en_uso' => 'En uso',
+            'finalizado' => 'Finalizado',
+            'cancelado' => 'Cancelado',
+        ];
     }
 }

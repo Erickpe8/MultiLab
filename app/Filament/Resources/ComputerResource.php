@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Validation\Rule;
 
 class ComputerResource extends Resource
 {
@@ -36,7 +37,8 @@ class ComputerResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Nombre o Etiqueta')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('serial_number')
                             ->label('Número de Serie')
                             ->required()
@@ -44,36 +46,48 @@ class ComputerResource extends Resource
                             ->maxLength(255),
                         Forms\Components\TextInput::make('marca')
                             ->label('Marca')
-                            ->maxLength(255),
+                            ->maxLength(120)
+                            ->nullable(),
                     ])->columns(2),
                 Forms\Components\Section::make('Estado y Notas')
                     ->schema([
                         Forms\Components\Select::make('status')
                             ->label('Estado')
-                            ->options([
-                                'disponible' => 'Disponible',
-                                'no_disponible' => 'No Disponible',
-                            ])
+                            ->options(static::statusOptions())
                             ->required()
+                            ->rules([Rule::in(array_keys(static::statusOptions()))])
                             ->native(false),
                         Forms\Components\Textarea::make('notes')
                             ->label('Notas')
+                            ->maxLength(1000)
                             ->columnSpanFull(),
                     ]),
                 Forms\Components\Section::make('Componentes')
                     ->schema([
                         Forms\Components\TextInput::make('main_card')
-                            ->label('Tarjeta Principal'),
+                            ->label('Tarjeta Principal')
+                            ->maxLength(150)
+                            ->nullable(),
                         Forms\Components\TextInput::make('processor')
-                            ->label('Procesador'),
+                            ->label('Procesador')
+                            ->maxLength(150)
+                            ->nullable(),
                         Forms\Components\TextInput::make('ram')
-                            ->label('RAM'),
+                            ->label('RAM')
+                            ->maxLength(100)
+                            ->nullable(),
                         Forms\Components\TextInput::make('hard_drive')
-                            ->label('Disco Duro'),
+                            ->label('Disco Duro')
+                            ->maxLength(150)
+                            ->nullable(),
                         Forms\Components\TextInput::make('network_card')
-                            ->label('Tarjeta de Red'),
+                            ->label('Tarjeta de Red')
+                            ->maxLength(150)
+                            ->nullable(),
                         Forms\Components\TextInput::make('graphics_card')
-                            ->label('Tarjeta Gráfica'),
+                            ->label('Tarjeta Gráfica')
+                            ->maxLength(150)
+                            ->nullable(),
                     ])->columns(2),
             ]);
     }
@@ -125,10 +139,7 @@ class ComputerResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'disponible' => 'Disponible',
-                        'no_disponible' => 'No Disponible',
-                    ])
+                    ->options(static::statusOptions())
                     ->label('Estado')
                     ->native(false),
             ])

@@ -123,7 +123,7 @@ class MaterialRequestResource extends AppResource
                         'rechazada' => 'heroicon-o-x-circle',
                         default => 'heroicon-o-clock',
                     })
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->formatStateUsing(fn (string $state) => static::statusOptions()[$state] ?? ucfirst($state))
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Recibida')
@@ -142,11 +142,7 @@ class MaterialRequestResource extends AppResource
             ->filters([
                 SelectFilter::make('status')
                     ->label('Estado')
-                    ->options([
-                        'pendiente' => 'Pendiente',
-                        'aprobada' => 'Aprobada',
-                        'rechazada' => 'Rechazada',
-                    ])
+                    ->options(static::statusOptions())
                     ->indicator('Estado'),
                 SelectFilter::make('material_id')
                     ->label('Material')
@@ -181,7 +177,7 @@ class MaterialRequestResource extends AppResource
                                 'rechazada' => 'danger',
                                 default => 'warning',
                             })
-                            ->formatStateUsing(fn (string $state) => ucfirst($state))
+                            ->formatStateUsing(fn (string $state) => static::statusOptions()[$state] ?? ucfirst($state))
                             ->icon(fn (string $state) => match ($state) {
                                 'aprobada' => 'heroicon-o-check-circle',
                                 'rechazada' => 'heroicon-o-x-circle',
@@ -256,6 +252,15 @@ class MaterialRequestResource extends AppResource
         return [
             'index' => Pages\ListMaterialRequests::route('/'),
             'view' => Pages\ViewMaterialRequest::route('/{record}'),
+        ];
+    }
+
+    protected static function statusOptions(): array
+    {
+        return [
+            'pendiente' => 'Pendiente',
+            'aprobada' => 'Aprobada',
+            'rechazada' => 'Rechazada',
         ];
     }
 }

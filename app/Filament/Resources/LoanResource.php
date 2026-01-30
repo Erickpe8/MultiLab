@@ -23,6 +23,7 @@ use App\Helpers\RoleHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class LoanResource extends AppResource
 {
@@ -48,6 +49,7 @@ class LoanResource extends AppResource
                                 ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                                 ->preload()
                                 ->required()
+                                ->rules(['exists:users,id'])
                                 ->helperText('Persona que recibirá los materiales.')
                                 ->columnSpan(6),
                             Forms\Components\Select::make('issued_by')
@@ -58,6 +60,7 @@ class LoanResource extends AppResource
                                 ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
                                 ->preload()
                                 ->required()
+                                ->rules(['exists:users,id'])
                                 ->helperText('Responsable de la entrega en laboratorio.')
                                 ->columnSpan(6),
                             Forms\Components\Placeholder::make('borrower_contact')
@@ -92,6 +95,7 @@ class LoanResource extends AppResource
                         ->readOnly()
                         ->required()
                         ->maxLength(32)
+                        ->unique(ignoreRecord: true)
                         ->helperText('Se genera automáticamente, pero puedes copiarlo antes de guardar.'),
                 ]),
             Forms\Components\Section::make('Agenda y seguimiento')
@@ -156,7 +160,10 @@ class LoanResource extends AppResource
                                 ->prefixIcon('heroicon-o-calendar')
                                 ->required()
                                 ->native(false)
-                                ->minDate(now())
+                                ->minDate(now()->startOfDay())
+                                ->displayFormat('d/m/Y H:i')
+                                ->format('Y-m-d H:i')
+                                ->timezone(config('app.timezone'))
                                 ->seconds(false)
                                 ->helperText('Inicio del retiro por parte del solicitante.')
                                 ->columnSpan(4),
@@ -166,6 +173,9 @@ class LoanResource extends AppResource
                                 ->required()
                                 ->native(false)
                                 ->maxDate(now()->addYears(5))
+                                ->displayFormat('d/m/Y H:i')
+                                ->format('Y-m-d H:i')
+                                ->timezone(config('app.timezone'))
                                 ->seconds(false)
                                 ->afterOrEqual('loan_at')
                                 ->validationMessages([
@@ -185,6 +195,7 @@ class LoanResource extends AppResource
                         ->label('Notas internas')
                         ->placeholder('Observaciones relevantes, condiciones especiales o daños detectados...')
                         ->rows(4)
+                        ->maxLength(1500)
                         ->columnSpanFull(),
                 ]),
             Forms\Components\Section::make('Estado del préstamo')
@@ -198,6 +209,7 @@ class LoanResource extends AppResource
                                 ->default('pendiente')
                                 ->helperText('Utiliza este campo para marcar devoluciones completas, con multa o estados administrativos como rechazado/cancelado.')
                                 ->required()
+                                ->rules([Rule::in(array_keys(self::statusOptions()))])
                                 ->columnSpan(6),
                             Forms\Components\ToggleButtons::make('mass_return_action')
                                 ->label('Acciones rápidas')
@@ -257,6 +269,7 @@ class LoanResource extends AppResource
                                         ->prefixIcon('heroicon-o-cube')
                                         ->options(Material::query()->pluck('name', 'id'))
                                         ->required()
+                                        ->rules(['exists:materials,id'])
                                         ->disabledOn('edit')
                                         ->live()
                                         ->afterStateUpdated(function (Forms\Set $set) {
@@ -277,35 +290,44 @@ class LoanResource extends AppResource
                                         })
                                         ->visible(fn (Forms\Get $get) => (bool) $get('material_id'))
                                         ->columnSpan(3),
-                                    Forms\Components\TextInput::make('loan_qty')
-                                        ->label('Cantidad prestada')
-                                        ->prefixIcon('heroicon-o-clipboard-document-list')
-                                        ->numeric()
-                                        ->required()
-                                        ->rule(function (Forms\Get $get, Forms\Components\Component $component) {
-                                            return function (string $attribute, $value, \Closure $fail) use ($get, $component) {
-                                                $livewirePage = $component->getLivewire();
-                                                $operation = 'edit';
-
-                                                if (method_exists($livewirePage, 'getOperation')) {
-                                                    $operation = $livewirePage->getOperation();
-                                                } elseif (property_exists($livewirePage, 'operation')) {
-                                                    $operation = $livewirePage->operation;
-                                                }
-
-                                                if ($operation !== 'create') {
-                                                    return;
-                                                }
-
-                                                $material = Material::find($get('material_id'));
-                                                if ($material && $value > $material->current_stock) {
-                                                    $fail("No se puede prestar más de la cantidad disponible en stock ({$material->current_stock}).");
-                                                }
-                                            };
-                                        })
-                                        ->disabledOn('edit')
-                                        ->columnSpan(4),
-                                    Forms\Components\Placeholder::make('pending_qty')
+                                                                         Forms\Components\TextInput::make('loan_qty')
+                                                                             ->label('Cantidad prestada')
+                                                                             ->prefixIcon('heroicon-o-clipboard-document-list')
+                                                                             ->numeric()
+                                                                             ->minValue(1)
+                                                                             ->required()
+                                                                             ->rule(function (Forms\Get $get) {
+                                                                                 return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                                                                     $materialId = $get('material_id');
+                                    
+                                                                                     // If no material is selected, or material not found, defer to other rules or stop.
+                                                                                     if (!$materialId || !($material = Material::find($materialId))) {
+                                                                                         return;
+                                                                                     }
+                                    
+                                                                                     $currentStock = $material->current_stock;
+                                    
+                                                                                     // Get all materials currently in the repeater for this form
+                                                                                     // Access the parent repeater's state. '..' goes up one level in the component tree.
+                                                                                     $allRepeaterItems = $get('../../materials');
+                                    
+                                                                                     $totalLoanedInCurrentForm = 0;
+                                                                                     foreach ($allRepeaterItems as $item) {
+                                                                                         if (($item['material_id'] ?? null) === $materialId) {
+                                                                                             // Sum up loan_qty for the same material across all repeater items
+                                                                                             $totalLoanedInCurrentForm += (int) ($item['loan_qty'] ?? 0);
+                                                                                         }
+                                                                                     }
+                                    
+                                                                                     // Check if the total loan quantity for this material in the current form
+                                                                                     // exceeds the available stock.
+                                                                                     if ($totalLoanedInCurrentForm > $currentStock) {
+                                                                                         $fail("La cantidad total prestada para '{$material->name}' (actualmente {$totalLoanedInCurrentForm}) excede el stock disponible ({$currentStock}).");
+                                                                                     }
+                                                                                 };
+                                                                             })
+                                                                             ->disabledOn('edit')
+                                                                             ->columnSpan(4),                                    Forms\Components\Placeholder::make('pending_qty')
                                         ->label('Cantidad pendiente')
                                         ->content(function (Forms\Get $get) {
                                             $loanQty = (int) ($get('loan_qty') ?? 0);

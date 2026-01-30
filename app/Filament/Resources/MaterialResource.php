@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rule;
 
 class MaterialResource extends AppResource
 {
@@ -73,6 +74,7 @@ class MaterialResource extends AppResource
                                                 ->searchable()
                                                 ->preload()
                                                 ->required()
+                                                ->rules(['exists:categories,id'])
                                                 ->helperText('Agrupa el material según su uso para facilitar filtros.')
                                                 ->columnSpan(6),
                                             Select::make('unit_id')
@@ -82,6 +84,7 @@ class MaterialResource extends AppResource
                                                 ->searchable()
                                                 ->preload()
                                                 ->required()
+                                                ->rules(['exists:units,id'])
                                                 ->helperText('Define cómo se descuentan existencias (unidades, cajas, metros, etc.).')
                                                 ->columnSpan(6),
                                         ]),
@@ -99,6 +102,7 @@ class MaterialResource extends AppResource
                                                 ->label('Stock mínimo')
                                                 ->prefixIcon('heroicon-o-arrow-trending-down')
                                                 ->numeric()
+                                                ->integer()
                                                 ->default(0)
                                                 ->minValue(0)
                                                 ->helperText('Cuando el stock baje de este valor se considera en alerta.')
@@ -107,14 +111,23 @@ class MaterialResource extends AppResource
                                                 ->label('Stock máximo')
                                                 ->prefixIcon('heroicon-o-arrow-trending-up')
                                                 ->numeric()
+                                                ->integer()
                                                 ->default(0)
                                                 ->minValue(0)
+                                                ->rule(fn (Forms\Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                                    $minStock = (int) ($get('min_stock') ?? 0);
+
+                                                    if ($value !== null && $value !== '' && (int) $value !== 0 && (int) $value < $minStock) {
+                                                        $fail('El stock máximo debe ser mayor o igual al stock mínimo.');
+                                                    }
+                                                })
                                                 ->helperText('Límite de seguridad para evitar sobreinventario.')
                                                 ->columnSpan(4),
                                             TextInput::make('current_stock')
                                                 ->label('Stock actual')
                                                 ->prefixIcon('heroicon-o-archive-box')
                                                 ->numeric()
+                                                ->integer()
                                                 ->default(0)
                                                 ->minValue(0)
                                                 ->helperText('Se ajusta automáticamente con préstamos y devoluciones.')
