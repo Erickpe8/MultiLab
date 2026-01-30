@@ -1,5 +1,7 @@
 {{-- resources/views/usermanagement/partials/active-users.blade.php --}}
 @php
+    use Illuminate\Support\Str;
+
     $actionButtonBase = 'h-10 w-10 inline-flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm';
     $btnIconAmber = $actionButtonBase . ' bg-[#F0C808] border-[#F0C808] text-black hover:bg-[#d9b307] hover:border-[#d9b307] focus-visible:ring-[#F0C808]';
     $btnIconRose = $actionButtonBase . ' bg-[#F40000] border-[#F40000] text-white hover:bg-[#cf0000] hover:border-[#cf0000] focus-visible:ring-[#F40000]';
@@ -121,9 +123,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div
-                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                                    flex items-center justify-center text-white font-bold text-sm shrink-0">
-                                            {{ substr($user->name, 0, 1) }}
+                                            class="w-12 h-12 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                            {{ Str::upper(Str::substr(Str::of($user->name ?: 'Usuario'), 0, 1)) }}
                                         </div>
                                         <div>
                                             <div class="font-medium text-[var(--text)]">
@@ -165,18 +166,21 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                                    @php
+                                        $roleLabel = $mainRole;
+                                        $roleBadgeClass = $roleLabel === 'Sin rol'
+                                            ? 'bg-[#F0C808] border-[#F0C808] text-black'
+                                            : 'bg-[#1D4ED8] border-[#1D4ED8] text-white';
+                                    @endphp
                                     <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                 bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30 w-fit">
-                                        {{ $mainRole }}
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border {{ $roleBadgeClass }}">
+                                        {{ $roleLabel }}
                                     </span>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <span
-                                        class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
-                                                 bg-green-500/20 text-green-700 dark:text-green-300
-                                                 border border-green-500/30">
+                                        class="inline-flex px-3 py-1 rounded-full text-sm font-semibold border bg-[#009B72] border-[#009B72] text-white">
                                         Activo
                                     </span>
                                 </td>

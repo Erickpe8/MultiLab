@@ -1,5 +1,7 @@
 {{-- resources/views/usermanagement/partials/pending-requests.blade.php --}}
 @php
+    use Illuminate\Support\Str;
+
     $actionButtonBase = 'h-10 w-10 inline-flex items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm';
     $btnIconGreen = $actionButtonBase . ' bg-[#009B72] border-[#009B72] text-white hover:bg-[#007f5d] hover:border-[#007f5d] focus-visible:ring-[#009B72]';
     $btnIconRose = $actionButtonBase . ' bg-[#F40000] border-[#F40000] text-white hover:bg-[#cf0000] hover:border-[#cf0000] focus-visible:ring-[#F40000]';
@@ -89,14 +91,16 @@
                     </thead>
                     <tbody class="divide-y divide-[var(--border)]">
                         @foreach ($pendingUsers as $user)
+                            @php
+                                $initial = Str::upper(Str::substr(Str::of($user->name ?: 'Usuario')->trim(), 0, 1));
+                            @endphp
                             <tr class="hover:bg-[var(--border)]/5 transition-colors">
                                 <!-- Usuario -->
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div
-                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]
-                                                    flex items-center justify-center text-white font-bold text-sm shrink-0">
-                                            {{ substr($user->name, 0, 1) }}
+                                            class="w-12 h-12 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                            {{ $initial ?: 'U' }}
                                         </div>
                                         <div>
                                             <div class="font-medium text-[var(--text)]">
@@ -128,9 +132,7 @@
                                 <!-- Estado -->
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <span
-                                        class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold
-                                                 bg-yellow-500/20 text-yellow-700 dark:text-yellow-300
-                                                 border border-yellow-500/30">
+                                        class="inline-flex px-3 py-1 rounded-full text-sm font-semibold border bg-[#F0C808] border-[#F0C808] text-black">
                                         Pendiente
                                     </span>
                                 </td>

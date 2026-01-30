@@ -8,10 +8,15 @@
     <div class="flex flex-col gap-4 pb-4 border-b border-[var(--border)]">
         <div class="flex items-center gap-3">
             <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
-                        flex items-center justify-center">
-                <x-ui.icon name="lock-closed" size="lg" class="text-[var(--primary-600)] dark:text-[var(--primary-600)]" />
+                class="flex h-12 w-12 items-center justify-center rounded-2xl
+                    border border-[#F40000]/30
+                    bg-[#F40000]/10
+                    dark:border-[#F40000]/40
+                    dark:bg-[#F40000]/20"
+            >
+                <x-ui.icon name="block-user" class="h-6 w-6 text-[#F40000]" />
             </div>
+
             <div>
                 <h3 class="text-lg font-bold text-[var(--text)]">
                     Usuarios Bloqueados
@@ -123,9 +128,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                 <div
-                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-soft)] to-[var(--primary-600)]
-                            flex items-center justify-center text-white font-bold text-sm shrink-0">
-                                            {{ substr($user->name, 0, 1) }}
+                    class="w-12 h-12 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                            {{ Str::upper(Str::substr(Str::of($user->name ?: 'Usuario')->trim(), 0, 1)) }}
                                         </div>
                                         <div>
                                             <div class="font-medium text-[var(--text)]">
@@ -143,18 +147,20 @@
                                 </td>
 
                                 <td class="px-6 py-4 hidden lg:table-cell">
+                                    @php
+                                        $roleLabel = $mainRole;
+                                        $roleBadgeClass = $roleLabel === 'Sin rol'
+                                            ? 'bg-[#F0C808] border-[#F0C808] text-black'
+                                            : 'bg-[#1D4ED8] border-[#1D4ED8] text-white';
+                                    @endphp
                                     <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/30 w-fit">
-                                        {{ $mainRole }}
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border {{ $roleBadgeClass }}">
+                                        {{ $roleLabel }}
                                     </span>
                                 </td>
 
                                 <td class="px-6 py-4 text-center">
-                                    <span
-                        class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold
-                                                bg-[var(--primary-soft)] text-[var(--primary-600)] dark:text-[var(--primary-600)]
-                                                border border-[color-mix(in oklab, var(--primary) 50%, var(--border))]">
+                                    <span class="inline-flex px-3 py-1 rounded-full text-sm font-semibold border bg-[#F40000] border-[#F40000] text-white">
                                         Bloqueado
                                     </span>
                                 </td>
