@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -26,9 +25,20 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\\p{L}\\s]+$/u'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$/'],
+        ], [
+            'name.required' => 'Escribe tu nombre completo.',
+            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            'email.required' => 'Escribe tu correo institucional.',
+            'email.email' => 'Ingresa un correo válido.',
+            'email.unique' => 'Ya existe una cuenta con ese correo.',
+            'password.required' => 'Escribe una contraseña.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.regex' => 'Incluye mayúsculas, minúsculas, números y símbolos en la contraseña.',
         ]);
 
         // Se crea el usuario usando el mutator de nombres seccionados
@@ -39,12 +49,6 @@ class RegisteredUserController extends Controller
         $user->is_active = false; // queda pendiente de aprobación del laboratorio
         $user->save();
 
-        return redirect()
-            ->route('login')
-            ->with('notify', [
-                'type'    => 'info',
-                'message' => 'Tu preregistro en MultiLab ha sido recibido. El equipo del laboratorio validará tu cuenta antes de permitir el acceso.',
-            ]);
+        return redirect()->route('login');
     }
 }
-

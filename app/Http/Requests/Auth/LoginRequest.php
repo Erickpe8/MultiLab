@@ -30,7 +30,17 @@ class LoginRequest extends FormRequest
     {
         return [
             'email'    => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:8'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'Escribe tu correo institucional.',
+            'email.email' => 'Ingresa un correo válido.',
+            'password.required' => 'Escribe tu contraseña.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ];
     }
 
@@ -47,7 +57,6 @@ class LoginRequest extends FormRequest
 
         if ($user) {
             if ($user->is_blocked) {
-                $this->flashNotification('error', 'Tu usuario está bloqueado. Contacta al administrador.');
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
@@ -56,7 +65,6 @@ class LoginRequest extends FormRequest
             }
 
             if (! $user->is_active) {
-                $this->flashNotification('warning', 'Tu usuario está pendiente de aprobación.');
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
@@ -65,11 +73,10 @@ class LoginRequest extends FormRequest
             }
 
             if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
-                $this->flashNotification('info', 'Debes verificar tu correo antes de ingresar.');
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
-                    'email' => 'Debes verificar tu correo antes de ingresar.',
+                    'email' => 'Tu usuario está pendiente de aprobación.',
                 ]);
             }
         }
@@ -77,7 +84,6 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
             $message = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
-            $this->flashNotification('error', $message);
 
             throw ValidationException::withMessages([
                 'email' => $message,
@@ -120,11 +126,4 @@ class LoginRequest extends FormRequest
         );
     }
 
-    protected function flashNotification(string $type, string $message): void
-    {
-        session()->flash('notify', [
-            'type'    => $type,
-            'message' => $message,
-        ]);
-    }
 }

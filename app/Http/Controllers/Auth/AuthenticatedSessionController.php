@@ -30,11 +30,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         $displayName = $user?->first_name ?: ($user?->name ?? 'usuario');
 
-        return redirect('/dashboard')
-            ->with('notify', [
-                'type'    => 'success',
-                'message' => 'Bienvenido(a) a MultiLab, ' . $displayName . '.',
-            ]);
+        return redirect('/dashboard');
     }
 
     /**
@@ -47,11 +43,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')
-            ->with('notify', [
-                'type'    => 'info',
-                'message' => 'Sesión cerrada correctamente.',
-            ]);
+        return redirect('/');
     }
 }
-
