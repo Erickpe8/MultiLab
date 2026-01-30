@@ -1,3 +1,12 @@
+@php
+    $homeCardBase = 'group block min-h-full rounded-2xl border border-[var(--border)] bg-white dark:bg-[var(--card)] p-6 shadow-sm text-[var(--text)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-[var(--primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--card)]';
+    $cardKicker = 'text-xs font-semibold uppercase tracking-[0.35em] text-[var(--text-muted)]';
+    $cardTitleClass = 'mt-4 text-xl font-semibold leading-7 text-[var(--text)]';
+    $cardBodyClass = 'mt-2 text-sm leading-6 text-[var(--text-muted)]';
+    $cardCtaClass = 'mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--card)]';
+    $iconWrapperClass = 'flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-white/60 text-[var(--primary)] dark:bg-white/5';
+@endphp
+
 <div class="space-y-8">
     <section class="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm backdrop-blur-sm">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -36,30 +45,29 @@
                     @foreach ($section['visibleCards'] as $card)
                         <a href="{{ $card['href'] }}"
                            aria-disabled="{{ $card['hasRoute'] ? 'false' : 'true' }}"
-                           class="group block min-h-full rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 py-6 text-[var(--text)] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $card['hasRoute'] ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]' : 'cursor-not-allowed opacity-70' }}">
+                           class="{{ $homeCardBase }} {{ $card['hasRoute'] ? '' : 'cursor-not-allowed opacity-70' }}">
                             <div class="flex items-center justify-between gap-4">
-                                <div
-                                    class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--border)]/30 text-[var(--primary)]">
+                                <div class="{{ $iconWrapperClass }}">
                                     {{-- OJO: aquí NO uses :name en Blade si no estás seguro; usa name con {{ }} --}}
                                     <x-ui.icon name="{{ $card['icon'] }}" size="lg" />
                                 </div>
 
-                                <span class="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-[var(--text-muted)]">
+                                <span class="{{ $cardKicker }}">
                                         {{ $card['badge'] ?? 'Acceso' }}
                                     </span>
                             </div>
 
-                            <h3 class="mt-6 text-lg font-semibold text-[var(--text)]">{{ $card['title'] }}</h3>
+                            <h3 class="{{ $cardTitleClass }}">{{ $card['title'] }}</h3>
 
-                            <p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
+                            <p class="{{ $cardBodyClass }}">
                                 {{ $card['description'] }}
                             </p>
 
                             <div class="mt-4 flex flex-col gap-2">
-                                    <span
-                                        class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] {{ $card['hasRoute'] ? 'group-hover:underline' : '' }}">
+                                <span
+                                    class="{{ $cardCtaClass }} {{ $card['hasRoute'] ? 'group-hover:text-[var(--primary-600)] group-hover:underline' : '' }}">
                                         {{ $card['cta'] ?? 'Ir al módulo' }}
-                                        <x-ui.icon name="siguiente" size="sm" class="text-[var(--accent)]" />
+                                        <x-ui.icon name="siguiente" size="sm" class="text-[var(--primary)]" />
                                     </span>
                                 @unless ($card['hasRoute'])
                                     <span class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.35em] text-[var(--text-muted)]">

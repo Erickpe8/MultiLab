@@ -41,6 +41,7 @@ return [
         'perfil' => 'heroicon-o-user-circle',
         'login' => 'heroicon-o-arrow-right-on-rectangle',
         'logout' => 'heroicon-o-arrow-left-on-rectangle',
+        'block-user' => 'heroicon-o-user-minus',
         'bloquear' => 'heroicon-o-lock-closed',
         'exito' => 'heroicon-o-check-circle',
         'info' => 'heroicon-o-information-circle',
