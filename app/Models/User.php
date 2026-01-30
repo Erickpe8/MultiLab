@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser as FilamentUserContract;
+use Filament\Panel;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUserContract, MustVerifyEmailContract
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, MustVerifyEmail;
 
     /**
      * Importante para Spatie Permission.
@@ -144,6 +148,20 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->hasRole('superadmin');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if (! $this->is_active || $this->is_blocked) {
+            return false;
+        }
+
+        return $this->hasAnyRole([
+            'superadmin',
+            'aux_admin',
+            'docente',
+            'estudiante',
+        ]);
     }
 
     /**

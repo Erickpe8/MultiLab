@@ -100,6 +100,15 @@
 
     <x-notify />
     @include('components.toast-bridge')
+
+    @if (session('notify'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const data = @json(session('notify'));
+                showNotification(data.message ?? 'Operación realizada', data.type ?? 'info');
+            });
+        </script>
+    @endif
 </body>
 
 </html>

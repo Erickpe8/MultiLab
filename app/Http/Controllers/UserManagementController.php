@@ -156,6 +156,9 @@ class UserManagementController extends Controller
             $user->is_blocked = false;
             $user->area = $validated['area'] ?? null;
             $user->role_name = $validated['role'];
+            if (! $user->email_verified_at) {
+                $user->email_verified_at = now();
+            }
             $user->save();
 
             $user->syncRoles([$validated['role']]);

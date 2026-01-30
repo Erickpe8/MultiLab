@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -44,19 +45,42 @@ class LoginRequest extends FormRequest
 
         $user = User::where('email', $this->input('email'))->first();
 
-        if ($user && ! $user->is_active) {
-            RateLimiter::hit($this->throttleKey());
+        if ($user) {
+            if ($user->is_blocked) {
+                $this->flashNotification('error', 'Tu usuario está bloqueado. Contacta al administrador.');
+                RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => 'Tu cuenta aún no ha sido validada por el laboratorio.',
-            ]);
+                throw ValidationException::withMessages([
+                    'email' => 'Tu usuario está bloqueado. Contacta al administrador.',
+                ]);
+            }
+
+            if (! $user->is_active) {
+                $this->flashNotification('warning', 'Tu usuario está pendiente de aprobación.');
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => 'Tu usuario está pendiente de aprobación.',
+                ]);
+            }
+
+            if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+                $this->flashNotification('info', 'Debes verificar tu correo antes de ingresar.');
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => 'Debes verificar tu correo antes de ingresar.',
+                ]);
+            }
         }
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+            $message = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+            $this->flashNotification('error', $message);
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => $message,
             ]);
         }
 
@@ -95,5 +119,12 @@ class LoginRequest extends FormRequest
             Str::lower($this->string('email')) . '|' . $this->ip()
         );
     }
-}
 
+    protected function flashNotification(string $type, string $message): void
+    {
+        session()->flash('notify', [
+            'type'    => $type,
+            'message' => $message,
+        ]);
+    }
+}
