@@ -44,6 +44,7 @@ class UserSeeder extends Seeder
                 'password' => self::PASSWORD,
                 'is_active' => true,
                 'role_name' => 'superadmin',
+                'email_verified_at' => now(),
             ])
         );
 
@@ -70,6 +71,7 @@ class UserSeeder extends Seeder
                 'password' => self::PASSWORD,
                 'is_active' => true,
                 'role_name' => 'aux_admin',
+                'email_verified_at' => now(),
             ])
         );
 

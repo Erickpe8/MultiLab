@@ -56,6 +56,21 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 
+    Route::get('/__diag', function () {
+        $user = auth()->user();
+
+        return response()->json([
+            'user_id' => $user?->id,
+            'email' => $user?->email,
+            'roles' => $user?->getRoleNames()->toArray() ?? [],
+            'is_active' => $user?->is_active,
+            'is_blocked' => $user?->is_blocked,
+            'guard_default' => config('auth.defaults.guard'),
+            'session_domain' => config('session.domain'),
+            'app_url' => config('app.url'),
+            'app_env' => config('app.env'),
+        ]);
+    })->name('diag.status');
 });
 Route::get('/manual', [ManualController::class, 'index'])->name('manual.index');
 
