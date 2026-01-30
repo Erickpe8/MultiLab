@@ -12,7 +12,8 @@ class MainDashboard extends Page
 
     protected static string $view = 'filament.pages.main-dashboard';
 
-    protected static ?string $title = 'Dahsboard Principal';
+    protected static ?string $navigationLabel = 'Inicio';
+    protected static ?string $title = 'Inicio';
 
     public function getSections(): array
     {

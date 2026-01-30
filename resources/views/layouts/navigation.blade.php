@@ -119,7 +119,7 @@
                 <div class="flex items-center gap-3">
                     <x-ui.icon name="inicio" size="lg"
                                class="transition-transform duration-200 group-hover:scale-110 {{ request()->is('dashboard') ? 'text-white' : 'text-[var(--text)]' }}" />
-                    <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Dashboard</span>
+                    <span class="{{ request()->is('dashboard') ? 'text-white' : '' }}">Inicio</span>
                 </div>
             </button>
         </div>
