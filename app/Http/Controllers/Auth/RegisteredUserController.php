@@ -24,9 +24,20 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->merge([
+            'email' => strtolower(trim((string) $request->input('email'))),
+        ]);
+
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\\p{L}\\s]+$/u'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email',
+                'regex:/^[^@\\s]+@fesc\\.edu\\.co$/i',
+            ],
             'password' => ['required', 'confirmed', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$/'],
         ], [
             'name.required' => 'Escribe tu nombre completo.',
@@ -35,6 +46,7 @@ class RegisteredUserController extends Controller
             'email.required' => 'Escribe tu correo institucional.',
             'email.email' => 'Ingresa un correo válido.',
             'email.unique' => 'Ya existe una cuenta con ese correo.',
+            'email.regex' => 'Solo se permite el registro con correo institucional @fesc.edu.co.',
             'password.required' => 'Escribe una contraseña.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',

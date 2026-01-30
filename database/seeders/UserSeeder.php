@@ -43,6 +43,7 @@ class UserSeeder extends Seeder
             array_merge($admin, [
                 'password' => self::PASSWORD,
                 'is_active' => true,
+                'is_blocked' => false,
                 'role_name' => 'superadmin',
                 'email_verified_at' => now(),
             ])
@@ -70,6 +71,7 @@ class UserSeeder extends Seeder
             array_merge($aux, [
                 'password' => self::PASSWORD,
                 'is_active' => true,
+                'is_blocked' => false,
                 'role_name' => 'aux_admin',
                 'email_verified_at' => now(),
             ])
@@ -107,7 +109,9 @@ class UserSeeder extends Seeder
                     'phone' => (string) ($phoneStart + $i),
                     'password' => self::PASSWORD,
                     'is_active' => true,
+                    'is_blocked' => false,
                     'role_name' => $role,
+                    'email_verified_at' => now(),
                 ]
             );
 

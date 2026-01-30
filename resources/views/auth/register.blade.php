@@ -39,6 +39,8 @@
                 </label>
                 <input id="email" name="email" type="email" value="{{ old('email') }}" required
                     placeholder="correo@fesc.edu.co"
+                    pattern="^[^@\s]+@fesc\.edu\.co$"
+                    title="Solo se permite el correo institucional @fesc.edu.co"
                     class="{{ $inputClass }} @error('email') border-rose-500 focus:border-rose-500 focus:ring-rose-500/40 @enderror"
                     aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}" />
                 <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-[var(--primary-600)]" />

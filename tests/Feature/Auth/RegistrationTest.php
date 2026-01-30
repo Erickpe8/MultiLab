@@ -16,19 +16,47 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_new_users_can_register(): void
+    public function test_registration_requires_institutional_email(): void
     {
-        $response = $this->post('/register', [
+        $response = $this->from(route('register'))->post(route('register'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Password123*',
+            'password_confirmation' => 'Password123*',
         ]);
 
-        // MultiLab: NO debe logear
+        $response->assertRedirect(route('register'));
+        $response->assertInvalid('email');
         $this->assertGuest();
+    }
 
-        // Debe redirigir correctamente al login como definiste
+    public function test_registration_rejects_similar_domain(): void
+    {
+        $response = $this->from(route('register'))->post(route('register'), [
+            'name' => 'Test User',
+            'email' => 'test@fesc.edu.co.co',
+            'password' => 'Password123*',
+            'password_confirmation' => 'Password123*',
+        ]);
+
+        $response->assertRedirect(route('register'));
+        $response->assertInvalid('email');
+        $this->assertGuest();
+    }
+
+    public function test_new_users_can_register_with_institutional_email(): void
+    {
+        $response = $this->post(route('register'), [
+            'name' => 'Test User',
+            'email' => 'TestUser@FESC.EDU.CO',
+            'password' => 'Password123*',
+            'password_confirmation' => 'Password123*',
+        ]);
+
+        $this->assertGuest();
         $response->assertRedirect(route('login'));
+        $this->assertDatabaseHas('users', [
+            'email' => 'testuser@fesc.edu.co',
+        ]);
     }
 }
