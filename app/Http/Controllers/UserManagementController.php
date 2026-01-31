@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Models\ClassroomLoan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -350,16 +351,34 @@ class UserManagementController extends Controller
                 return response()->json(['error' => 'No autorizado'], 403);
             }
 
-            if ($user->id === auth()->id()) {
-                return response()->json([
-                    'error' => 'No puedes eliminarte a ti mismo.',
-                ], 400);
-            }
+        if ($user->id === auth()->id()) {
+            return response()->json([
+                'error' => 'No puedes eliminarte a ti mismo.',
+            ], 400);
+        }
 
-            $userName = $user->name;
+        $hasClassroomLoans = ClassroomLoan::query()
+            ->where(function ($query) use ($user) {
+                $query->where('requested_by', $user->id)
+                    ->orWhere('approved_by', $user->id);
+            })
+            ->exists();
 
-            Log::warning('Eliminando usuario permanentemente', [
-                'user_id'    => $user->id,
+        if ($hasClassroomLoans) {
+            Log::warning('Intento de eliminar usuario con préstamos o reservas ligadas', [
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+            ]);
+
+            return response()->json([
+                'error' => 'El usuario tiene préstamos o reservas ligadas; no puede ser eliminado.',
+            ], 500);
+        }
+
+        $userName = $user->name;
+
+        Log::warning('Eliminando usuario permanentemente', [
+            'user_id'    => $user->id,
                 'user_email' => $user->email,
                 'deleted_by' => auth()->id(),
             ]);

@@ -3,6 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
 
@@ -77,6 +79,8 @@ class LoginValidationTest extends TestCase
         $response->assertSessionHasErrors([
             'email' => 'Tu usuario está bloqueado. Contacta al administrador.',
         ]);
+
+        $this->clearLoginThrottle($blocked->email);
     }
 
     public function test_inactive_user_receives_pending_message(): void
@@ -96,6 +100,8 @@ class LoginValidationTest extends TestCase
         $response->assertSessionHasErrors([
             'email' => 'Tu usuario está pendiente de aprobación.',
         ]);
+
+        $this->clearLoginThrottle($pending->email);
     }
 
     public function test_unverified_account_receives_pending_message(): void
@@ -115,5 +121,13 @@ class LoginValidationTest extends TestCase
         $response->assertSessionHasErrors([
             'email' => 'Tu usuario está pendiente de aprobación.',
         ]);
+
+        $this->clearLoginThrottle($unverified->email);
+    }
+
+    private function clearLoginThrottle(string $email): void
+    {
+        $signature = Str::transliterate(Str::lower($email) . '|127.0.0.1');
+        RateLimiter::clear($signature);
     }
 }

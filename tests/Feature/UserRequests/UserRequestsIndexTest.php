@@ -8,10 +8,12 @@ use Database\Seeders\UserTestSeeder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 
 class UserRequestsIndexTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -23,7 +25,7 @@ class UserRequestsIndexTest extends TestCase
 
     public function test_superadmin_can_view_pending_requests_listing(): void
     {
-        $superadmin = User::where('email', 'superadmin@multilab.test')->firstOrFail();
+        $superadmin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->firstOrFail());
 
         $pendingUsers = User::factory()->count(3)->create([
             'is_active'  => false,
@@ -47,7 +49,7 @@ class UserRequestsIndexTest extends TestCase
 
     public function test_regular_user_cannot_access_pending_requests(): void
     {
-        $docente = User::where('email', 'docente@multilab.test')->firstOrFail();
+        $docente = $this->verifyUser(User::where('email', 'docente@multilab.test')->firstOrFail());
 
         $response = $this->actingAs($docente)->get(route('user-management.index', ['view' => 'pending']));
 

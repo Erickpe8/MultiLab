@@ -6,11 +6,13 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 use Tests\TestCase;
 
 class ApproveUserRequestTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -22,7 +24,7 @@ class ApproveUserRequestTest extends TestCase
 
     public function test_superadmin_can_approve_pending_user_and_assign_role(): void
     {
-        $superadmin = User::where('email', 'superadmin@multilab.test')->firstOrFail();
+        $superadmin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->firstOrFail());
         $pending = User::factory()->create([
             'is_active'  => false,
             'is_blocked' => false,
