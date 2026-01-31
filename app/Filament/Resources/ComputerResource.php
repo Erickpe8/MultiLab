@@ -162,4 +162,12 @@ class ComputerResource extends Resource
             'edit' => Pages\EditComputer::route('/{record}/edit'),
         ];
     }
+
+    protected static function statusOptions(): array
+    {
+        return [
+            'disponible' => 'Disponible',
+            'no_disponible' => 'No Disponible',
+        ];
+    }
 }

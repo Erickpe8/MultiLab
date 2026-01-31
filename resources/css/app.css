@@ -77,6 +77,46 @@
     color-scheme: light;
 }
 
+:root[data-theme='light'] .fi-badge.fi-color-success {
+    background-color: rgba(58, 141, 88, 0.18);
+    border-color: #0f5132;
+    color: #0f5132;
+}
+
+:root[data-theme='light'] .fi-badge.fi-color-danger {
+    background-color: rgba(194, 65, 12, 0.16);
+    border-color: #a13306;
+    color: #7c2d12;
+
+}
+
+:root[data-theme='light'] .fi-badge.fi-color-primary {
+    background-color: rgba(59, 130, 246, 0.22);
+    border-color: #3b82f6;
+    color: #0f172a;
+}
+
+:root[data-theme='light'] .fi-badge.fi-color-warning {
+    background-color: rgba(202, 139, 2, 0.2);
+    border-color: #ea580c;
+    color: #9a3412;
+}
+
+:root[data-theme='light'] .fi-btn.fi-btn-color-primary:not(.fi-btn-outlined):not(.fi-btn-ghost) {
+    background-color: #60a5fa;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+:root[data-theme='light'] .fi-btn.fi-btn-color-primary:not(.fi-btn-outlined):not(.fi-btn-ghost):hover {
+    background-color: #3b82f6;
+    border-color: #2563eb;
+}
+
+:root[data-theme='light'] .fi-btn.fi-btn-color-primary:not(.fi-btn-outlined):not(.fi-btn-ghost):focus-visible {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
 /* DARK */
 :root[data-theme='dark']{
     --font-primary: "Calibri", "Segoe UI", "Arial", sans-serif;

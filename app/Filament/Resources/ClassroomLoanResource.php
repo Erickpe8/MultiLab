@@ -304,10 +304,10 @@ class ClassroomLoanResource extends Resource
                     ->label('Estado')
                     ->badge()
                     ->colors([
-                        'warning' => 'pendiente',
-                        'success' => ['aprobado', 'finalizado'],
-                        'danger' => ['rechazado', 'cancelado'],
-                        'info' => 'en_uso',
+                        'warning' => fn (string $state): bool => $state === 'pendiente',
+                        'success' => fn (string $state): bool => in_array($state, ['aprobado', 'finalizado'], true),
+                        'danger' => fn (string $state): bool => in_array($state, ['rechazado', 'cancelado'], true),
+                        'primary' => fn (string $state): bool => $state === 'en_uso',
                     ])
                     ->formatStateUsing(fn(string $state) => match ($state) {
                         'pendiente' => 'Pendiente',
