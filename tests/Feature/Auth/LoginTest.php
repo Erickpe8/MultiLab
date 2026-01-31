@@ -55,7 +55,7 @@ class LoginTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('welcome'));
         $this->assertAuthenticatedAs($user);
     }
 
@@ -104,7 +104,7 @@ class LoginTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('welcome'));
         $response->assertSessionHas('notify');
         $this->assertAuthenticatedAs($user);
     }

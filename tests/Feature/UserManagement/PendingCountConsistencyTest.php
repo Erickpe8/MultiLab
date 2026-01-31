@@ -7,10 +7,12 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\TestCase;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 
 class PendingCountConsistencyTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -22,7 +24,7 @@ class PendingCountConsistencyTest extends TestCase
 
     public function test_pending_badge_matches_list_total(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->firstOrFail();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->firstOrFail());
 
         User::factory()->count(4)->create([
             'is_active'  => false,

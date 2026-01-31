@@ -6,11 +6,13 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 use Tests\TestCase;
 
 class BlockUserRequestTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -22,7 +24,7 @@ class BlockUserRequestTest extends TestCase
 
     public function test_superadmin_can_block_active_user_and_move_to_blocked(): void
     {
-        $superadmin = User::where('email', 'superadmin@multilab.test')->firstOrFail();
+        $superadmin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->firstOrFail());
         $target = User::factory()->create([
             'is_active'  => true,
             'is_blocked' => false,

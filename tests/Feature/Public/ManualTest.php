@@ -25,9 +25,9 @@ class ManualTest extends TestCase
         $response = $this->get(route('manual.index'));
 
         $response->assertOk();
-        $response->assertSee('Superadmin');
+        $response->assertSee('Super Administrador');
+        $response->assertSee('Administrador Auxiliar');
         $response->assertSee('Docente');
         $response->assertSee('Estudiante');
-        $response->assertSee('Auxiliar / Admin de laboratorio');
     }
 }

@@ -6,11 +6,13 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 use Tests\TestCase;
 
 class PendingViewTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -22,7 +24,7 @@ class PendingViewTest extends TestCase
 
     public function test_superadmin_can_open_pending_view_tab(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->first();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->first());
 
         $response = $this->actingAs($admin)->get(route('user-management.index', ['view' => 'pending']));
 
@@ -33,7 +35,7 @@ class PendingViewTest extends TestCase
 
     public function test_aux_admin_is_forbidden_from_pending_tab(): void
     {
-        $aux = User::where('email', 'auxiliar@multilab.test')->first();
+        $aux = $this->verifyUser(User::where('email', 'auxiliar@multilab.test')->first());
 
         $response = $this->actingAs($aux)->get(route('user-management.index', ['view' => 'pending']));
 

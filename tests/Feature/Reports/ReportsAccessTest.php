@@ -6,11 +6,13 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 use Tests\TestCase;
 
 class ReportsAccessTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -45,7 +47,7 @@ class ReportsAccessTest extends TestCase
 
     private function superadmin(): User
     {
-        return User::where('email', 'superadmin@multilab.test')->firstOrFail();
+        return $this->verifyUser(User::where('email', 'superadmin@multilab.test')->firstOrFail());
     }
 
     public function test_pending_user_cannot_view_reports_index(): void

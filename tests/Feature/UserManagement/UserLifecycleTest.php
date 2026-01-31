@@ -8,11 +8,13 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserTestSeeder;
 use Tests\Traits\Database\RefreshDatabaseSkipDropForeign;
+use Tests\Traits\EnsuresVerifiedUser;
 use Tests\TestCase;
 
 class UserLifecycleTest extends TestCase
 {
     use RefreshDatabaseSkipDropForeign;
+    use EnsuresVerifiedUser;
 
     protected function setUp(): void
     {
@@ -24,7 +26,7 @@ class UserLifecycleTest extends TestCase
 
     public function test_superadmin_can_approve_pending_user_and_logs_audit(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->first();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->first());
         $pending = User::factory()->create([
             'is_active' => false,
             'is_blocked' => false,
@@ -47,7 +49,7 @@ class UserLifecycleTest extends TestCase
 
     public function test_superadmin_can_block_user_and_records_audit(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->first();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->first());
         $target = User::factory()->create([
             'is_active' => true,
             'is_blocked' => false,
@@ -66,7 +68,7 @@ class UserLifecycleTest extends TestCase
 
     public function test_deleting_user_with_classroom_loan_relationship_fails(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->first();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->first());
         $target = User::factory()->create([
             'is_active' => true,
             'is_blocked' => false,
@@ -86,7 +88,7 @@ class UserLifecycleTest extends TestCase
 
     public function test_superadmin_can_destroy_user_without_restrictions(): void
     {
-        $admin = User::where('email', 'superadmin@multilab.test')->first();
+        $admin = $this->verifyUser(User::where('email', 'superadmin@multilab.test')->first());
         $target = User::factory()->create([
             'is_active' => true,
             'is_blocked' => false,
