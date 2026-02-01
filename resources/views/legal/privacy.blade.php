@@ -29,9 +29,9 @@
 @endsection
 
 @section('legal-content')
-    <div class="py-8 sm:py-10 bg-[var(--bg)] min-h-screen">
+    <div class="py-8 sm:py-10 bg-[var(--bg)] overflow-y-auto">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <article class="bg-[var(--card)] rounded-xl border border-[var(--border)] shadow-lg overflow-hidden">
+            <article class="bg-[var(--card)] rounded-xl border border-[var(--border)] shadow-lg">
 
                 <!-- Header del documento -->
                 <div

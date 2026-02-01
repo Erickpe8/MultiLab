@@ -76,24 +76,26 @@
         {{-- HEADER --}}
         <header
             class="sticky top-0 z-50 h-16 lg:h-20 border-b border-slate-200/70 dark:border-white/10 bg-white/90 dark:bg-slate-950/70 backdrop-blur">
-            <div class="max-w-6xl mx-auto flex h-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                    <x-brand.logo variant="horizontal" class="h-10 w-auto" />
-                    <span class="text-lg sm:text-xl font-semibold tracking-wide text-[var(--primary)]">
+            <div class="max-w-6xl mx-auto flex h-full items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
+                <a href="{{ route('welcome') }}" class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <x-brand.logo variant="horizontal" class="h-8 sm:h-10 w-auto" />
+                    <span class="text-sm sm:text-lg lg:text-xl font-semibold tracking-wide text-[var(--primary)] hidden sm:block">
                         {{ config('app.name') }}
                     </span>
                 </a>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     @if (Route::has('login'))
                         <a href="{{ route('login') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-full px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] hover:text-[var(--primary-700)] dark:hover:text-[var(--primary-300)]">
-                            Iniciar sesión
+                            class="inline-flex h-9 sm:h-11 items-center justify-center rounded-full px-3 sm:px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--primary)] transition ring-1 ring-blue-300/60 hover:ring-blue-400 dark:ring-blue-300/40 dark:hover:ring-blue-300/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] hover:text-[var(--primary-700)] dark:hover:text-[var(--primary-300)]">
+                            <span class="hidden sm:inline">Iniciar sesión</span>
+                            <span class="sm:hidden">Iniciar</span>
                         </a>
                     @endif
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-full bg-blue-600 px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 hover:text-white">
-                            Registrarse
+                            class="inline-flex h-9 sm:h-11 items-center justify-center rounded-full bg-blue-600 px-3 sm:px-6 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 hover:text-white">
+                            <span class="hidden sm:inline">Registrarse</span>
+                            <span class="sm:hidden">Registro</span>
                         </a>
                     @endif
                 </div>

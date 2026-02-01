@@ -45,8 +45,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="h-screen overflow-hidden font-primary antialiased bg-[var(--bg)] text-[var(--text)]">
-    <div class="h-screen overflow-hidden">
+<body class="min-h-screen font-primary antialiased bg-[var(--bg)] text-[var(--text)]">
+    <div class="min-h-screen">
         {{ $slot }}
     </div>
 
