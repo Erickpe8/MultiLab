@@ -9,7 +9,7 @@
     }"
     class="fixed inset-y-0 left-0 z-40 w-64
         bg-[var(--card)] text-[var(--text)] border-r border-[var(--border)]
-        transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 lg:overflow-y-auto sidebar-scroll
+        transform transition-transform duration-200 -translate-x-full lg:translate-x-0 lg:min-h-screen lg:shadow-none lg:top-0 overflow-y-auto sidebar-scroll
         backdrop-blur-sm"
     x-bind:class="{ 'translate-x-0': sidebarOpen }">
     <!-- Header / Logo + Theme toggle -->
