@@ -38,7 +38,7 @@ class UserManagementController extends Controller
 
             if ($pendingSearch !== '') {
                 $pendingQuery->where(function ($q) use ($pendingSearch) {
-                    $q->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$pendingSearch}%")
+                    $q->where(DB::raw("CONCAT_WS(' ', NULLIF(first_name, ''), NULLIF(middle_name, ''), NULLIF(first_surname, ''), NULLIF(second_surname, ''))"), 'like', "%{$pendingSearch}%")
                         ->orWhere('email', 'like', "%{$pendingSearch}%");
                 });
             }
@@ -56,16 +56,23 @@ class UserManagementController extends Controller
                 ->where('is_blocked', false)
                 ->with('roles');
 
-            if ($activeSearch !== '') {
-                $activeQuery->where(function ($q) use ($activeSearch) {
-                    $q->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$activeSearch}%")
-                        ->orWhere('email', 'like', "%{$activeSearch}%");
+            if ($activeRoleFilter !== '') {
+                $activeQuery->whereHas('roles', function ($q) use ($activeRoleFilter) {
+                    $q->where('name', 'like', "%{$activeRoleFilter}%");
                 });
             }
 
-            if ($activeRoleFilter !== '') {
-                $activeQuery->whereHas('roles', function ($q) use ($activeRoleFilter) {
-                    $q->where('name', $activeRoleFilter);
+            if ($activeSearch !== '') {
+                $activeQuery->where(function ($q) use ($activeSearch) {
+                    $searchTerms = explode(' ', $activeSearch);
+                    $q->where(function ($subQ) use ($searchTerms) {
+                        foreach ($searchTerms as $term) {
+                            if (trim($term)) {
+                                $subQ->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$term}%");
+                            }
+                        }
+                    })
+                    ->orWhere('email', 'like', "%{$activeSearch}%");
                 });
             }
 
@@ -78,18 +85,26 @@ class UserManagementController extends Controller
         $blockedUsers = collect();
 
         if ($view === 'blocked') {
-            $blockedQuery = User::where('is_blocked', true)->with('roles');
-
-            if ($blockedSearch !== '') {
-                $blockedQuery->where(function ($q) use ($blockedSearch) {
-                    $q->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$blockedSearch}%")
-                        ->orWhere('email', 'like', "%{$blockedSearch}%");
-                });
-            }
+            $blockedQuery = User::where('is_blocked', true)
+                ->with('roles');
 
             if ($blockedRoleFilter !== '') {
                 $blockedQuery->whereHas('roles', function ($q) use ($blockedRoleFilter) {
-                    $q->where('name', $blockedRoleFilter);
+                    $q->where('name', 'like', "%{$blockedRoleFilter}%");
+                });
+            }
+
+            if ($blockedSearch !== '') {
+                $blockedQuery->where(function ($q) use ($blockedSearch) {
+                    $searchTerms = explode(' ', $blockedSearch);
+                    $q->where(function ($subQ) use ($searchTerms) {
+                        foreach ($searchTerms as $term) {
+                            if (trim($term)) {
+                                $subQ->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, first_surname, second_surname)"), 'like', "%{$term}%");
+                            }
+                        }
+                    })
+                    ->orWhere('email', 'like', "%{$blockedSearch}%");
                 });
             }
 

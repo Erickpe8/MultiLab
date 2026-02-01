@@ -31,43 +31,42 @@
         </p>
     </div>
 
-    <form method="GET" id="blocked-users-filter-form" class="flex flex-col gap-3">
+    <form method="GET" id="blocked-users-filter-form"
+            class="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
         @foreach (request()->except('blocked_search', 'blocked_role', 'blocked_page', 'view') as $key => $value)
             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
         @endforeach
         <input type="hidden" name="view" value="blocked">
 
-        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div class="flex-1 relative">
+        <div class="flex-1 min-w-0">
+            <div class="relative">
                 <input type="text" name="blocked_search" id="blocked-search-input"
                     value="{{ request('blocked_search') }}"
                     placeholder="Buscar por nombre o correo"
-                    class="w-full pl-10 pr-4 py-2 rounded-lg border border-[var(--border)]
-                          bg-[var(--card)] text-[var(--text)] text-sm
-                          focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
-                          placeholder:text-[var(--text-muted)] transition-all">
-                <x-ui.icon name="buscar" size="sm"
-                    class="absolute left-3 top-2.5 text-[var(--text-muted)]" />
+                    class="w-full h-10 rounded-xl border border-[var(--border)] bg-[var(--card)]
+                          text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] pl-10 pr-4 transition-all
+                          focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20">
+                <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
+                    <x-ui.icon name="buscar" size="sm" class="text-[var(--text-muted)]" />
+                </div>
             </div>
+        </div>
 
-            <div class="relative w-full sm:w-64">
-                <label for="blocked-role-select" class="sr-only">Rol</label>
-                <select name="blocked_role" id="blocked-role-select"
-                    class="w-full px-4 py-2 rounded-lg border border-[var(--border)]
-                           bg-[var(--card)] text-[var(--text)] text-sm
-                           focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent
-                           appearance-none transition-all">
-                    <option value="">Todos los roles</option>
-                    @foreach ($roles as $role)
-                        <option value="{{ $role->name }}"
-                            {{ request('blocked_role') === $role->name ? 'selected' : '' }}>
-                            {{ ucfirst($role->name) }}
-                        </option>
-                    @endforeach
-                </select>
-                <x-ui.icon name="expandir" size="sm"
-                    class="absolute right-3 top-2.5 text-[var(--text-muted)] pointer-events-none" />
-            </div>
+        <div class="w-full md:w-auto relative">
+            <label for="blocked-role-select" class="sr-only">Rol</label>
+            <select name="blocked_role" id="blocked-role-select"
+                class="w-full md:w-56 h-10 rounded-xl border border-[var(--border)] bg-[var(--card)]
+                       text-sm text-[var(--text)] px-3 transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20">
+                <option value="">Todos los roles</option>
+                @foreach ($roles as $role)
+                    <option value="{{ $role->name }}"
+                        {{ request('blocked_role') === $role->name ? 'selected' : '' }}>
+                        {{ ucfirst($role->name) }}
+                    </option>
+                @endforeach
+            </select>
+            <x-ui.icon name="expandir" size="sm"
+                class="absolute right-3 top-3 text-[var(--text-muted)] pointer-events-none" />
         </div>
 
         @if (request('blocked_search') || request('blocked_role'))

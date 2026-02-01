@@ -224,7 +224,8 @@
 
         const userId = document.getElementById('edit-user-id').value;
         const role = document.getElementById('edit-role').value;
-        const area = document.getElementById('edit-area').value;
+        const areaEl = document.getElementById('edit-area');
+        const area = areaEl ? areaEl.value : null;
         const form = event.target;
         const submitBtn = form.querySelector('button[type="submit"]');
 

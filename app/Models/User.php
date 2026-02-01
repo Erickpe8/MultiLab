@@ -109,6 +109,7 @@ class User extends Authenticatable implements FilamentUserContract, MustVerifyEm
         }
 
         if ($count === 2) {
+            $this->attributes['middle_name']    = '';
             $this->attributes['first_surname']  = $parts[1];
             $this->attributes['second_surname'] = '';
             return;

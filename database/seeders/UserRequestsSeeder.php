@@ -128,7 +128,7 @@ class UserRequestsSeeder extends Seeder
                 'mobile' => '3100000011',
                 'is_active' => false,
                 'is_blocked' => true,
-                'role_name' => null,
+                'role_name' => 'docente',
                 'area' => 'Infraestructura',
             ],
             [
@@ -145,7 +145,7 @@ class UserRequestsSeeder extends Seeder
                 'mobile' => '3100000012',
                 'is_active' => false,
                 'is_blocked' => true,
-                'role_name' => null,
+                'role_name' => 'estudiante',
                 'area' => 'Laboratorio',
             ],
             [
@@ -162,7 +162,7 @@ class UserRequestsSeeder extends Seeder
                 'mobile' => '3100000013',
                 'is_active' => false,
                 'is_blocked' => true,
-                'role_name' => null,
+                'role_name' => 'docente',
                 'area' => 'Soporte',
             ],
             [
@@ -179,7 +179,7 @@ class UserRequestsSeeder extends Seeder
                 'mobile' => '3100000014',
                 'is_active' => false,
                 'is_blocked' => true,
-                'role_name' => null,
+                'role_name' => 'estudiante',
                 'area' => 'Finanzas',
             ],
             [
@@ -196,13 +196,14 @@ class UserRequestsSeeder extends Seeder
                 'mobile' => '3100000015',
                 'is_active' => false,
                 'is_blocked' => true,
-                'role_name' => null,
+                'role_name' => 'estudiante',
                 'area' => 'Mantenimiento',
             ],
         ];
 
         foreach ($blockedUsers as $attributes) {
-            User::updateOrCreate(['email' => $attributes['email']], $attributes);
+            $user = User::updateOrCreate(['email' => $attributes['email']], $attributes);
+            $user->syncRoles([$attributes['role_name']]);
         }
     }
 

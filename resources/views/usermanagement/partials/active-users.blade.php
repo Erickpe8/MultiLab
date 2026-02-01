@@ -132,32 +132,8 @@
                                             </div>
                                             <div class="text-sm text-[var(--text-muted)] md:hidden">
                                                 {{ $user->email }}
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('active-users-filter-form');
-                const searchInput = document.getElementById('active-search-input');
-                const roleSelect = document.getElementById('active-role-select');
-                let debounceTimeout;
-
-                const submitForm = () => {
-                    if (form) {
-                        form.submit();
-                    }
-                };
-
-                if (searchInput) {
-                    searchInput.addEventListener('input', function () {
-                        clearTimeout(debounceTimeout);
-                        debounceTimeout = setTimeout(submitForm, 400);
-                    });
-                }
-
-                if (roleSelect) {
-                    roleSelect.addEventListener('change', submitForm);
-                }
-            });
-        </script>
-    </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
 
@@ -247,3 +223,28 @@
         @endif
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('active-users-filter-form');
+        const searchInput = document.getElementById('active-search-input');
+        const roleSelect = document.getElementById('active-role-select');
+        let debounceTimeout;
+
+        const submitForm = () => {
+            if (form) {
+                form.submit();
+            }
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(submitForm, 400);
+            });
+        }
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', submitForm);
+        }
+    });
+</script>
