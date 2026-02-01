@@ -56,13 +56,6 @@ class ObservationsRelationManager extends RelationManager
                     ->keyLabel('Descripción')
                     ->valueLabel('Valor')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('evidence_path')
-                    ->label('Evidencia')
-                    ->disk('public')
-                    ->directory('classroom-observations')
-                    ->preserveFilenames()
-                    ->visibility('private')
-                    ->downloadable(),
             ])
             ->columns(2);
     }

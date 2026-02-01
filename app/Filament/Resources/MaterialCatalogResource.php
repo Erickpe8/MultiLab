@@ -102,8 +102,7 @@ class MaterialCatalogResource extends AppResource
                 TextColumn::make('available_stock')
                     ->label('Disponible')
                     ->getStateUsing(fn (Material $record) => max($record->current_stock - $record->quantity_on_loan, 0))
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
             ])
             ->filters([])
             ->headerActions([
@@ -215,15 +214,13 @@ class MaterialCatalogResource extends AppResource
                             ->displayFormat('d/m/Y H:i')
                             ->format('Y-m-d H:i')
                             ->timezone(config('app.timezone'))
-                            ->seconds(false)
-                            ->native(false),
+                            ->seconds(false),
                         DateTimePicker::make('planned_return_at')
                             ->label('Fecha de devolución estimada')
                             ->prefixIcon('heroicon-o-clock')
                             ->required()
                             ->maxDate(now()->addYears(5))
                             ->seconds(false)
-                            ->native(false)
                             ->afterOrEqual('needed_at')
                             ->validationMessages([
                                 'after_or_equal' => 'La fecha de devolución no puede ser anterior a la fecha de retiro deseada.',

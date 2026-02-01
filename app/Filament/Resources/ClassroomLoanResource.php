@@ -104,24 +104,11 @@ class ClassroomLoanResource extends Resource
                             ->label('Estado')
                             ->options(function () {
                                 $allOptions = static::statusOptions();
-                                $teacherOptions = ['pendiente', 'en_uso', 'finalizado', 'cancelado'];
-
-                                if (Auth::user()?->hasRole('docente')) {
-                                    return collect($allOptions)->only($teacherOptions)->toArray();
-                                }
-
                                 return $allOptions;
                             })
-                            ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
+                            ->disabled(fn() => ! Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
                             ->default('pendiente')
-                            ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin', 'docente']))
-                            ->rules([
-                                fn() => Rule::in(
-                                    Auth::user()?->hasRole('docente')
-                                        ? ['pendiente', 'en_uso', 'finalizado', 'cancelado']
-                                        : array_keys(static::statusOptions())
-                                ),
-                            ])
+                            ->required(fn() => Auth::user()->hasAnyRole(['superadmin', 'aux_admin']))
                             ->native(false),
                     ])
                     ->columns(2),
@@ -363,6 +350,10 @@ class ClassroomLoanResource extends Resource
                             ->when($from, fn($q, $date) => $q->whereDate('scheduled_start_at', '>=', $date))
                             ->when($until, fn($q, $date) => $q->whereDate('scheduled_end_at', '<=', $date));
                     }),
+                Tables\Filters\Filter::make('my_loans')
+                    ->label('Mis reservas')
+                    ->query(fn (Builder $query): Builder => $query->where('requested_by', Auth::id()))
+                    ->default(Auth::user()->hasRole('docente'))
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

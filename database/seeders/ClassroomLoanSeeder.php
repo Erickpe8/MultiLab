@@ -28,7 +28,7 @@ class ClassroomLoanSeeder extends Seeder
 
         ClassroomLoan::query()->delete();
 
-        $statuses = ['pendiente', 'aprobado', 'en_uso', 'finalizado', 'cancelado', 'rechazado', 'en_uso', 'finalizado'];
+        $statuses = ['pendiente', 'aprobado', 'cancelado', 'rechazado'];
         $subjects = [
             'Programación II',
             'Laboratorio de Redes',

@@ -159,7 +159,6 @@ class LoanResource extends AppResource
                                 ->label('Fecha de Préstamo')
                                 ->prefixIcon('heroicon-o-calendar')
                                 ->required()
-                                ->native(false)
                                 ->minDate(now()->startOfDay())
                                 ->displayFormat('d/m/Y H:i')
                                 ->format('Y-m-d H:i')
@@ -171,7 +170,6 @@ class LoanResource extends AppResource
                                 ->label('Fecha de Devolución')
                                 ->prefixIcon('heroicon-o-clock')
                                 ->required()
-                                ->native(false)
                                 ->maxDate(now()->addYears(5))
                                 ->displayFormat('d/m/Y H:i')
                                 ->format('Y-m-d H:i')
@@ -446,14 +444,12 @@ class LoanResource extends AppResource
                     ->label('Solicitante')
                     ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-user-circle', $state ?? 'Sin solicitante'))
                     ->html()
-                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
-                    ->sortable(),
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email']),
                 Tables\Columns\TextColumn::make('issuer.name')
                     ->label('Entregado por')
                     ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-clipboard-document-check', $state ?? 'Sin asignar'))
                     ->html()
-                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email'])
-                    ->sortable(),
+                    ->searchable(['first_name', 'middle_name', 'first_surname', 'second_surname', 'email']),
                 Tables\Columns\TextColumn::make('loan_code')
                     ->label('Código de Préstamo')
                     ->formatStateUsing(fn (?string $state) => self::renderIconCell('heroicon-o-hashtag', $state ?? 'N/A'))
